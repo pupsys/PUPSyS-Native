@@ -1,7 +1,7 @@
 // Library Imports
 import { LinearGradient, } from "expo-linear-gradient";
 import { useContext, useRef, } from "react";
-import { Pressable, } from "react-native";
+import { Pressable, View, } from "react-native";
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 
 // Context Imports
@@ -189,5 +189,24 @@ export function GradientCard(props) {
         { renderView() }
       </LinearGradient>
     </Swipeable>
+  )
+}
+
+/**
+ * A componet for rendering a full-width line in a card
+ */
+export function Divider() {
+  
+  // Get context
+  const { dark } = useContext(DarkContext);
+
+  return (
+    <View 
+      style={{          
+        width: "100%",
+        borderColor: dark ? darkTheme.textPrimary : lightTheme.textPrimary,
+        borderBottomWidth: 1,
+      }}
+    />
   )
 }

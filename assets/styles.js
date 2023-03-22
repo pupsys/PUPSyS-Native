@@ -112,5 +112,5 @@ export const globalColors = {
   green: "#22C55E",
   greenAlpha: "rgba(34, 197, 94, 0.2)",
   red: "#FD3C4A",
-  venmo: "#008CFF"
+  orange: "#FF9922"
 }

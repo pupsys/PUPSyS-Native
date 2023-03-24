@@ -5,7 +5,7 @@ import { View, } from 'react-native'
 import { ScrollView, } from 'react-native-gesture-handler'
 
 // Context Imports
-import { DarkContext } from '../Context'
+import { DarkContext, } from '../Context'
 
 // Style Imports
 import { darkTheme, lightTheme, } from '../assets/styles'

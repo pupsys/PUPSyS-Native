@@ -116,13 +116,22 @@ function Sensors() {
      * Get the border color by picking the most extreme color of any reading
      * @returns color key
      */
-    function getBorderColor() {
-      if (data.pressure > 350 || data.temperature > 50 || data.humidity > 50) {
-        return globalColors.red;
+    function getSummaryColor() {
+      /** Get colors of all sensors */
+      const allColors = [getPressureColor(), getTemperatureColor(), getHumidityColor()];
+      // If any of the colors are red, make the card red
+      for (const readingColor of allColors) {
+        if (readingColor === globalColors.red) {
+          return readingColor;
+        }
       }
-      if (data.pressure > 325 || data.temperature > 40 || data.humidity > 25) {
-        return globalColors.orange;
+      // If any of the colors are orange, make the card orange
+      for (const readingColor of allColors) {
+        if (readingColor === globalColors.orange) {
+          return readingColor;
+        }
       }
+      // Everything is well! Make the card green.
       return globalColors.green;
     }
 
@@ -131,13 +140,29 @@ function Sensors() {
      * @returns color key
      */
     function getPressureColor() {
-      if (data.pressure > 350) {
+      if (data.pressure >= 350) {
         return globalColors.red;
       }
-      if (data.pressure > 320) {
+      if (data.pressure >= 320) {
         return globalColors.orange;
       }
       return "primary";
+    }
+
+    /**
+     * Get the image source for pressure icon based on reading color
+     * @returns image source
+     */
+    function getPressureSource() {
+      const color = getPressureColor();
+      if (color === globalColors.red) {
+        return require("../assets/images/PressureRed.png");
+      }
+      if (color === globalColors.orange) {
+        return require("../assets/images/PressureOrange.png");
+      }
+      // No worries, return theme colored icon
+      return dark ? require("../assets/images/PressureDark.png") : require("../assets/images/PressureLight.png");
     }
 
     /**
@@ -145,13 +170,29 @@ function Sensors() {
      * @returns color key
      */
     function getTemperatureColor() {
-      if (data.temperature > 50) {
+      if (data.temperature >= 50) {
         return globalColors.red;
       }
-      if (data.temperature > 40) {
+      if (data.temperature >= 40) {
         return globalColors.orange;
       }
       return "primary";
+    }
+
+    /**
+     * Get the image source for temperature icon based on reading color
+     * @returns image source
+     */
+    function getTemperatureSource() {
+      const color = getTemperatureColor();
+      if (color === globalColors.red) {
+        return require("../assets/images/TemperatureRed.png");
+      }
+      if (color === globalColors.orange) {
+        return require("../assets/images/TemperatureOrange.png");
+      }
+      // No worries, return theme colored icon
+      return dark ? require("../assets/images/TemperatureDark.png") : require("../assets/images/TemperatureLight.png");
     }
 
     /**
@@ -159,20 +200,66 @@ function Sensors() {
      * @returns color key
      */
     function getHumidityColor() {
-      if (data.humidity > 50) {
+      if (data.humidity >= 50) {
         return globalColors.red;
       }
-      if (data.humidity > 25) {
+      if (data.humidity >= 25) {
         return globalColors.orange;
       }
       return "primary";
+    }
+
+    /**
+     * Get the image source for humidity icon based on reading color
+     * @returns image source
+     */
+    function getHumiditySource() {
+      const color = getHumidityColor();
+      if (color === globalColors.red) {
+        return require("../assets/images/HumidityRed.png");
+      }
+      if (color === globalColors.orange) {
+        return require("../assets/images/HumidityOrange.png");
+      }
+      // No worries, return theme colored icon
+      return dark ? require("../assets/images/HumidityDark.png") : require("../assets/images/HumidityLight.png");
+    }
+
+    /**
+     * Get the summary text based on card's background color
+     * @returns summary string ("Act Now", "Pay Attention", or "Good Job")
+     */
+    function getSummaryText() {
+      const color = getSummaryColor();
+      if (color === globalColors.red) {
+        return "Act Now";
+      }
+      if (color === globalColors.orange) {
+        return "Pay Attention";
+      }
+      return "Good Job";
+    }
+
+    /**
+     * Get the summary image based on card's background color
+     * @returns image source
+     */
+    function getSummarySource() {
+      const color = getSummaryColor();
+      if (color === globalColors.red) {
+        return require("../assets/images/ActNow.png");
+      }
+      if (color === globalColors.orange) {
+        return require("../assets/images/PayAttention.png");
+      }
+      return require("../assets/images/GoodJob.png");
     }
 
     return (
       <Pressable
         android_ripple={{color: globalColors.greenAlpha}}
         style={{
-          borderColor: getBorderColor(),
+          borderColor: getSummaryColor(),
           borderWidth: 1,
           display: "flex",
           flexDirection: "column",
@@ -212,13 +299,9 @@ function Sensors() {
             marginTop: 5,
           }}
         >
-          <View 
-            display="flex" 
-            flexDirection="row" 
-            alignItems="center" 
-          >
+          <View display="flex" flexDirection="row" alignItems="center" >
             <Image 
-              source={dark ? require("../assets/images/PressureDark.png") : require("../assets/images/PressureLight.png")}
+              source={getPressureSource()}
               style={{
                 width: 30,
                 height: 30,
@@ -231,13 +314,9 @@ function Sensors() {
               color={getPressureColor()}
             />
           </View>
-          <View 
-            display="flex" 
-            flexDirection="row" 
-            alignItems="center" 
-          >
+          <View display="flex" flexDirection="row" alignItems="center">
             <Image 
-              source={dark ? require("../assets/images/TemperatureDark.png") : require("../assets/images/TemperatureLight.png")}
+              source={getTemperatureSource()}
               style={{
                 width: 30,
                 height: 30,
@@ -250,13 +329,9 @@ function Sensors() {
               color={getTemperatureColor()}
             />
           </View>
-          <View 
-            display="flex" 
-            flexDirection="row" 
-            alignItems="center" 
-          >
+          <View display="flex" flexDirection="row" alignItems="center" >
             <Image 
-              source={dark ? require("../assets/images/HumidityDark.png") : require("../assets/images/HumidityLight.png")}
+              source={getHumiditySource()}
               style={{
                 width: 30,
                 height: 30,
@@ -269,6 +344,10 @@ function Sensors() {
               color={getHumidityColor()}
             />
           </View>
+        </View>
+        <View display="flex" flexDirection="row" alignItems="center" >
+          <Image source={getSummarySource()} style={{height: 20, width: 20}}/>
+          <StyledText text={getSummaryText()} color={getSummaryColor()} marginLeft={10}/>
         </View>
       </Pressable>
     )
@@ -293,21 +372,21 @@ const exampleData = {
     {
       id: 1,
       location: "Left Hip",
-      pressure: 300,
-      temperature: 37,
-      humidity: 5,
+      pressure: 350,
+      temperature: 50,
+      humidity: 50,
     },
     {
       id: 2,
       location: "Right Hip",
-      pressure: 300,
+      pressure: 350,
       temperature: 37,
-      humidity: 5,
+      humidity: 30,
     },
     {
       id: 3,
       location: "Left Heel",
-      pressure: 300,
+      pressure: 330,
       temperature: 37,
       humidity: 5,
     },

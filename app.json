@@ -9,7 +9,7 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#1E2028"
+      "backgroundColor": "#FCFCFC"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -23,7 +23,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#1E2028"
+        "backgroundColor": "#FCFCFC"
       },
       "package": "com.PUPSyS.PUPSyS"
     },

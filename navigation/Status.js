@@ -296,7 +296,7 @@ function Sensors() {
           justifyContent="center"
           style={{          
             width: "100%",
-            marginTop: 5,
+            margin: 5,
           }}
         >
           <View display="flex" flexDirection="row" alignItems="center" >

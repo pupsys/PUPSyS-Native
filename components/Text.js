@@ -134,7 +134,7 @@ export function StyledText(props) {
         style={{ 
           zIndex: props.zIndex ? props.zIndex : 1,
           fontSize: props.fontSize ? props.fontSize : 16, 
-          fontWeight: props.fontWeight ? props.fontWeight : 'bold', 
+          fontWeight: props.fontWeight ? props.fontWeight : 'normal', 
           color: getColor(), 
           textAlign: 'center',
           width: props.width ? "100%" : null,

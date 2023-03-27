@@ -263,7 +263,7 @@ function Sensors() {
             width: "100%",
           }}
         >
-          <StyledText text={`Sensor ${parseInt(data.id)}: ${data.location}`} />
+          <StyledText text={`Sensor ${parseInt(data.id)}: ${data.location}`} fontWeight="bold" />
           <Image 
             source={dark ? require("../assets/images/ArrowDownDark.png") : require("../assets/images/ArrowDownLight.png")}
             style={{

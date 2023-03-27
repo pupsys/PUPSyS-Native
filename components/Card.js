@@ -199,9 +199,12 @@ export function GradientCard(props) {
 }
 
 /**
- * A componet for rendering a full-width line in a card
+ * A component for rendering a full-width line in a card
+ * @param {boolean} vertical whether or not divider is vertical
+ * @default
+ * vertical = false;
  */
-export function Divider() {
+export function Divider(props) {
   
   // Get context
   const { dark } = useContext(DarkContext);
@@ -209,9 +212,11 @@ export function Divider() {
   return (
     <View 
       style={{          
-        width: "100%",
+        width: props.vertical ? "0%" : "100%",
+        height: props.vertical ? "100%" : "0%",
         borderColor: dark ? darkTheme.textPrimary : lightTheme.textPrimary,
-        borderBottomWidth: 1,
+        borderBottomWidth: props.vertical ? 0 : 1,
+        borderLeftWidth: props.vertical ? 1 : 0,
       }}
     />
   )

@@ -122,6 +122,7 @@ export function StyledText(props) {
       textAlign="center" 
       style={{
         height: props.height, 
+        width: props.width,
         marginTop: props.marginTop ? props.marginTop : 0,
         marginBottom: props.marginBottom ? props.marginBottom : 0,
         marginLeft: props.marginLeft ? props.marginLeft : 0,
@@ -135,7 +136,8 @@ export function StyledText(props) {
           fontSize: props.fontSize ? props.fontSize : 16, 
           fontWeight: props.fontWeight ? props.fontWeight : 'bold', 
           color: getColor(), 
-          textAlign: 'center'
+          textAlign: 'center',
+          width: props.width ? "100%" : null,
         }}
       >
         {props.text}

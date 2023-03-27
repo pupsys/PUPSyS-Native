@@ -29,7 +29,7 @@ export const textStyles = {
 export const buttonStyles = {
   buttonElevation: 2,
   buttonBorderWidth: 1,
-  buttonWidth: 200,
+  buttonWidth: 150,
   buttonHeight: 50,
   dropDownButtonHeight: 40,
 }

@@ -94,7 +94,7 @@ export default function Patient({navigation}) {
   }
 
   return (
-    <ScrollView
+    <View
       style={{
         padding: 10,
       }}
@@ -201,12 +201,14 @@ export default function Patient({navigation}) {
         </View>
         <Entry width="25%" height={50} placeholderText="Age" value={age} onChange={t => setAge(t)}/>
       </View>
-      <GradientCard flexDirection="column" gradient="white" justifyContent="flex-start" alignItems="flex-start">
-        <StyledText text="Medical Conditions:" marginBottom={5}/>
-        <Divider />
-        { renderConditionCheckboxes() }
-        <Entry placeholderText="Enter notes..." value={notesEntryValue} onChange={(t) => setNotesEntryValue(t)} />
-      </GradientCard>
-    </ScrollView>
+      <ScrollView>
+        <GradientCard flexDirection="column" gradient="white" justifyContent="flex-start" alignItems="flex-start">
+          <StyledText text="Medical Conditions:" marginBottom={5}/>
+          <Divider />
+          { renderConditionCheckboxes() }
+          <Entry placeholderText="Enter notes..." value={notesEntryValue} onChange={(t) => setNotesEntryValue(t)} />
+        </GradientCard>
+      </ScrollView>
+    </View>
   )
 }

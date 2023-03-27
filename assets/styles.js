@@ -104,13 +104,14 @@ export const lightTheme = {
  * @const
  */
 export const globalColors = {
-  disabledGradient: ['#6543ac', '#888888'],
-  selectedGradient: ['#00DD66', '#6442AC'],
-  whiteGradient: ['#6543ac', '#888888'],
-  greenGradient: ['#6543ac', '#00DD66'],
-  redGradient: ['#6543ac', '#FD3C4A'],
+  disabledGradient: ['#888888', '#888888'],
+  selectedGradient: ['#6442AC', '#6442AC'],
+  whiteGradient: ['#888888', '#888888'],
+  greenGradient: ['#00DD66', '#00DD66'],
+  orangeGradient: ['#FF9922', '#FF9922'],
+  redGradient: ['#FD3C4A', '#FD3C4A'],
   green: "#22C55E",
   greenAlpha: "rgba(34, 197, 94, 0.2)",
   red: "#FD3C4A",
-  orange: "#FF9922"
+  orange: "#FF9922",
 }

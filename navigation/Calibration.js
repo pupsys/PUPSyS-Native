@@ -13,17 +13,8 @@ import Topbar from "../components/Topbar";
 
 export default function Calibration({navigation}) {
 
-    // Get Context
-    const { currentRoute, setCurrentRoute } = useContext(RouteContext);
-
-    // Set current route on component mount
-    useState(() => {
-        setCurrentRoute(pageNames.CALIBRATION);
-      }, []);
-
     return (
       <View>
-        <Topbar title={currentRoute} onMenuClick={() => navigation.navigate(pageNames.STATUS)}/>
         <Text>Calibration</Text>
       </View>
     )

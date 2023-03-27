@@ -2,7 +2,7 @@
 import { useState, } from "react";
 import { StatusBar, View, } from "react-native";
 import { DefaultTheme, NavigationContainer, } from "@react-navigation/native";
-import { createStackNavigator, } from "@react-navigation/stack"; 
+import { createDrawerNavigator, } from "@react-navigation/drawer"; 
 
 // Component Imports
 import Calibration from "./navigation/Calibration";
@@ -22,10 +22,10 @@ import { DarkContext, RouteContext, } from "./Context";
  * The main App Stack navigator, allowing the user to visit pages not contained within the mainPage bottom tab navigation 
  * @constant
  */
-export const AppStack = createStackNavigator();
+export const AppDrawer = createDrawerNavigator();
 
 /** 
- * AppStack navigation theme inherits from the {@link DefaultTheme} and sets the navigation's background color to transparent 
+ * AppDrawer navigation theme inherits from the {@link DefaultTheme} and sets the navigation's background color to transparent 
  * @constant
  * */
 const navTheme = {
@@ -52,16 +52,13 @@ function App() {
       <StatusBar backgroundColor={dark ? darkTheme.statusBarColor : lightTheme.statusBarColor} />
       <View style={{height: '100%'}}>
         <NavigationContainer theme={navTheme}>
-          <AppStack.Navigator
+          <AppDrawer.Navigator
             initialRouteName={pageNames.STATUS}
-            screenOptions={{
-              headerShown: false,
-            }}
           >
-            <AppStack.Screen name={pageNames.STATUS}      component={Status}      />
-            <AppStack.Screen name={pageNames.PATIENT}     component={Patient}     />
-            <AppStack.Screen name={pageNames.CALIBRATION} component={Calibration} />
-          </AppStack.Navigator>
+            <AppDrawer.Screen name={pageNames.STATUS}      component={Status}      />
+            <AppDrawer.Screen name={pageNames.PATIENT}     component={Patient}     />
+            <AppDrawer.Screen name={pageNames.CALIBRATION} component={Calibration} />
+          </AppDrawer.Navigator>
         </NavigationContainer>
       </View>
     </RouteContext.Provider>

@@ -14,7 +14,7 @@ import { darkTheme, globalColors, lightTheme, } from '../assets/styles';
 import { DarkContext, RouteContext, } from '../Context'
 
 // Component Imports
-import { Divider, } from "../components/Card";
+import { Divider, GradientCard, } from "../components/Card";
 import { StyledText } from '../components/Text';
 import Topbar from "../components/Topbar";
 
@@ -29,13 +29,7 @@ const tabNames = {
 export default function Status({navigation}) {
 
     // Get Context
-    const { currentRoute, setCurrentRoute } = useContext(RouteContext);
     const { dark } = useContext(DarkContext);
-
-    // Set current route on component mount
-    useState(() => {
-      setCurrentRoute(pageNames.STATUS);
-    }, []);
     
     // Render Status tabs
     return (
@@ -76,7 +70,6 @@ export default function Status({navigation}) {
 function Overall() {
   return (
     <View>
-        <Topbar title={pageNames.STATUS} />
     </View>
   )
 }
@@ -256,19 +249,10 @@ function Sensors() {
     }
 
     return (
-      <Pressable
-        android_ripple={{color: globalColors.greenAlpha}}
-        style={{
-          borderColor: getSummaryColor(),
-          borderWidth: 1,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          padding: 12,
-          margin: 10,
-          borderRadius: 10,
-        }}
+      <GradientCard
+        flexDirection="column"
+        justifyContent="center"
+        gradient={getSummaryColor()}
       >
         <View 
           display="flex" 
@@ -349,16 +333,15 @@ function Sensors() {
           <Image source={getSummarySource()} style={{height: 20, width: 20}}/>
           <StyledText text={getSummaryText()} color={getSummaryColor()} marginLeft={10}/>
         </View>
-      </Pressable>
+      </GradientCard>
     )
   }
     
   return (
     <View>
-      <Topbar title={pageNames.STATUS} />
       <ScrollView
         style={{
-          paddingTop: 10,
+          padding: 10,
         }}
       >
         { renderSensorCards() }

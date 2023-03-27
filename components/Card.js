@@ -15,7 +15,10 @@ import { cardStyles, darkTheme, globalColors, lightTheme } from "../assets/style
  * @param {boolean} selected whether or not to display card as selected
  * @param {Function} onClick function to be called on card click
  * @param {boolean} disabled whether or not to display card as disabled
+ * @param {boolean} solid whether or not to use solid color instead of gradient
  * @param {string} gradient gradient key for border ("white", "red", or "green")
+ * @param {string} justifyContent flex direction
+ * @param {string} flexDirection flex direction
  * @param {React.Component} leftSwipeComponent component to render under card on left swipe
  * @param {React.Component} rightSwipeComponent component to render under card on right swipe
  * @param {Function} onLeftSwipe function to call on left swipe
@@ -43,6 +46,9 @@ export function GradientCard(props) {
     if (props.gradient === "red" || props.gradient === globalColors.red) {
       return globalColors.redGradient;
     }
+    if (props.gradient === "orange" || props.gradient === globalColors.orange) {
+      return globalColors.orangeGradient;
+    }
     if (props.gradient === "green" || props.gradient === globalColors.green) {
       return globalColors.greenGradient;
     }
@@ -58,9 +64,9 @@ export function GradientCard(props) {
           display="flex"
           onPress={props.onClick}
           android_ripple={props.onClick ? {color: globalColors.greenAlpha} : {}}
-          flexDirection="row"
+          flexDirection={props.flexDirection ? props.flexDirection : "row"}
           alignItems="center"
-          justifyContent="space-between" 
+          justifyContent={props.justifyContent ? props.justifyContent : "space-between"}
           style={{
             borderRadius: cardStyles.cardBorderRadius, 
             width: '100%', 

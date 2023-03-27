@@ -8,7 +8,7 @@ import { Image, Pressable, Text, View, } from "react-native";
 import { DarkContext, } from '../Context';
 
 // Style Imports
-import { buttonStyles, darkTheme, lightTheme, globalColors, measurements, } from '../assets/styles';
+import { buttonStyles, darkTheme, globalColors, lightTheme, textStyles, } from '../assets/styles';
 
 /**
  * Menu button for display in the topbar— will open flyout menu
@@ -207,7 +207,8 @@ export function StyledCheckbox(props) {
   return (
     <CheckBox 
     value={props.checked} 
-    color={props.checked ? "#fcfcfc" : "#767676"}
+    color="#767676"
+    
     onValueChange={props.onChange}/>
   )
 }
@@ -231,28 +232,6 @@ export function StyledCheckbox(props) {
 export function DropDownButton(props) {
 
   const { dark } = useContext(DarkContext);
-
-  /**
-   * Get the correct border color from props or default to buttonBorder based on DarkContext
-   * @returns string for border color
-   */
-  function getBorderColor() {
-    if (props.color) {
-      if (props.color === "red" || props.red) {
-        return globalColors.red;
-      }
-      if (props.color === "green") {
-        return globalColors.green;
-      }
-    }
-    if (props.disabled) {
-      return dark ? darkTheme.buttonBorderDisabled : lightTheme.buttonBorderDisabled;
-    }
-    if (props.red) {
-      return globalColors.red;
-    }
-    return dark ? darkTheme.buttonBorder : lightTheme.buttonBorder;
-  }
 
   /**
    * Get the correct text color from props or default to textPrimary based on DarkContext
@@ -297,9 +276,9 @@ export function DropDownButton(props) {
         height: buttonStyles.dropDownButtonHeight,
         marginLeft: 10,
         marginBottom: props.marginBottom ? props.marginBottom : 0,
-        borderRadius: 10,
-        backgroundColor: dark ? darkTheme.buttonFill : lightTheme.buttonFill,
-        elevation: buttonStyles.buttonElevation
+        backgroundColor: dark ? darkTheme.textFieldFill : lightTheme.textFieldFill,
+        borderBottomColor: dark ? darkTheme.textFieldBorderColor : lightTheme.textFieldBorderColor,
+        borderBottomWidth: 1,
       }}
     >
       <Pressable
@@ -310,16 +289,13 @@ export function DropDownButton(props) {
           height: "100%",
           paddingLeft: 10,
           paddingRight: 10,
-          borderRadius: 10,
-          borderWidth: buttonStyles.buttonBorderWidth,
-          borderColor: getBorderColor(),
           display: "flex",
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "center",
         }}
       >
-        <Text style={{color: (getTextColor()), fontSize: 20}}>
+        <Text style={{color: (getTextColor()), fontSize: textStyles.entryFontSize}}>
           {props.text}
         </Text>
         <Image source={getArrow()} style={{marginLeft: 5, height: 20, width: 20}}/>

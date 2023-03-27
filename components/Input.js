@@ -32,8 +32,6 @@ export function Entry(props) {
           borderBottomColor: dark ? darkTheme.textFieldBorderColor : lightTheme.textFieldBorderColor,
           borderBottomWidth: 1,
           height: props.height ? props.height : measurements.entryHeight, 
-          borderRadius: 10,
-          elevation: 2,
           marginTop: props.marginTop ? props.marginTop : 0,
           marginBottom: props.marginBottom ? props.marginBottom : 0,
           marginLeft: props.marginLeft ? props.marginLeft : 0,

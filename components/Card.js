@@ -65,7 +65,7 @@ export function GradientCard(props) {
           onPress={props.onClick}
           android_ripple={props.onClick ? {color: globalColors.greenAlpha} : {}}
           flexDirection={props.flexDirection ? props.flexDirection : "row"}
-          alignItems="center"
+          alignItems={props.alignItems ? props.alignItems : "center"}
           justifyContent={props.justifyContent ? props.justifyContent : "space-between"}
           style={{
             borderRadius: cardStyles.cardBorderRadius, 

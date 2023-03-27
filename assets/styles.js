@@ -19,7 +19,7 @@ export const measurements = {
  * @const
  */
 export const textStyles = {
-  entryFontSize: 26,
+  entryFontSize: 16,
 }
 
 /**

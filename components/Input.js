@@ -11,6 +11,7 @@ import { darkTheme, lightTheme, measurements, textStyles, } from "../assets/styl
 /**
  * General text entry component for CitrusNative
  * @param {Function} onChange function to be called when text is changes 
+ * @param {string} textAlign text alignment 
  * @param {number} marginLeft left margin
  * @param {number} marginRight right margin
  * @param {number} marginTop top margin
@@ -25,7 +26,7 @@ export function Entry(props) {
       <View 
         display="flex" 
         flexDirection="row" 
-        alignItems="center" 
+        alignItems="center"
         style={{
           backgroundColor: (dark ? darkTheme.textFieldFill : lightTheme.textFieldFill), 
           width: props.width ? props.width : "100%", 
@@ -47,7 +48,8 @@ export function Entry(props) {
           keyboardType={props.numeric ? "numeric" : "default"}
           value={props.value ? props.value : ""}
           style={{
-            textAlign: "center",
+            paddingHorizontal: 10,
+            textAlign: props.textAlign ? props.textAlign : "center",
             color: dark ? darkTheme.textPrimary : lightTheme.textPrimary, 
             width: "100%",
             fontSize: textStyles.entryFontSize

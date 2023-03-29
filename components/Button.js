@@ -303,3 +303,33 @@ export function DropDownButton(props) {
     </View>
   )
 }
+
+/**
+ * Simple save icon button
+ * @param {Function} onClick onClick action
+ */
+export function SaveButton(props) {
+
+  // Get context
+  const { dark } = useContext(DarkContext);
+
+  return (
+    <Pressable 
+      onPress={props.onClick}
+      android_ripple={{color: globalColors.greenAlpha}}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        width: 50,
+        height: 50,
+        borderColor: dark ? darkTheme.buttonBorder : lightTheme.buttonBorder,
+        borderWidth: 1,
+        borderRadius: 5,
+        marginLeft: 10,
+      }}
+    >
+        <Image source={dark ? require("../assets/images/SaveDark.png") : require("../assets/images/SaveLight.png")} style={{width: 40, height: 40, backgroundColor: "transparent"}}/>
+    </Pressable>
+  )
+}

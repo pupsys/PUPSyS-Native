@@ -1,6 +1,6 @@
 // Library Imports
 import { useContext, useState, } from 'react'
-import { ActivityIndicator, ScrollView, Pressable, View, } from 'react-native'
+import { ActivityIndicator, ScrollView, Pressable, View, Alert, } from 'react-native'
 import DropDownPicker from 'react-native-dropdown-picker';
 
 // Context Imports
@@ -13,7 +13,7 @@ import { darkTheme, globalColors, lightTheme, } from '../assets/styles';
 import { Divider, GradientCard, } from '../components/Card';
 import { Entry, } from '../components/Input';
 import { StyledText, } from '../components/Text';
-import { DropDownButton, StyledButton, } from '../components/Button';
+import { DropDownButton, SaveButton, StyledButton, } from '../components/Button';
 
 /** Space taken up by entry names */
 const fieldNameWidth = 60;
@@ -33,44 +33,46 @@ const calibrationUnitsMenuItems = [
   {value: allCalibrationUnits[0], label: allCalibrationUnits[0]},
   {value: allCalibrationUnits[1], label: allCalibrationUnits[1]},
 ]
+/** Example device data for development */
+const exampleDevices = [
+  {
+    id: 0,
+    name: "HT100",
+    signal: "-77dBm",
+    logTo: "PUPSys\\HT100",
+    location: "Left Hip",
+    calibration: [30, 40, 50],
+  },
+  {
+    id: 1,
+    name: "HT110",
+    signal: "-50dBm",
+    logTo: "PUPSys\\HT110",
+    location: "Right Hip",
+    calibration: [30, 40, 50],
+  },
+  {
+    id: 2,
+    name: "HT120",
+    signal: "-111dBm",
+    logTo: "PUPSys\\HT120",
+    location: "Left Heel",
+    calibration: [30, 40, 50],
+  },
+  {
+    id: 3,
+    name: "HT130",
+    signal: "-121dBm",
+    logTo: "PUPSys\\HT130",
+    location: "Right Heel",
+    calibration: [30, 40, 50],
+  },
+]
 
 export default function Calibration({navigation}) {
 
   // Create some example device data
-  const [devices, setDevices] = useState([
-    {
-      id: "1",
-      name: "HT100",
-      signal: "-77dBm",
-      logTo: "C:\\Users\\Joe\\PUPSys\\HT100",
-      location: "Left Hip",
-      calibration: [30, 40, 50],
-    },
-    {
-      id: "2",
-      name: "HT110",
-      signal: "-50dBm",
-      logTo: "C:\\Users\\Joe\\PUPSys\\HT110",
-      location: "Right Hip",
-      calibration: [30, 40, 50],
-    },
-    {
-      id: "3",
-      name: "HT120",
-      signal: "-111dBm",
-      logTo: "C:\\Users\\Joe\\PUPSys\\HT120",
-      location: "Left Heel",
-      calibration: [30, 40, 50],
-    },
-    {
-      id: "4",
-      name: "HT130",
-      signal: "-121dBm",
-      logTo: "C:\\Users\\Joe\\PUPSys\\HT130",
-      location: "Right Heel",
-      calibration: [30, 40, 50],
-    },
-  ]);
+  const [devices, setDevices] = useState(exampleDevices);
 
   // Create other states
   const [unitsMenuOpen, setUnitsMenuOpen] = useState(false);        // Whether or not the unit dropdown menu is open
@@ -120,11 +122,11 @@ export default function Calibration({navigation}) {
      */
     function handleClick() {
       // Guard clauses:
-      if (header) { return; }       // This is the header, not a device
-      if (calibrating) { return; }  // We're calibrating right now, so it isn't safe to change devices
+      if (header)       { return; }  // This is the header, not a device
+      if (calibrating)  { return; }  // We're calibrating right now, so it isn't safe to change devices
       
       // Set the current device
-      setCurrentDevice(device.id - 1);
+      setCurrentDevice(device.id);
     }
 
     /**
@@ -135,7 +137,7 @@ export default function Calibration({navigation}) {
       // Guard clauses:
       if (header) { return; } // This is not a device, this is the header
 
-      if ((currentDevice + 1) === parseInt(device.id)) {
+      if (currentDevice === device.id) {
         // If this is the current device, return greenAlpha
         return globalColors.greenAlpha;
       }
@@ -154,7 +156,7 @@ export default function Calibration({navigation}) {
           backgroundColor: getBackgroundColor()
         }}
       >
-        <StyledText text={header ? "#" : device.id} width="10%" align="center"/>
+        <StyledText text={header ? "#" : `${device.id + 1}`} width="10%" align="center"/>
         <Divider vertical={true}/>
         <StyledText text={header ? "Name" : device.name} width="50%"/>
         <Divider vertical={true}/>
@@ -191,7 +193,15 @@ export default function Calibration({navigation}) {
           <View style={{width: fieldNameWidth}}>
             <StyledText text="Log To:" marginRight={5}/>
           </View>
-          <Entry width="75%" height={50} placeholderText="Log Location" value={devices[currentDevice].logTo} onChange={t => handleLogToChange(t)}/>
+          <Entry 
+            width="65%" 
+            height={50} 
+            placeholderText="Log Location" 
+            value={devices[currentDevice].logTo} 
+            onChange={t => handleLogToChange(t)}
+            textAlign="left"
+          />
+          <SaveButton />
         </View>
         <View
           style={{
@@ -238,16 +248,19 @@ export default function Calibration({navigation}) {
    */
   function CalibrationSequence() {
 
-    const [calibrationStep, setCalibrationStep] = useState(1);    // Which step in calibration we're on
-    const [currentWeight, setCurrentWeight]     = useState(null); // Weight of current calibration step
+    // Create states
+    const [calibrationStep, setCalibrationStep]                   = useState(1);                        // Which step in calibration we're on
+    const [currentWeight, setCurrentWeight]                       = useState(null);                     // Weight of current calibration step
+    const [calibrationUnitsMenuOpen, setCalibrationUnitsMenuOpen] = useState(false);                    // Whether or not the unit dropdown menu is open
+    const [calibrationUnits, setCalibrationUnits]                 = useState(allCalibrationUnits[0]);   // The currently selected unit
+    const [calibrationReadings, setCalibrationReadings]           = useState([null, null, null]);       // Weights entered during calibration
 
-    const [calibrationUnitsMenuOpen, setCalibrationUnitsMenuOpen] = useState(false);        // Whether or not the unit dropdown menu is open
-    const [calibrationUnits, setCalibrationUnits]                 = useState(allCalibrationUnits[0]);  // The currently selected unit
+    /**
+     * Component to display current calibration state
+     */
+    function CalibrationProgress() {
 
-    const [loading, setLoading] = useState(false); // Whether or not we're waiting for calibration to complete
-
-    const [calibrationReadings, setCalibrationReadings] = useState([null, null, null]);
-
+      
     /**
      * Component for showing calibration progress
      * @param {number} number which stage of calibration this dot represents
@@ -301,6 +314,22 @@ export default function Calibration({navigation}) {
       )
     }
 
+      return (
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <CalibrationDot number={1} />
+          <CalibrationDot number={2} />
+          <CalibrationDot number={3} />
+        </View>
+      )
+    }
+
     /**
      * Handle submit button click.
      * Convert to grams and set current device's calibration stage to text box value.
@@ -325,14 +354,15 @@ export default function Calibration({navigation}) {
 
       // Move on to next step
       setCurrentWeight(null);
-      setLoading(false);
       if (calibrationStep <= 2) {
+        // There are next steps
         setCalibrationReadings(newReadings);
         setCalibrationStep(calibrationStep + 1);
       } else {
+        // No next step— reset and save to device
         setCalibrationStep(0);
         setCalibrating(false);
-        confirmReadings()
+        confirmReadings();
       }
     }
 
@@ -349,27 +379,11 @@ export default function Calibration({navigation}) {
       setCalibrationReadings([null, null, null]);
     }
 
-    return (
-      <View
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <View
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <CalibrationDot number={1} />
-          <CalibrationDot number={2} />
-          <CalibrationDot number={3} />
-        </View>
+    /**
+     * Component for entering weights during a calibration step
+     */
+    function CalibrationForm() {
+      return (
         <View
           style={{
             display: "flex",
@@ -407,10 +421,65 @@ export default function Calibration({navigation}) {
             }}
           />
         </View>
+      )
+    }
+
+    return (
+      <View
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <CalibrationProgress />
+        <CalibrationForm />
         <StyledButton text="Submit" disabled={!currentWeight} onClick={handleSubmit}/>
-        { loading && <ActivityIndicator size={60} color={globalColors.green} style={{marginTop: 60}} /> }
       </View>
     )
+  }
+
+  /**
+   * Display an alert to disconnect the device
+   */
+  function handleDisconectClick() {
+    
+    /**
+     * Remove device from device list
+     */
+    function confirmDisconnect() {
+      // Filter out current device
+      let newDevices = [];
+      for (let i = 0; i < devices.length; i++) {
+        if (i !== currentDevice) {
+          const d = devices[i];
+          d.id = i;
+          newDevices.push(d);
+        }
+      }
+      setDevices(newDevices);
+    }
+
+    // Alert user
+    Alert.alert("Disconnect", `Disconnect device "${devices[currentDevice].name}"?`, [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+      {
+        text: 'Disconnect',
+        onPress: () => confirmDisconnect(),
+        style: 'destructive',
+      },
+    ])
+  }
+
+  /**
+   * Reset device state (for testing)
+   */
+  function resetDevices() {
+    setDevices(exampleDevices);
   }
 
   return (
@@ -445,14 +514,27 @@ export default function Calibration({navigation}) {
           display: 'flex',
           flexDirection: 'row',
           alignItems: "center",
-          padding: 10,
+          padding: 5,
           width: "100%",
           justifyContent: "space-around",
         }}
       >
         <StyledButton text={!calibrating ? "Calibrate" : "Cancel"} onClick={() => setCalibrating(!calibrating)}/>
-        <StyledButton text="Disconnect" color={!calibrating ? "red" : null} disabled={calibrating} />
+        <StyledButton text="Disconnect" color={!calibrating ? "red" : null} disabled={calibrating} onClick={handleDisconectClick}/>
       </View>
+      { 
+        !calibrating && (
+          <View 
+            style={{
+              width: "100%",
+              alignItems: "center",
+              padding: 5,
+            }}
+          >
+            <StyledButton text="Reset Devices" onClick={resetDevices}/>
+          </View>
+        ) 
+      }
       { calibrating ? <CalibrationSequence /> : <SensorDetails /> }
     </View>
   )

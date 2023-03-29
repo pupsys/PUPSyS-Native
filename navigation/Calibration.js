@@ -1,6 +1,7 @@
 // Library Imports
 import { useContext, useState, } from 'react'
-import { ActivityIndicator, ScrollView, Pressable, View, Alert, } from 'react-native'
+import { ScrollView, Pressable, View, Alert, } from 'react-native'
+import DocumentPicker from 'react-native-document-picker';
 import DropDownPicker from 'react-native-dropdown-picker';
 
 // Context Imports
@@ -100,69 +101,119 @@ export default function Calibration({navigation}) {
   }
 
   /**
-   * Map BLE devices to list items
+   * Component to display a card with list of all connected devices
    */
-  function renderBLEDevices() {
-    return devices.map((device, index) => {
-      return <DeviceListItem key={index} device={device}/>
-    })
+  function DeviceList() {
+
+    /**
+     * Component for rendering a device in BLE devices list
+     * @param {boolean} header whether or not this is the header
+     * @param {Object} device device object
+     * @see {@link devices}
+     */
+    function DeviceListItem({header, device}) {
+    
+      /**
+       * Handle click on a device.
+       * Set device to current if we're not in calibration
+       */
+      function handleClick() {
+        // Guard clauses:
+        if (header)       { return; }  // This is the header, not a device
+        if (calibrating)  { return; }  // We're calibrating right now, so it isn't safe to change devices
+        
+        // Set the current device
+        setCurrentDevice(device.id);
+      }
+    
+      /**
+       * Set background color of selected device to greenAlpha
+       * @returns color key
+       */
+      function getBackgroundColor() {
+        // Guard clauses:
+        if (header) { return; } // This is not a device, this is the header
+      
+        if (currentDevice === device.id) {
+          // If this is the current device, return greenAlpha
+          return globalColors.greenAlpha;
+        }
+      }
+    
+      // Render device in a Pressable
+      return (
+        <Pressable
+          android_ripple={header ? null : {color: globalColors.greenAlpha}}
+          onPress={handleClick}
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            marginVertical: 2,
+            backgroundColor: getBackgroundColor()
+          }}
+        >
+          <StyledText text={header ? "#" : `${device.id + 1}`} width="10%" align="center"/>
+          <Divider vertical={true}/>
+          <StyledText text={header ? "Name" : device.name} width="50%"/>
+          <Divider vertical={true}/>
+          <StyledText text={header ? "Signal" : device.signal} width="40%"/>
+        </Pressable>
+      )
+    }
+
+    /**
+     * Map BLE devices to list items
+     */
+    function renderBLEDevices() {
+      return devices.map((device, index) => {
+        return <DeviceListItem key={index} device={device}/>
+      })
+    }
+
+    return (
+      <ScrollView>
+        <GradientCard flexDirection="column" gradient="white" justifyContent="flex-start" alignItems="flex-start">
+          <StyledText text="BLE Devices:" marginBottom={5}/>
+          <Divider />
+          <ScrollView
+            style={{
+              backgroundColor: dark ? darkTheme.tabBarColor : lightTheme.tabBarColor,
+              width: "100%",
+              padding: 10,
+              marginTop: 10,
+              borderColor: dark ? darkTheme.cardBorder : lightTheme.cardBorder,
+              borderWidth: 1,
+              borderRadius: 5,
+            }}
+            >
+              <DeviceListItem header={true}/>
+              <Divider />
+              { renderBLEDevices() }
+          </ScrollView>
+        </GradientCard>
+      </ScrollView>
+    )
   }
 
   /**
-   * Component for rendering a device in BLE devices list
-   * @param {boolean} header whether or not this is the header
-   * @param {Object} device device object
-   * @see {@link devices}
+   * Open the file browser and set delected directory as log location
    */
-  function DeviceListItem({header, device}) {
-
-    /**
-     * Handle click on a device.
-     * Set device to current if we're not in calibration
-     */
-    function handleClick() {
-      // Guard clauses:
-      if (header)       { return; }  // This is the header, not a device
-      if (calibrating)  { return; }  // We're calibrating right now, so it isn't safe to change devices
-      
-      // Set the current device
-      setCurrentDevice(device.id);
-    }
-
-    /**
-     * Set background color of selected device to greenAlpha
-     * @returns color key
-     */
-    function getBackgroundColor() {
-      // Guard clauses:
-      if (header) { return; } // This is not a device, this is the header
-
-      if (currentDevice === device.id) {
-        // If this is the current device, return greenAlpha
-        return globalColors.greenAlpha;
+  async function openFileBrowser() {
+    try {
+      // Open picker
+      const result = await DocumentPicker.pickDirectory();
+      // Handle result
+      console.log(result);
+    } catch (err) {
+      if (DocumentPicker.isCancel(err)) {
+        // Cancelled
+        console.log('User cancelled the picker');
+      } else {
+        // Otherwise, throw the error for handling later (maybe)
+        throw err;
       }
     }
-
-    // Render device in a Pressable
-    return (
-      <Pressable
-        android_ripple={header ? null : {color: globalColors.greenAlpha}}
-        onPress={handleClick}
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          marginVertical: 2,
-          backgroundColor: getBackgroundColor()
-        }}
-      >
-        <StyledText text={header ? "#" : `${device.id + 1}`} width="10%" align="center"/>
-        <Divider vertical={true}/>
-        <StyledText text={header ? "Name" : device.name} width="50%"/>
-        <Divider vertical={true}/>
-        <StyledText text={header ? "Signal" : device.signal} width="40%"/>
-      </Pressable>
-    )
   }
 
   /**
@@ -201,7 +252,7 @@ export default function Calibration({navigation}) {
             onChange={t => handleLogToChange(t)}
             textAlign="left"
           />
-          <SaveButton />
+          <SaveButton onClick={openFileBrowser}/>
         </View>
         <View
           style={{
@@ -441,74 +492,46 @@ export default function Calibration({navigation}) {
   }
 
   /**
-   * Display an alert to disconnect the device
+   * Component for buttons related to calibration
    */
-  function handleDisconectClick() {
-    
+  function CalibrationActions() {
+
     /**
-     * Remove device from device list
+     * Display an alert to disconnect the device
      */
-    function confirmDisconnect() {
-      // Filter out current device
-      let newDevices = [];
-      for (let i = 0; i < devices.length; i++) {
-        if (i !== currentDevice) {
-          const d = devices[i];
-          d.id = i;
-          newDevices.push(d);
+    function handleDisconectClick() {
+
+      /**
+       * Remove device from device list
+       */
+      function confirmDisconnect() {
+        // Filter out current device
+        let newDevices = [];
+        for (let i = 0; i < devices.length; i++) {
+          if (i !== currentDevice) {
+            const d = devices[i];
+            d.id = i;
+            newDevices.push(d);
+          }
         }
+        setDevices(newDevices);
       }
-      setDevices(newDevices);
+
+      // Alert user
+      Alert.alert("Disconnect", `Disconnect device "${devices[currentDevice].name}"?`, [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Disconnect',
+          onPress: () => confirmDisconnect(),
+          style: 'destructive',
+        },
+      ])
     }
 
-    // Alert user
-    Alert.alert("Disconnect", `Disconnect device "${devices[currentDevice].name}"?`, [
-      {
-        text: 'Cancel',
-        style: 'cancel',
-      },
-      {
-        text: 'Disconnect',
-        onPress: () => confirmDisconnect(),
-        style: 'destructive',
-      },
-    ])
-  }
-
-  /**
-   * Reset device state (for testing)
-   */
-  function resetDevices() {
-    setDevices(exampleDevices);
-  }
-
-  return (
-    <View
-      style={{
-        padding: 10,
-      }}
-    >
-      <ScrollView>
-        <GradientCard flexDirection="column" gradient="white" justifyContent="flex-start" alignItems="flex-start">
-          <StyledText text="BLE Devices:" marginBottom={5}/>
-          <Divider />
-          <ScrollView
-            style={{
-              backgroundColor: dark ? darkTheme.tabBarColor : lightTheme.tabBarColor,
-              width: "100%",
-              padding: 10,
-              marginTop: 10,
-              borderColor: dark ? darkTheme.cardBorder : lightTheme.cardBorder,
-              borderWidth: 1,
-              borderRadius: 5,
-            }}
-            >
-              <DeviceListItem header={true}/>
-              <Divider />
-              { renderBLEDevices() }
-          </ScrollView>
-        </GradientCard>
-      </ScrollView>
+    return (
       <View
         style={{
           display: 'flex',
@@ -522,20 +545,46 @@ export default function Calibration({navigation}) {
         <StyledButton text={!calibrating ? "Calibrate" : "Cancel"} onClick={() => setCalibrating(!calibrating)}/>
         <StyledButton text="Disconnect" color={!calibrating ? "red" : null} disabled={calibrating} onClick={handleDisconectClick}/>
       </View>
-      { 
-        !calibrating && (
-          <View 
-            style={{
-              width: "100%",
-              alignItems: "center",
-              padding: 5,
-            }}
-          >
-            <StyledButton text="Reset Devices" onClick={resetDevices}/>
-          </View>
-        ) 
-      }
-      { calibrating ? <CalibrationSequence /> : <SensorDetails /> }
+    )
+  }
+  
+  /**
+   * Component to show a reset devices button when calibration sequence is not active
+   */
+  function ResetDevicesButton() {
+    // Guard causes:
+    if (calibrating) { return; } // Don't show reset button during calibration sequence
+
+    /**
+     * Reset device state (for testing)
+     */
+    function resetDevices() {
+      setDevices(exampleDevices);
+    }
+    
+    return (
+      <View 
+        style={{
+          width: "100%",
+          alignItems: "center",
+          padding: 5,
+        }}
+        >
+        <StyledButton text="Reset Devices" onClick={resetDevices}/>
+      </View>
+    )
+  }
+  
+  return (
+    <View
+      style={{
+        padding: 10,
+      }}
+    >
+      <DeviceList />
+      <CalibrationActions />
+      <ResetDevicesButton />
+      { calibrating ? <CalibrationSequence /> : <SensorDetails /> /** Show sensor details or calibration sequence */ }
     </View>
   )
 }

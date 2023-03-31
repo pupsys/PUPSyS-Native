@@ -70,10 +70,10 @@ export default App;
 
 const exampleDevices = [
   {
-    id: 1,
+    id: 0,
     name: "HT100",
     signal: "-77dBm",
-    logTo: "PUPSys\\HT100",
+    logTo: "content://com.android.externalstorage.documents/tree/primary%3APUPSys",
     location: "Left Hip",
     calibration: [30, 40, 50],
     pressure: 350,
@@ -82,10 +82,10 @@ const exampleDevices = [
     paused: false,
   },
   {
-    id: 2,
+    id: 1,
     name: "HT110",
     signal: "-50dBm",
-    logTo: "PUPSys\\HT110",
+    logTo: "content://com.android.externalstorage.documents/tree/primary%3APUPSys",
     location: "Right Hip",
     calibration: [30, 40, 50],
     pressure: 300,
@@ -94,10 +94,10 @@ const exampleDevices = [
     paused: false,
   },
   {
-    id: 3,
+    id: 2,
     name: "HT120",
     signal: "-111dBm",
-    logTo: "PUPSys\\HT120",
+    logTo: "content://com.android.externalstorage.documents/tree/primary%3APUPSys",
     location: "Left Heel",
     calibration: [30, 40, 50],
     pressure: 300,
@@ -106,10 +106,10 @@ const exampleDevices = [
     paused: false,
   },
   {
-    id: 4,
+    id: 3,
     name: "HT130",
     signal: "-121dBm",
-    logTo: "PUPSys\\HT130",
+    logTo: "content://com.android.externalstorage.documents/tree/primary%3APUPSys",
     location: "Right Heel",
     calibration: [30, 40, 50],
     pressure: 300,

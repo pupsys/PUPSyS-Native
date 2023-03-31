@@ -97,3 +97,12 @@ export function makeNumeric(string) {
 export function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
+
+/**
+ * Format file system uri to readable path
+ * @param {string} uri uri to format
+ * @returns formatted URI
+ */
+export function formatUri(uri) {
+    return "/" + uri.substring(uri.indexOf("%3A") + 3).replace("%2F", "/");
+}

@@ -10,6 +10,9 @@ import { DarkContext, DevicesContext, } from '../Context';
 // Style Imports
 import { darkTheme, globalColors, lightTheme, } from '../assets/styles';
 
+// API Imports
+import { formatUri, } from '../api/strings';
+
 // Component Imports
 import { Divider, GradientCard, } from '../components/Card';
 import { Entry, } from '../components/Input';
@@ -51,16 +54,16 @@ export default function Calibration({navigation}) {
 
   /**
    * Change the current device's logTo location
-   * @param {string} t value from logTo text field 
+   * @param {string} newUri uri value from text field or DocumentPicker 
    */
-  function handleLogToChange(t) {
+  function handleLogToChange(newUri) {
     // Clone devices list
     let newDevices = [];
     for (const d of devices) {
       newDevices.push(d);
     }
     // Set current device's logTo to value of text field
-    newDevices[currentDevice].logTo = t;
+    newDevices[currentDevice].logTo = newUri;
     // Update state
     setDevices(newDevices);
   }
@@ -169,7 +172,7 @@ export default function Calibration({navigation}) {
       // Open picker
       const result = await DocumentPicker.pickDirectory();
       // Handle result
-      console.log(result);
+      handleLogToChange(result.uri);
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
         // Cancelled
@@ -213,7 +216,7 @@ export default function Calibration({navigation}) {
             width="65%" 
             height={50} 
             placeholderText="Log Location" 
-            value={devices[currentDevice].logTo} 
+            value={formatUri(devices[currentDevice].logTo)} 
             onChange={t => handleLogToChange(t)}
             textAlign="left"
           />

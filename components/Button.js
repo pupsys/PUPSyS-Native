@@ -333,3 +333,98 @@ export function SaveButton(props) {
     </Pressable>
   )
 }
+
+/**
+ * Pause button with text component for CitrusNative
+ * @param {Function} onClick function to be called onClick
+ * @param {boolean} paused whether paused or not
+ * @default
+ * marginTop = 10;
+ * marginBottom = 0;
+ */
+export function PauseButton(props) {
+
+  const { dark } = useContext(DarkContext);
+
+    /**
+   * Get the correct border color from props or default to buttonBorder based on DarkContext
+   * @returns string for border color
+   */
+  function getBorderColor() {
+    return dark ? darkTheme.buttonBorder : lightTheme.buttonBorder;
+  }
+
+  /**
+   * Get the correct text color from props or default to textPrimary based on DarkContext
+   * @returns string for text color
+   */
+  function getTextColor() {
+    return dark ? darkTheme.textPrimary : lightTheme.textPrimary;
+  }
+  
+  /**
+   * Get pause or play image by props.paused
+   * @reutrns image source
+   */
+  function getImage() {
+    if (props.paused) {
+      dark ? require("../assets/images/PlayDark.png") : require("../assets/images/PlayLight.png");
+    }
+    return dark ? require("../assets/images/PauseDark.png") : require("../assets/images/PauseLight.png");
+  }
+
+  /**
+   * Get pause or play text by props.paused
+   * @reutrns button text
+   */
+  function getText() {
+    if (props.paused) {
+      "Resume Sensor";
+    }
+    return "Pause Sensor";
+  }
+
+  // Button is unselected. Render without gradient
+  return (
+    <View 
+      style={{
+        display: 'flex', 
+        flexDirection: "row", 
+        width: buttonStyles.buttonWidth, 
+        height: buttonStyles.buttonHeight,
+        marginTop: 10,
+        marginBottom: 0,
+        borderRadius: 10,
+        backgroundColor: dark ? darkTheme.buttonFill : lightTheme.buttonFill,
+        elevation: buttonStyles.buttonElevation
+      }}
+    >
+      <Pressable
+        onPress={props.onClick}
+        android_ripple={props.onClick ? {color: globalColors.greenAlpha} : {}}
+        style={{
+          height: "100%",
+          width: "100%",
+          borderRadius: 10,
+          borderWidth: buttonStyles.buttonBorderWidth,
+          borderColor: getBorderColor(),
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Image source={getImage()} style={{width: 30, height: 30, backgroundColor: "transparent"}}/>
+        <Text 
+          style={{
+            color: (getTextColor()), 
+            fontSize: 14,
+            margin: 5,
+          }}
+          >
+          {getText()}
+        </Text>
+      </Pressable>
+    </View>
+  )
+}

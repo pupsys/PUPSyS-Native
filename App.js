@@ -16,7 +16,7 @@ import { darkTheme, lightTheme } from "./assets/styles";
 import { pageNames, } from "./api/enum";
 
 // Context Imports
-import { DarkContext, RouteContext, } from "./Context";
+import { DarkContext, DevicesContext, } from "./Context";
 
 /** 
  * The main App Stack navigator, allowing the user to visit pages not contained within the mainPage bottom tab navigation 
@@ -43,12 +43,12 @@ function App() {
   
   // Init. contexts
   const [ dark, setDark ] = useState(false);
-  const [ currentRoute, setCurrentRoute ] = useState(pageNames.STATUS);
+  const [ devices, setDevices ] = useState(exampleDevices);
 
   // Render PUPSyS!
   return (
     <DarkContext.Provider value={{dark, setDark}}>  
-    <RouteContext.Provider value={{currentRoute, setCurrentRoute}}>  
+    <DevicesContext.Provider value={{devices, setDevices}}>  
       <StatusBar backgroundColor={dark ? darkTheme.statusBarColor : lightTheme.statusBarColor} />
       <View style={{height: '100%'}}>
         <NavigationContainer theme={navTheme}>
@@ -61,9 +61,60 @@ function App() {
           </AppDrawer.Navigator>
         </NavigationContainer>
       </View>
-    </RouteContext.Provider>
+    </DevicesContext.Provider>
     </DarkContext.Provider>
   );
 }
 
 export default App;
+
+const exampleDevices = [
+  {
+    id: 1,
+    name: "HT100",
+    signal: "-77dBm",
+    logTo: "PUPSys\\HT100",
+    location: "Left Hip",
+    calibration: [30, 40, 50],
+    pressure: 350,
+    temperature: 50,
+    humidity: 50,
+    paused: false,
+  },
+  {
+    id: 2,
+    name: "HT110",
+    signal: "-50dBm",
+    logTo: "PUPSys\\HT110",
+    location: "Right Hip",
+    calibration: [30, 40, 50],
+    pressure: 300,
+    temperature: 40,
+    humidity: 20,
+    paused: false,
+  },
+  {
+    id: 3,
+    name: "HT120",
+    signal: "-111dBm",
+    logTo: "PUPSys\\HT120",
+    location: "Left Heel",
+    calibration: [30, 40, 50],
+    pressure: 300,
+    temperature: 30,
+    humidity: 20,
+    paused: false,
+  },
+  {
+    id: 4,
+    name: "HT130",
+    signal: "-121dBm",
+    logTo: "PUPSys\\HT130",
+    location: "Right Heel",
+    calibration: [30, 40, 50],
+    pressure: 300,
+    temperature: 30,
+    humidity: 20,
+    paused: false,
+  },
+];

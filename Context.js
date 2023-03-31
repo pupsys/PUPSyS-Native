@@ -9,6 +9,6 @@ export const DarkContext = createContext();
 
 /**
  * @type {React.Context<string>}
- * @static Tells the entire application what page we're looking at
+ * @static Tells the entire application device states
  */
-export const RouteContext = createContext();
+export const DevicesContext = createContext();

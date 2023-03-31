@@ -5,7 +5,7 @@ import DocumentPicker from 'react-native-document-picker';
 import DropDownPicker from 'react-native-dropdown-picker';
 
 // Context Imports
-import { DarkContext, } from '../Context';
+import { DarkContext, DevicesContext, } from '../Context';
 
 // Style Imports
 import { darkTheme, globalColors, lightTheme, } from '../assets/styles';
@@ -34,46 +34,11 @@ const calibrationUnitsMenuItems = [
   {value: allCalibrationUnits[0], label: allCalibrationUnits[0]},
   {value: allCalibrationUnits[1], label: allCalibrationUnits[1]},
 ]
-/** Example device data for development */
-const exampleDevices = [
-  {
-    id: 0,
-    name: "HT100",
-    signal: "-77dBm",
-    logTo: "PUPSys\\HT100",
-    location: "Left Hip",
-    calibration: [30, 40, 50],
-  },
-  {
-    id: 1,
-    name: "HT110",
-    signal: "-50dBm",
-    logTo: "PUPSys\\HT110",
-    location: "Right Hip",
-    calibration: [30, 40, 50],
-  },
-  {
-    id: 2,
-    name: "HT120",
-    signal: "-111dBm",
-    logTo: "PUPSys\\HT120",
-    location: "Left Heel",
-    calibration: [30, 40, 50],
-  },
-  {
-    id: 3,
-    name: "HT130",
-    signal: "-121dBm",
-    logTo: "PUPSys\\HT130",
-    location: "Right Heel",
-    calibration: [30, 40, 50],
-  },
-]
 
 export default function Calibration({navigation}) {
 
   // Create some example device data
-  const [devices, setDevices] = useState(exampleDevices);
+  const {devices, setDevices} = useContext(DevicesContext);
 
   // Create other states
   const [unitsMenuOpen, setUnitsMenuOpen] = useState(false);        // Whether or not the unit dropdown menu is open

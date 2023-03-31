@@ -1,6 +1,6 @@
 // Library Imports
 import { useContext, useState, } from 'react'
-import { Image, View, } from 'react-native'
+import { Dimensions, Image, View, } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler';
 import { createBottomTabNavigator, } from '@react-navigation/bottom-tabs';
 import { LineChart } from "react-native-chart-kit";
@@ -19,10 +19,21 @@ import { StyledText } from '../components/Text';
 /** Navigator for all status tabs */
 const StatusTabs = createBottomTabNavigator();
 
+/**
+ * Enum for sensor navigation page names
+ * @example
+ * tabNames.OVERALL = "Overall";
+ * tabNames.SENSORS = "Sensors";
+ * @readonly
+ * @enum {string}
+ */
 const tabNames = {
   OVERALL: "Overall",
   SENSORS: "Sensors",
 };
+
+/** Width of graphs relative to screen width */
+const GRAPHSCALE = 0.85;
 
 export default function Status({navigation}) {
 
@@ -133,7 +144,7 @@ function Sensors() {
       if (data.pressure >= 320) {
         return globalColors.orange;
       }
-      return "primary";
+      return dark ? darkTheme.textPrimary : lightTheme.textPrimary;
     }
 
     /**
@@ -163,7 +174,7 @@ function Sensors() {
       if (data.temperature >= 40) {
         return globalColors.orange;
       }
-      return "primary";
+      return dark ? darkTheme.textPrimary : lightTheme.textPrimary;
     }
 
     /**
@@ -193,7 +204,7 @@ function Sensors() {
       if (data.humidity >= 25) {
         return globalColors.orange;
       }
-      return "primary";
+      return dark ? darkTheme.textPrimary : lightTheme.textPrimary;
     }
 
     /**
@@ -360,51 +371,47 @@ function Sensors() {
                 height: 30,
               }}
             />
-            <StyledText text="Pressure (mmhg)" marginLeft={5} color={getPressureColor()} />
+            <StyledText text="Pressure (mmHg)" marginLeft={5} color={getPressureColor()} />
           </View>
-          <LineChart
-            data={{
-              labels: ["January", "February", "March", "April", "May", "June"],
-              datasets: [
-                {
-                  data: [
-                    Math.random() * 100,
-                    Math.random() * 100,
-                    Math.random() * 100,
-                    Math.random() * 100,
-                    Math.random() * 100,
-                    Math.random() * 100
-                  ]
-                }
-              ]
-            }}
-            width={"90%"} // from react-native
-            height={220}
-            yAxisLabel="$"
-            yAxisSuffix="k"
-            yAxisInterval={1} // optional, defaults to 1
-            chartConfig={{
-              backgroundColor: "#e26a00",
-              backgroundGradientFrom: "#fb8c00",
-              backgroundGradientTo: "#ffa726",
-              decimalPlaces: 2, // optional, defaults to 2dp
-              color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-              labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-              style: {
-                borderRadius: 16
-              },
-              propsForDots: {
-                r: "6",
-                strokeWidth: "2",
-                stroke: "#ffa726"
-              }
-            }}
-            bezier
+          <CenteredChart data={examplePressureData} color={getPressureColor()} suffix="mmHg"/>
+          <View
             style={{
-              marginVertical: 8,
-              borderRadius: 16
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "flex-start",
+              width: "100%",
+              padding: 5,
             }}
-          />
+          >
+            <Image 
+              source={getTemperatureSource()}
+              style={{
+                width: 30,
+                height: 30,
+              }}
+            />
+            <StyledText text="Temperature (°C)" marginLeft={5} color={getTemperatureColor()} />
+          </View>
+          <CenteredChart data={exampleTemperatureData} color={getTemperatureColor()} suffix="°C"/>
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "flex-start",
+              width: "100%",
+              padding: 5,
+            }}
+          >
+            <Image 
+              source={getHumiditySource()}
+              style={{
+                width: 30,
+                height: 30,
+              }}
+            />
+            <StyledText text="Humidity (%)" marginLeft={5} color={getHumidityColor()} />
+          </View>
+          <CenteredChart data={exampleHumidityData} color={getHumidityColor()} suffix="%"/>
         </View>
       )
     }
@@ -425,7 +432,7 @@ function Sensors() {
             width: "100%",
           }}
         >
-          <StyledText text={`Sensor ${parseInt(data.id)}: ${data.location}`} fontWeight="bold" />
+          <StyledText text={`Sensor ${data.id + 1}: ${data.location}`} fontWeight="bold" />
           <Image 
             source={dark ? require("../assets/images/ArrowDownDark.png") : require("../assets/images/ArrowDownLight.png")}
             style={{
@@ -473,3 +480,106 @@ function Sensors() {
     </View>
   )
 }
+
+/**
+ * Component to render a chart with a provided data
+ * @param {Object} data chart data
+ * @param {string} color line color
+ * @param {string} suffix y axis suffix
+ */
+function CenteredChart({data, color, suffix}) {
+
+  const {dark} = useContext(DarkContext)
+
+  return (
+    <View
+      style={{
+        width: "100%",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+      }}
+    >
+      <LineChart
+        data={data}
+        segments={4}
+        width={Dimensions.get("window").width * GRAPHSCALE} // from react-native
+        height={220}
+        yAxisSuffix={suffix}
+        yAxisInterval={1} // optional, defaults to 1
+        withVerticalLines={false}
+        chartConfig={{
+          backgroundColor: dark ? darkTheme.cardFill : lightTheme.cardFill,
+          backgroundGradientFrom: dark ? darkTheme.cardFill : lightTheme.cardFill,
+          backgroundGradientTo: dark ? darkTheme.cardFill : lightTheme.cardFill,
+          decimalPlaces: 0, // optional, defaults to 2dp
+          color: () => color,
+          labelColor: () => dark ? darkTheme.textPrimary : lightTheme.textPrimary,
+          style: {
+            borderRadius: 0,
+          },
+          propsForDots: {
+            r: "2",
+            strokeWidth: "1",
+            stroke: dark ? darkTheme.textPrimary : lightTheme.textPrimary,
+          },
+          propsForBackgroundLines: {
+            opacity: 0.2,
+          },
+        }}
+        bezier
+        style={{
+          marginVertical: 8,
+        }}
+      />
+    </View>
+  )
+}
+
+const examplePressureData = {
+  labels: ["January", "February", "March", "April", "May", "June"],
+  datasets: [
+    {
+      data: [
+        Math.random() * 100,
+        Math.random() * 100,
+        Math.random() * 100,
+        Math.random() * 100,
+        Math.random() * 100,
+        Math.random() * 100
+      ]
+    }
+  ],
+};
+
+const exampleTemperatureData = {
+  labels: ["January", "February", "March", "April", "May", "June"],
+  datasets: [
+    {
+      data: [
+        Math.random() * 100,
+        Math.random() * 100,
+        Math.random() * 100,
+        Math.random() * 100,
+        Math.random() * 100,
+        Math.random() * 100
+      ]
+    }
+  ]
+};
+
+const exampleHumidityData = {
+  labels: ["January", "February", "March", "April", "May", "June"],
+  datasets: [
+    {
+      data: [
+        Math.random() * 100,
+        Math.random() * 100,
+        Math.random() * 100,
+        Math.random() * 100,
+        Math.random() * 100,
+        Math.random() * 100
+      ]
+    }
+  ]
+};

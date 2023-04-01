@@ -11,6 +11,9 @@ import { darkTheme, globalColors, lightTheme, } from '../assets/styles';
 // Context Imports
 import { DarkContext, DevicesContext, } from '../Context'
 
+// API Imports
+import { exampleDevices } from '../api/sensor'; 
+
 // Component Imports
 import { PauseButton, } from "../components/Button"
 import { Divider, GradientCard, } from "../components/Card";
@@ -263,7 +266,7 @@ function Sensors() {
         newDevices.push(d);
       }
       // Set current device's logTo to value of text field
-      newDevices[data.id - 1].paused = !newDevices[data.id - 1].paused;
+      newDevices[data.id].paused = !newDevices[data.id].paused;
       // Update state
       setDevices(newDevices);
     }
@@ -549,7 +552,7 @@ const examplePressureData = {
         Math.random() * 100
       ]
     }
-  ],
+  ]
 };
 
 const exampleTemperatureData = {

@@ -1767,8 +1767,7 @@ function getEveryXthElement(list, x) {
 export function getGraphLabels(sensorReadings) {
     const allReadingTimes = getReadingTimes(sensorReadings, SECONDS); 
     const NUM_LABELS = 4;
-    const truncatedLabels = getEveryXthElement(allReadingTimes, allReadingTimes.length / NUM_LABELS)
-    console.log(truncatedLabels)
+    const truncatedLabels = getEveryXthElement(allReadingTimes, allReadingTimes.length / NUM_LABELS);
     return truncatedLabels;
 }
 

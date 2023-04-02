@@ -1,9 +1,9 @@
 // Library Imports
 import { useContext, useState } from 'react';
-import { Alert, Animated, Image, Modal, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Alert, Animated, Image, TouchableOpacity, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 import DropDownPicker from 'react-native-dropdown-picker';
-import { GestureHandlerRootView, PanGestureHandler } from 'react-native-gesture-handler';
+import { useAnimatedGestureHandler, PanGestureHandler } from 'react-native-gesture-handler';
 
 // Context Imports
 import { DarkContext, DevicesContext } from '../Context';
@@ -19,6 +19,7 @@ import { Divider, GradientCard } from '../components/Card';
 import { Entry } from '../components/Input';
 import { CenteredTitle, StyledText } from '../components/Text';
 import { DropDownButton, SaveButton, StyledButton } from '../components/Button';
+import { createStackNavigator } from '@react-navigation/stack';
 
 
 /** Space taken up by entry names */
@@ -39,6 +40,9 @@ const calibrationUnitsMenuItems = [
   {value: allCalibrationUnits[0], label: allCalibrationUnits[0]},
   {value: allCalibrationUnits[1], label: allCalibrationUnits[1]},
 ]
+
+/** Stack navigator for calibration */
+const CalibrationStack = createStackNavigator();
 
 export default function Calibration({navigation}) {
 
@@ -189,8 +193,9 @@ export default function Calibration({navigation}) {
 
   /**
    * Component to display all sensor details. Shown when not running calibration.
+   * @param {ReactNavigation} navigation navigation object from {@link CalibrationStack}
    */
-  function SensorDetails() {
+  function SensorDetails({navigation}) {
     return (
       <View>
         <View
@@ -202,7 +207,7 @@ export default function Calibration({navigation}) {
           }}
         >
           <StyledText text="Sensor Location:" marginRight={5}/>
-          <DropDownButton text={devices[currentDevice].location} onClick={() => setSensorLocationModalOpen(true)}/>
+          <DropDownButton text={devices[currentDevice].location} onClick={() => navigation.navigate("sensorLocation")}/>
         </View>
         <View
           style={{
@@ -545,48 +550,63 @@ export default function Calibration({navigation}) {
       </View>
     )
   }
-  
-  return (
-    <View
-      style={{
-        padding: 10,
-      }}
-    >
-      
-      <Modal
-        animationType="slide"
-        visible={sensorLocationModalOpen}
-        transparent={true}
-        onRequestClose={() => {
-          setSensorLocationModalOpen(!sensorLocationModalOpen);
+
+  /**
+   * Component to display sensor location picker in navigation
+   * @param {ReactNavigation} navigation navigation object from {@link CalibrationStack}
+   */
+  function SensorLocationScreen({navigation}) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          margin: 10,
+          padding: 10,
+          elevation: 5,
+          borderColor: dark ? darkTheme.cardBorder : lightTheme.cardBorder,
+          borderWidth: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: dark ? darkTheme.cardFill : lightTheme.cardFill,
+          borderRadius: 10,
         }}
       >
-        <View
-          style={{
-            flex: 1,
-            maxHeight: '90%',
-            marginTop: '50%',
-            padding: 10,
-            elevation: 5,
-            borderColor: dark ? darkTheme.textFieldBorderColor : lightTheme.textFieldBorderColor,
-            justifyContent: 'flex-start',
-            alignItems: 'center',
-            backgroundColor: dark ? darkTheme.cardFill : lightTheme.cardFill,
-            borderTopLeftRadius: 50,
-            borderTopRightRadius: 50,
-          }}
-        >
-          <CenteredTitle text="Sensor Location" />
-          <DraggableSensorIcon iconSource={require("../assets/images/Sensor.png")} />
-          <StyledButton text="Done" onClick={() => setSensorLocationModalOpen(false)} />    
-        </View>
-      </Modal>
+        <CenteredTitle text="Sensor Location" />
+        <DraggableSensorIcon iconSource={require("../assets/images/Sensor.png")} />
+        <StyledButton text="Done" onClick={() => navigation.navigate("default")} />    
+      </View>
+    )
+  }
 
-      <DeviceList />
-      <CalibrationActions />
-      <ResetDevicesButton />
-      { calibrating ? <CalibrationSequence /> : <SensorDetails /> /** Show sensor details or calibration sequence */ }
-    </View>
+  /**
+   * Component to display default calibration screen w/ device list and actions
+   * @param {ReactNavigation} navigation navigation object from {@link CalibrationStack}
+   */
+  function DefaultCalibrationScreen({navigation}) {
+    return (
+      <View
+        style={{
+          padding: 10,
+        }}
+      >
+        <DeviceList />
+        <CalibrationActions />
+        <ResetDevicesButton />
+        { calibrating ? <CalibrationSequence /> : <SensorDetails navigation={navigation}/> /** Show sensor details or calibration sequence */ }
+      </View>
+    )
+  }
+  
+  return (
+    <CalibrationStack.Navigator 
+      initialRouteName='default'
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <CalibrationStack.Screen name="default" component={DefaultCalibrationScreen} />
+      <CalibrationStack.Screen name="sensorLocation" component={SensorLocationScreen} />
+    </CalibrationStack.Navigator>
   )
 }
 
@@ -597,6 +617,9 @@ export default function Calibration({navigation}) {
  */
 function DraggableSensorIcon({ iconSource }) {
   
+  // Get context
+  const { dark } = useContext(DarkContext)
+
   /**
    * Styles for the DraggableSensorIcon component.
    * @type {Object}
@@ -612,13 +635,16 @@ function DraggableSensorIcon({ iconSource }) {
       width: '100%',
       height: '100%',
       resizeMode: 'contain',
+      borderColor: dark ? darkTheme.cardBorder : lightTheme.cardBorder,
+      borderWidth: 1,
+      borderRadius: 5,
     },
     icon: {
       position: 'absolute',
     },
     iconImage: {
-      width: 50,
-      height: 50,
+      width: 30,
+      height: 30,
     },
   });
 
@@ -635,8 +661,8 @@ function DraggableSensorIcon({ iconSource }) {
    * @param {Object} event - The gesture event object.
    */
   function handleGesture(event) {
-    console.log("OUTCH")
     const { translationX, translationY } = event.nativeEvent;
+    console.log( iconPosition.x, iconPosition.y );
     setIconPosition({ x: translationX, y: translationY });
   };
 

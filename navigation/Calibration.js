@@ -1,23 +1,25 @@
 // Library Imports
-import { useContext, useState, } from 'react'
-import { ScrollView, Pressable, View, Alert, } from 'react-native'
+import { useContext, useState } from 'react';
+import { Alert, Animated, Image, Modal, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 import DropDownPicker from 'react-native-dropdown-picker';
+import { GestureHandlerRootView, PanGestureHandler } from 'react-native-gesture-handler';
 
 // Context Imports
-import { DarkContext, DevicesContext, } from '../Context';
+import { DarkContext, DevicesContext } from '../Context';
 
 // Style Imports
-import { darkTheme, globalColors, lightTheme, } from '../assets/styles';
+import { darkTheme, globalColors, lightTheme } from '../assets/styles';
 
 // API Imports
-import { formatUri, } from '../api/strings';
+import { formatUri } from '../api/strings';
 
 // Component Imports
-import { Divider, GradientCard, } from '../components/Card';
-import { Entry, } from '../components/Input';
-import { StyledText, } from '../components/Text';
-import { DropDownButton, SaveButton, StyledButton, } from '../components/Button';
+import { Divider, GradientCard } from '../components/Card';
+import { Entry } from '../components/Input';
+import { CenteredTitle, StyledText } from '../components/Text';
+import { DropDownButton, SaveButton, StyledButton } from '../components/Button';
+
 
 /** Space taken up by entry names */
 const fieldNameWidth = 60;
@@ -44,10 +46,11 @@ export default function Calibration({navigation}) {
   const {devices, setDevices} = useContext(DevicesContext);
 
   // Create other states
-  const [unitsMenuOpen, setUnitsMenuOpen] = useState(false);        // Whether or not the unit dropdown menu is open
+  const [unitsMenuOpen, setUnitsMenuOpen] = useState(false);        // Whether the unit dropdown menu is open
   const [units, setUnits]                 = useState(allUnits[0]);  // The currently selected unit
   const [currentDevice, setCurrentDevice] = useState(0);            // The index of the currently selected device
-  const [calibrating, setCalibrating]     = useState(false);        // Whether or not we're showing calibration sequence
+  const [calibrating, setCalibrating]     = useState(false);        // Whether we're showing calibration sequence
+  const [sensorLocationModalOpen, setSensorLocationModalOpen] = useState(false); // Whether modal is open
 
   // Get context
   const { dark } = useContext(DarkContext);
@@ -199,7 +202,7 @@ export default function Calibration({navigation}) {
           }}
         >
           <StyledText text="Sensor Location:" marginRight={5}/>
-          <DropDownButton text={devices[currentDevice].location}/>
+          <DropDownButton text={devices[currentDevice].location} onClick={() => setSensorLocationModalOpen(true)}/>
         </View>
         <View
           style={{
@@ -549,6 +552,36 @@ export default function Calibration({navigation}) {
         padding: 10,
       }}
     >
+      
+      <Modal
+        animationType="slide"
+        visible={sensorLocationModalOpen}
+        transparent={true}
+        onRequestClose={() => {
+          setSensorLocationModalOpen(!sensorLocationModalOpen);
+        }}
+      >
+        <View
+          style={{
+            flex: 1,
+            maxHeight: '90%',
+            marginTop: '50%',
+            padding: 10,
+            elevation: 5,
+            borderColor: dark ? darkTheme.textFieldBorderColor : lightTheme.textFieldBorderColor,
+            justifyContent: 'flex-start',
+            alignItems: 'center',
+            backgroundColor: dark ? darkTheme.cardFill : lightTheme.cardFill,
+            borderTopLeftRadius: 50,
+            borderTopRightRadius: 50,
+          }}
+        >
+          <CenteredTitle text="Sensor Location" />
+          <DraggableSensorIcon iconSource={require("../assets/images/Sensor.png")} />
+          <StyledButton text="Done" onClick={() => setSensorLocationModalOpen(false)} />    
+        </View>
+      </Modal>
+
       <DeviceList />
       <CalibrationActions />
       <ResetDevicesButton />
@@ -556,3 +589,65 @@ export default function Calibration({navigation}) {
     </View>
   )
 }
+
+/**
+ * A draggable sensor icon overlaid on top of an image.
+ * @param {Object} props - Component properties.
+ * @param {Object} props.iconSource - The source of the sensor icon image.
+ */
+function DraggableSensorIcon({ iconSource }) {
+  
+  /**
+   * Styles for the DraggableSensorIcon component.
+   * @type {Object}
+   */
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      width: '100%',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    backgroundImage: {
+      width: '100%',
+      height: '100%',
+      resizeMode: 'contain',
+    },
+    icon: {
+      position: 'absolute',
+    },
+    iconImage: {
+      width: 50,
+      height: 50,
+    },
+  });
+
+  /**
+   * The current position of the sensor icon.
+   * @type {Object}
+   * @property {number} x - The x-coordinate of the sensor icon.
+   * @property {number} y - The y-coordinate of the sensor icon.
+   */
+  const [iconPosition, setIconPosition] = useState({ x: 0, y: 0 });
+
+  /**
+   * Handles the gesture event to update the icon position.
+   * @param {Object} event - The gesture event object.
+   */
+  function handleGesture(event) {
+    console.log("OUTCH")
+    const { translationX, translationY } = event.nativeEvent;
+    setIconPosition({ x: translationX, y: translationY });
+  };
+
+  return (
+    <View style={styles.container}>
+      <Image source={require("../assets/images/HumanDiagram.png")} style={styles.backgroundImage} />
+      <PanGestureHandler onGestureEvent={handleGesture}>
+        <Animated.View style={[styles.icon, { transform: [{ translateX: iconPosition.x }, { translateY: iconPosition.y }] }]}>
+          <Image source={iconSource} style={styles.iconImage} />
+        </Animated.View>
+      </PanGestureHandler>
+    </View>
+  );
+};

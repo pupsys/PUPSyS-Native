@@ -85,7 +85,7 @@ export function CenteredTitle(props) {
  * @param {number} fonSize font weight 
  * @default
  * color = "primary";
- * fontWeight = "bold";
+ * fontWeight = "normal";
  * fontSize = 16;
  * marginTop = 0;
  * marginBottom = 0;

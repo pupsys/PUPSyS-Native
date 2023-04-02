@@ -1,11 +1,12 @@
 // Library Imports
 import { useState, } from "react";
 import { StatusBar, View, } from "react-native";
-import { DefaultTheme, NavigationContainer, } from "@react-navigation/native";
-import { createDrawerNavigator, } from "@react-navigation/drawer"; 
+import { NavigationContainer } from "@react-navigation/native";
+import Icon from "react-native-vector-icons/Ionicons" 
 
 // Component Imports
 import Calibration from "./navigation/Calibration";
+import { AppDrawer, CustomDrawerItem, navTheme, } from "./components/Navigation";
 import Patient from "./navigation/Patient";
 import Status from "./navigation/Status";
 
@@ -19,29 +20,11 @@ import { exampleDevices, } from "./api/sensor";
 // Context Imports
 import { DarkContext, DevicesContext, } from "./Context";
 
-/** 
- * The main App Stack navigator, allowing the user to visit pages not contained within the mainPage bottom tab navigation 
- * @constant
- */
-export const AppDrawer = createDrawerNavigator();
-
-/** 
- * AppDrawer navigation theme inherits from the {@link DefaultTheme} and sets the navigation's background color to transparent 
- * @constant
- * */
-const navTheme = {
-  ...DefaultTheme,
-  colors: {
-    ...DefaultTheme.colors,
-    background: 'transparent',
-  },
-};
-
 /**
  * The entire PUPSyS app component. Creates states for all context and returns a Stack Navigator inside all context providers.
  */
 function App() {
-  
+
   // Init. contexts
   const [ dark, setDark ] = useState(false);
   const [ devices, setDevices ] = useState(exampleDevices);
@@ -56,9 +39,36 @@ function App() {
           <AppDrawer.Navigator
             initialRouteName={pageNames.STATUS}
           >
-            <AppDrawer.Screen name={pageNames.STATUS}      component={Status}      />
-            <AppDrawer.Screen name={pageNames.PATIENT}     component={Patient}     />
-            <AppDrawer.Screen name={pageNames.CALIBRATION} component={Calibration} />
+            <AppDrawer.Screen
+              component={Status}
+              name={pageNames.STATUS}
+              options={{
+                drawerLabel: "Sensors",
+                drawerIcon: ({ color, size }) => (
+                  <Icon name="heart-outline" size={size} color={color} />
+                ),
+              }}
+            />
+            <AppDrawer.Screen
+              component={Patient}
+              name={pageNames.PATIENT}
+              options={{
+                drawerLabel: "Patient Details",
+                drawerIcon: ({ color, size }) => (
+                  <Icon name="person-outline" size={size} color={color} />
+                ),
+              }}
+            />
+            <AppDrawer.Screen
+              component={Calibration}
+              name={pageNames.CALIBRATION}
+              options={{
+                drawerLabel: "Calibration",
+                drawerIcon: ({ color, size }) => (
+                  <Icon name="settings-outline" size={size} color={color} />
+                ),
+              }}
+            />
           </AppDrawer.Navigator>
         </NavigationContainer>
       </View>

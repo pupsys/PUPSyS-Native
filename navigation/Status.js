@@ -12,7 +12,7 @@ import { darkTheme, globalColors, lightTheme, } from '../assets/styles';
 import { DarkContext, DevicesContext, } from '../Context'
 
 // API Imports
-import { exampleDevices } from '../api/sensor'; 
+import { averagedAdc, getGraphLabels } from '../api/sensor'; 
 
 // Component Imports
 import { PauseButton, } from "../components/Button"
@@ -374,9 +374,9 @@ function Sensors() {
                 height: 30,
               }}
             />
-            <StyledText text="Pressure (mmHg)" marginLeft={5} color={getPressureColor()} />
+            <StyledText text="Pressure (adc)" marginLeft={5} color={getPressureColor()} />
           </View>
-          <CenteredChart data={examplePressureData} color={getPressureColor()} suffix="mmHg"/>
+          <CenteredChart data={examplePressureData} color={getPressureColor()} />
           <View
             style={{
               display: "flex",
@@ -395,7 +395,7 @@ function Sensors() {
             />
             <StyledText text="Temperature (°C)" marginLeft={5} color={getTemperatureColor()} />
           </View>
-          <CenteredChart data={exampleTemperatureData} color={getTemperatureColor()} suffix="°C"/>
+          <CenteredChart data={exampleTemperatureData} color={getTemperatureColor()} />
           <View
             style={{
               display: "flex",
@@ -414,7 +414,7 @@ function Sensors() {
             />
             <StyledText text="Humidity (%)" marginLeft={5} color={getHumidityColor()} />
           </View>
-          <CenteredChart data={exampleHumidityData} color={getHumidityColor()} suffix="%"/>
+          <CenteredChart data={exampleHumidityData} color={getHumidityColor()} />
         </View>
       )
     }
@@ -488,9 +488,8 @@ function Sensors() {
  * Component to render a chart with a provided data
  * @param {Object} data chart data
  * @param {string} color line color
- * @param {string} suffix y axis suffix
  */
-function CenteredChart({data, color, suffix}) {
+function CenteredChart({data, color}) {
 
   const {dark} = useContext(DarkContext)
 
@@ -508,7 +507,6 @@ function CenteredChart({data, color, suffix}) {
         segments={4}
         width={Dimensions.get("window").width * GRAPHSCALE} // from react-native
         height={220}
-        yAxisSuffix={suffix}
         yAxisInterval={1} // optional, defaults to 1
         withVerticalLines={false}
         chartConfig={{
@@ -540,17 +538,10 @@ function CenteredChart({data, color, suffix}) {
 }
 
 const examplePressureData = {
-  labels: ["January", "February", "March", "April", "May", "June"],
+  labels: getGraphLabels(averagedAdc),
   datasets: [
     {
-      data: [
-        Math.random() * 100,
-        Math.random() * 100,
-        Math.random() * 100,
-        Math.random() * 100,
-        Math.random() * 100,
-        Math.random() * 100
-      ]
+      data: averagedAdc
     }
   ]
 };

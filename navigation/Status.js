@@ -111,8 +111,6 @@ function Sensors() {
    */
   function SensorCard({data}) {
 
-    const [expanded, setExpanded] = useState(false); // Whether card expanded or not
-
     /**
      * Get the border color by picking the most extreme color of any reading
      * @returns color key
@@ -141,11 +139,13 @@ function Sensors() {
      * @returns color key
      */
     function getPressureColor() {
-      if (data.pressure >= 350) {
-        return globalColors.red;
-      }
-      if (data.pressure >= 320) {
-        return globalColors.orange;
+      if (!data.paused) {
+        if (data.pressure >= 350) {
+          return globalColors.red;
+        }
+        if (data.pressure >= 320) {
+          return globalColors.orange;
+        }
       }
       return dark ? darkTheme.textPrimary : lightTheme.textPrimary;
     }
@@ -171,11 +171,13 @@ function Sensors() {
      * @returns color key
      */
     function getTemperatureColor() {
-      if (data.temperature >= 50) {
-        return globalColors.red;
-      }
-      if (data.temperature >= 40) {
-        return globalColors.orange;
+      if (!data.paused) {
+        if (data.temperature >= 50) {
+          return globalColors.red;
+        }
+        if (data.temperature >= 40) {
+          return globalColors.orange;
+        }
       }
       return dark ? darkTheme.textPrimary : lightTheme.textPrimary;
     }
@@ -201,11 +203,13 @@ function Sensors() {
      * @returns color key
      */
     function getHumidityColor() {
-      if (data.humidity >= 50) {
-        return globalColors.red;
-      }
-      if (data.humidity >= 25) {
-        return globalColors.orange;
+      if (!data.paused) {
+        if (data.humidity >= 50) {
+          return globalColors.red;
+        }
+        if (data.humidity >= 25) {
+          return globalColors.orange;
+        }
       }
       return dark ? darkTheme.textPrimary : lightTheme.textPrimary;
     }
@@ -285,7 +289,7 @@ function Sensors() {
             }}
           />
           <StyledText 
-            text={`${parseInt(data.humidity)}%`} 
+            text={data.paused ? "..." : `${data.humidity}%`} 
             marginLeft={5} 
             marginRight={5} 
             color={getHumidityColor()}
@@ -308,7 +312,7 @@ function Sensors() {
             }}
           />
           <StyledText 
-            text={`${parseInt(data.temperature)}°C`} 
+            text={data.paused ? "..." : `${data.temperature}°C`} 
             marginLeft={5} 
             marginRight={5} 
             color={getTemperatureColor()}
@@ -331,7 +335,7 @@ function Sensors() {
             }}
           />
           <StyledText 
-            text={`${parseInt(data.pressure)}mmHg`} 
+            text={data.paused ? "..." : `${data.pressure}mmHg`} 
             marginLeft={5} 
             marginRight={5} 
             color={getPressureColor()}
@@ -345,7 +349,7 @@ function Sensors() {
      */
     function Graphs() {
       // Guard clauses:
-      if (!expanded) { return; } // Card is not expanded
+      if (!data.expanded) { return; } // Card is not expanded
       
       // Render graphs
       return (
@@ -376,7 +380,7 @@ function Sensors() {
             />
             <StyledText text="Pressure (adc)" marginLeft={5} color={getPressureColor()} />
           </View>
-          <CenteredChart data={examplePressureData} color={getPressureColor()} />
+          { data.paused  ? <StyledText text="Sensor Paused" width="100%" marginBottom={5} /> : <CenteredChart data={examplePressureData} color={getPressureColor()} /> }
           <View
             style={{
               display: "flex",
@@ -395,7 +399,7 @@ function Sensors() {
             />
             <StyledText text="Temperature (°C)" marginLeft={5} color={getTemperatureColor()} />
           </View>
-          <CenteredChart data={exampleTemperatureData} color={getTemperatureColor()} />
+          { data.paused  ? <StyledText text="Sensor Paused" width="100%" marginBottom={5} /> : <CenteredChart data={exampleTemperatureData} color={getTemperatureColor()} /> }
           <View
             style={{
               display: "flex",
@@ -414,7 +418,37 @@ function Sensors() {
             />
             <StyledText text="Humidity (%)" marginLeft={5} color={getHumidityColor()} />
           </View>
-          <CenteredChart data={exampleHumidityData} color={getHumidityColor()} />
+          { data.paused  ? <StyledText text="Sensor Paused" width="100%" marginBottom={5} /> : <CenteredChart data={exampleHumidityData} color={getHumidityColor()} /> }
+        </View>
+      )
+    }
+
+    /**
+     * Toggle device expanded status
+     */
+    function toggleExpanded() {
+      // Clone devices list
+      let newDevices = [];
+      for (const d of devices) {
+        newDevices.push(d);
+      }
+      // Set current device's logTo to value of text field
+      newDevices[data.id].expanded = !newDevices[data.id].expanded;
+      // Update state
+      setDevices(newDevices);
+    }
+
+    /**
+     * Component to display sensor summary. Does not show if paused.
+     */
+    function Summary() {
+      // Guard clauses:
+      if (data.paused) { return; } // Do not show if sensor is paused
+      
+      return (
+        <View display="flex" flexDirection="row" alignItems="center" >
+          <Image source={getSummarySource()} style={{height: 20, width: 20}}/>
+          <StyledText text={getSummaryText()} color={getSummaryColor()} marginLeft={10}/>
         </View>
       )
     }
@@ -424,7 +458,8 @@ function Sensors() {
         flexDirection="column"
         justifyContent="center"
         gradient={getSummaryColor()}
-        onClick={() => setExpanded(!expanded)}
+        onClick={toggleExpanded}
+        disabled={data.paused}
       >
         <View 
           display="flex" 
@@ -441,7 +476,7 @@ function Sensors() {
             style={{
               width: 40,
               height: 40,
-              transform: [{ rotate: expanded ? "0deg" : "180deg" }],
+              transform: [{ rotate: data.expanded ? "0deg" : "180deg" }],
             }}
           />
         </View>
@@ -460,13 +495,10 @@ function Sensors() {
           <TemperatureReading />
           <HumidityReading />
         </View>
-        { expanded && <Divider /> }
+        { data.expanded && <Divider /> }
         <Graphs />
-        <View display="flex" flexDirection="row" alignItems="center" >
-          <Image source={getSummarySource()} style={{height: 20, width: 20}}/>
-          <StyledText text={getSummaryText()} color={getSummaryColor()} marginLeft={10}/>
-        </View>
-        { expanded && <PauseButton paused={data.paused} onClick={togglePaused}/> }
+        <Summary />
+        { data.expanded && <PauseButton paused={data.paused} onClick={togglePaused}/> }
       </GradientCard>
     )
   }
@@ -489,7 +521,7 @@ function Sensors() {
  * @param {Object} data chart data
  * @param {string} color line color
  */
-function CenteredChart({data, color}) {
+function CenteredChart({data, color, backgroundColor}) {
 
   const {dark} = useContext(DarkContext)
 

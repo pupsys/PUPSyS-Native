@@ -6,7 +6,7 @@ import Icon from "react-native-vector-icons/Ionicons"
 
 // Component Imports
 import Calibration from "./navigation/Calibration";
-import { AppDrawer, CustomDrawerItem, navTheme, } from "./components/Navigation";
+import { AppDrawer, navTheme, } from "./components/Navigation";
 import Patient from "./navigation/Patient";
 import Status from "./navigation/Status";
 
@@ -75,6 +75,6 @@ function App() {
     </DevicesContext.Provider>
     </DarkContext.Provider>
   );
-}
+}3
 
 export default App;

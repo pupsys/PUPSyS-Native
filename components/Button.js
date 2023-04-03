@@ -335,7 +335,7 @@ export function SaveButton(props) {
 }
 
 /**
- * Pause button with text component for CitrusNative
+ * Pause button with text component for PUPSys
  * @param {Function} onClick function to be called onClick
  * @param {boolean} paused whether paused or not
  * @default
@@ -368,7 +368,7 @@ export function PauseButton(props) {
    */
   function getImage() {
     if (props.paused) {
-      dark ? require("../assets/images/PlayDark.png") : require("../assets/images/PlayLight.png");
+      return dark ? require("../assets/images/PlayDark.png") : require("../assets/images/PlayLight.png");
     }
     return dark ? require("../assets/images/PauseDark.png") : require("../assets/images/PauseLight.png");
   }
@@ -379,9 +379,9 @@ export function PauseButton(props) {
    */
   function getText() {
     if (props.paused) {
-      "Resume Sensor";
+      return "Resume";
     }
-    return "Pause Sensor";
+    return "Pause";
   }
 
   // Button is unselected. Render without gradient

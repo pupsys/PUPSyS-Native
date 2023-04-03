@@ -12,6 +12,7 @@ export const exampleDevices = [
     temperature: 50,
     humidity: 50,
     paused: false,
+    expanded: false,
   },
   {
     id: 1,
@@ -24,6 +25,7 @@ export const exampleDevices = [
     temperature: 40,
     humidity: 20,
     paused: false,
+    expanded: false,
   },
   {
     id: 2,
@@ -36,6 +38,7 @@ export const exampleDevices = [
     temperature: 30,
     humidity: 20,
     paused: false,
+    expanded: false,
   },
   {
     id: 3,
@@ -48,6 +51,7 @@ export const exampleDevices = [
     temperature: 30,
     humidity: 20,
     paused: false,
+    expanded: false,
   },
 ];
 

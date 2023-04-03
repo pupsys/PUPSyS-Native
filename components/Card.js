@@ -54,6 +54,13 @@ export function GradientCard(props) {
     }
   }
 
+  function getBackgroundColor() {
+    if (props.disabled) {
+      return dark ? darkTheme.searchFill : lightTheme.searchFill
+    }
+    return dark ? darkTheme.cardFill : lightTheme.cardFill;
+  }
+
   /**
    * Render the view component inside of the LinearGradient that makes up the border
    */
@@ -72,7 +79,7 @@ export function GradientCard(props) {
             width: '100%', 
             padding: 16, 
             height: "100%", 
-            backgroundColor: dark ? darkTheme.cardFill : lightTheme.cardFill,
+            backgroundColor: getBackgroundColor(),
           }}
         >
           { props.children }
@@ -168,7 +175,6 @@ export function GradientCard(props) {
     <Swipeable 
       ref={swipeableRef}
       containerStyle={{
-          opacity: props.disabled ? 0.5 : 1, 
           flex: 1
       }}
       renderLeftActions={renderLeftActions}

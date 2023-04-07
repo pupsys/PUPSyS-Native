@@ -11,28 +11,6 @@ import { DarkContext, } from '../Context';
 import { buttonStyles, darkTheme, globalColors, lightTheme, textStyles, } from '../assets/styles';
 
 /**
- * Menu button for display in the topbar— will open flyout menu
- * @param {Function} onClick function to be called on click
- */
-export function MenuButton(props) {
-
-  const { dark } = useContext(DarkContext);
-
-  return (
-    <Pressable 
-      display="flex" 
-      flexDirection="column" 
-      alignItems="center" 
-      justifyContent="center" 
-      onPress={props.onClick}
-    >
-        <Image source={dark ? require("../assets/images/MenuDark.png") : require("../assets/images/MenuLight.png")} style={{width: 40, height: 40, backgroundColor: (dark ? darkTheme.searchFill : lightTheme.searchFill), borderRadius: 20}}/>
-    </Pressable>
-  )
-}
-
-
-/**
  * Simple darkmode toggle button. Changes {@link DarkContext} on click.
  */
 export function DarkModeButton() {

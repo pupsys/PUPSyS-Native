@@ -1,5 +1,12 @@
+/**
+ * Seconds between sensor ADC readings
+ * @const
+ */
 export const SECONDS = 30;
 
+/**
+ * Example device information
+ */
 export const exampleDevices = [
   {
     id: 0,
@@ -55,6 +62,9 @@ export const exampleDevices = [
   },
 ];
 
+/**
+ * List of example ADC readings from trials
+ */
 export const exampleAdc = [
     11,
     8,
@@ -1768,6 +1778,13 @@ function getEveryXthElement(list, x) {
   return resultList;
 }
 
+/**
+ * Generates an array of graph labels based on sensor reading times.
+ * It takes an array of sensor readings and returns an array of truncated labels
+ * with a fixed number of elements.
+ * @param {number[]} sensorReadings - An array of sensor readings.
+ * @returns {string[]} An array of graph labels with a fixed number of elements.
+ */
 export function getGraphLabels(sensorReadings) {
     const allReadingTimes = getReadingTimes(sensorReadings, SECONDS); 
     const NUM_LABELS = 4;
@@ -1775,6 +1792,10 @@ export function getGraphLabels(sensorReadings) {
     return truncatedLabels;
 }
 
+/**
+ * 
+ * @returns {number[]} {@link exampleAdc} list shortened by averaging the number of readings by {@link SECONDS}
+ */
 export const averagedAdc = averageEveryXNumbers(exampleAdc, SECONDS);
 
 /**

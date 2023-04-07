@@ -1,9 +1,9 @@
 // Library Imports
 import { useContext, useState } from 'react';
-import { Alert, Animated, Image, TouchableOpacity, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Alert, Animated, Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 import DropDownPicker from 'react-native-dropdown-picker';
-import { useAnimatedGestureHandler, PanGestureHandler } from 'react-native-gesture-handler';
+import { PanGestureHandler, } from 'react-native-gesture-handler';
 
 // Context Imports
 import { DarkContext, DevicesContext } from '../Context';
@@ -13,6 +13,7 @@ import { darkTheme, globalColors, lightTheme } from '../assets/styles';
 
 // API Imports
 import { formatUri } from '../api/strings';
+import { exampleDevices } from "../api/sensor";
 
 // Component Imports
 import { Divider, GradientCard } from '../components/Card';
@@ -489,6 +490,9 @@ export default function Calibration({navigation}) {
             d.id = i;
             newDevices.push(d);
           }
+        }
+        if (currentDevice === devices.length - 1) {
+          setCurrentDevice(currentDevice - 1);
         }
         setDevices(newDevices);
       }

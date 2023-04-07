@@ -60,8 +60,8 @@ export default function Status({navigation}) {
             },
           })}
         >
-          <StatusTabs.Screen name={appStackPages.OVERALL} component={Overall}/>
-          <StatusTabs.Screen name={appStackPages.SENSORS} component={Sensors}/>
+          <StatusTabs.Screen name={statusTabsPages.OVERALL} component={Overall}/>
+          <StatusTabs.Screen name={statusTabsPages.SENSORS} component={Sensors}/>
         </StatusTabs.Navigator>
       </View>
     )

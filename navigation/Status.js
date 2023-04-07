@@ -20,6 +20,7 @@ import { averagedAdc, getGraphLabels, getScaledAdc } from '../api/sensor';
 import { PauseButton, } from "../components/Button";
 import { Divider, GradientCard, } from "../components/Card";
 import { StyledText } from '../components/Text';
+import { thresholds } from '../api/threshold';
 
 /** Navigator for all status tabs */
 const StatusTabs = createBottomTabNavigator();
@@ -171,10 +172,10 @@ function Overall() {
      */
     function getPressureColor() {
       for (const device of devices) {
-        if (device.pressure >= 350) {
+        if (device.pressure >= thresholds.pressure.RED) {
           return globalColors.red;
         }
-        if (device.pressure >= 320) {
+        if (device.pressure >= thresholds.pressure.ORANGE) {
           return globalColors.orange;
         }
       }
@@ -186,7 +187,7 @@ function Overall() {
         <StyledText text="Pressure (mmHg)" />
         <Divider marginTop={10} marginBottom={10}/>
         <CenteredChart data={exampleOverallPressureData} color={getPressureColor()} />
-        <DeviceList reading="pressure" orange={320} red={350}/>
+        <DeviceList reading="pressure" orange={thresholds.pressure.ORANGE} red={thresholds.pressure.RED}/>
         <Divider marginTop={10} marginBottom={10}/>
         <Summary color={getPressureColor()} />
       </GradientCard>
@@ -204,10 +205,10 @@ function Overall() {
      */
     function getTemperatureColor() {
       for (const device of devices) {
-        if (device.temperature >= 50) {
+        if (device.temperature >= thresholds.temperature.RED) {
           return globalColors.red;
         }
-        if (device.temperature >= 40) {
+        if (device.temperature >= thresholds.temperature.ORANGE) {
           return globalColors.orange;
         }
       }
@@ -219,7 +220,7 @@ function Overall() {
         <StyledText text="Temperature (°C)" />
         <Divider marginTop={10} marginBottom={10}/>
         <CenteredChart data={exampleOverallPressureData} color={getTemperatureColor()} />
-        <DeviceList reading="temperature" orange={40} red={50}/>
+        <DeviceList reading="temperature" orange={thresholds.temperature.ORANGE} red={thresholds.temperature.RED}/>
         <Divider marginTop={10} marginBottom={10}/>
         <Summary color={getTemperatureColor()} />
       </GradientCard>
@@ -237,10 +238,10 @@ function Overall() {
      */
     function getHumidityColor() {
       for (const device of devices) {
-        if (device.temperature >= 50) {
+        if (device.temperature >= thresholds.pressure.RED) {
           return globalColors.red;
         }
-        if (device.temperature >= 25) {
+        if (device.temperature >= thresholds.pressure.ORANGE) {
           return globalColors.orange;
         }
       }
@@ -252,7 +253,7 @@ function Overall() {
         <StyledText text="Humidity (%)" />
         <Divider marginTop={10} marginBottom={10}/>
         <CenteredChart data={exampleOverallPressureData} color={getHumidityColor()} />
-        <DeviceList reading="humidity" orange={25} red={50}/>
+        <DeviceList reading="humidity" orange={thresholds.pressure.ORANGE} red={thresholds.pressure.RED}/>
         <Divider marginTop={10} marginBottom={10}/>
         <Summary color={getHumidityColor()} />
       </GradientCard>
@@ -329,10 +330,10 @@ function Sensors() {
      */
     function getPressureColor() {
       if (!data.paused) {
-        if (data.pressure >= 350) {
+        if (data.pressure >= thresholds.pressure.RED) {
           return globalColors.red;
         }
-        if (data.pressure >= 320) {
+        if (data.pressure >= thresholds.pressure.ORANGE) {
           return globalColors.orange;
         }
       }
@@ -361,10 +362,10 @@ function Sensors() {
      */
     function getTemperatureColor() {
       if (!data.paused) {
-        if (data.temperature >= 50) {
+        if (data.temperature >= thresholds.temperature.RED) {
           return globalColors.red;
         }
-        if (data.temperature >= 40) {
+        if (data.temperature >= thresholds.temperature.ORANGE) {
           return globalColors.orange;
         }
       }
@@ -393,10 +394,10 @@ function Sensors() {
      */
     function getHumidityColor() {
       if (!data.paused) {
-        if (data.humidity >= 50) {
+        if (data.humidity >= thresholds.humidity.RED) {
           return globalColors.red;
         }
-        if (data.humidity >= 25) {
+        if (data.humidity >= thresholds.humidity.ORANGE) {
           return globalColors.orange;
         }
       }

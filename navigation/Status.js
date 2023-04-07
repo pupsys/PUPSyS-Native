@@ -12,7 +12,7 @@ import { darkTheme, globalColors, lightTheme, } from '../assets/styles';
 import { DarkContext, DevicesContext, } from '../Context'
 
 // API Imports
-import { averagedAdc, getGraphLabels } from '../api/sensor'; 
+import { averagedAdc, getGraphLabels, getScaledAdc } from '../api/sensor'; 
 
 // Component Imports
 import { PauseButton, } from "../components/Button"
@@ -79,13 +79,209 @@ export default function Status({navigation}) {
     )
 }
 
+/**
+ * Component for displaying all sensor data at the same time
+ */
 function Overall() {
+
+  // Get context
+  const { devices } = useContext(DevicesContext);
+  const { dark } = useContext(DarkContext);
+
+  /**
+   * Component to display a card with list of all connected devices and their pressure readings
+   * @param {string} reading reading to display from device
+   * @param {number} orange orange threshold
+   * @param {number} red red threshold
+   */
+  function DeviceList({reading, orange, red}) {
+
+    /**
+     * Component for rendering a device in BLE devices list
+     * @param {boolean} header whether or not this is the header
+     * @param {Object} device device object
+     * @see {@link devices}
+     */
+    function DeviceListItem({header, device}) {
+
+      /**
+       * Get color of reading by thresholds {@link orange} and {@link red}
+       * @returns color key
+       */
+      function getBackgroundColor() {
+        // Guard clauses
+        if (header)           { return; } // This is the header 
+        if (!device[reading]) { return; } // Somehow there is no reading
+        if (device[reading] >= red) {
+          return globalColors.redAlpha;
+        }
+        if (device[reading] >= orange) {
+          return globalColors.orangeAlpha;
+        }
+      }
+
+      // Render device in a View
+      return (
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            marginVertical: 2,
+            backgroundColor: getBackgroundColor()
+          }}
+        >
+          <StyledText text={header ? "#" : `${device.id + 1}`} width="10%" align="center"/>
+          <Divider vertical={true}/>
+          <StyledText text={header ? "Location" : device.location} width="50%"/>
+          <Divider vertical={true}/>
+          <StyledText text={header ? "Reading" : device[reading]} width="40%"/>
+        </View>
+      )
+    }
+      /**
+       * Map BLE devices to list items
+       */
+      function renderBLEDevices() {
+        return devices.map((device, index) => {
+          return <DeviceListItem key={index} device={device}/>
+        })
+      }
+
+      return (
+        <ScrollView
+            style={{
+              backgroundColor: dark ? darkTheme.tabBarColor : lightTheme.tabBarColor,
+              width: "100%",
+              padding: 10,
+              marginTop: 10,
+              borderColor: dark ? darkTheme.cardBorder : lightTheme.cardBorder,
+              borderWidth: 1,
+              borderRadius: 5,
+            }}
+            >
+              <DeviceListItem header={true}/>
+              <Divider />
+              { renderBLEDevices() }
+        </ScrollView>
+      )
+    }
+
+  /**
+   * Component to display overall pressure readings
+   */
+  function PressureOverall() {
+
+    /**
+     * Get the color of pressure text
+     * @returns color key
+     */
+    function getPressureColor() {
+      for (const device of devices) {
+        if (device.pressure >= 350) {
+          return globalColors.red;
+        }
+        if (device.pressure >= 320) {
+          return globalColors.orange;
+        }
+      }
+      return dark ? darkTheme.textPrimary : lightTheme.textPrimary;
+    }
+
+    return (
+      <GradientCard flexDirection="column" gradient={getPressureColor()}>
+        <StyledText text="Pressure (mmHg)" />
+        <Divider marginTop={10} marginBottom={10}/>
+        <CenteredChart data={exampleOverallPressureData} color={getPressureColor()} />
+        <DeviceList reading="pressure" orange={320} red={350}/>
+        <Divider marginTop={10} marginBottom={10}/>
+        <Summary color={getPressureColor()} />
+      </GradientCard>
+    );
+  }
+
+  /**
+   * Component to display overall temperature readings
+   */
+  function TemperatureOverall() {
+
+    /**
+     * Get the color of temperature text
+     * @returns color key
+     */
+    function getTemperatureColor() {
+      for (const device of devices) {
+        if (device.temperature >= 50) {
+          return globalColors.red;
+        }
+        if (device.temperature >= 40) {
+          return globalColors.orange;
+        }
+      }
+      return dark ? darkTheme.textPrimary : lightTheme.textPrimary;
+    }
+
+    return (
+      <GradientCard flexDirection="column" gradient={getTemperatureColor()}>
+        <StyledText text="Temperature (°C)" />
+        <Divider marginTop={10} marginBottom={10}/>
+        <CenteredChart data={exampleOverallPressureData} color={getTemperatureColor()} />
+        <DeviceList reading="temperature" orange={40} red={50}/>
+        <Divider marginTop={10} marginBottom={10}/>
+        <Summary color={getTemperatureColor()} />
+      </GradientCard>
+    );
+  }
+
+  /**
+   * Component to display overall humidity readings
+   */
+  function HumidityOverall() {
+
+    /**
+     * Get the color of humidity text
+     * @returns color key
+     */
+    function getHumidityColor() {
+      for (const device of devices) {
+        if (device.temperature >= 50) {
+          return globalColors.red;
+        }
+        if (device.temperature >= 25) {
+          return globalColors.orange;
+        }
+      }
+      return dark ? darkTheme.textPrimary : lightTheme.textPrimary;
+    }
+
+    return (
+      <GradientCard flexDirection="column" gradient={getHumidityColor()}>
+        <StyledText text="Humidity (%)" />
+        <Divider marginTop={10} marginBottom={10}/>
+        <CenteredChart data={exampleOverallPressureData} color={getHumidityColor()} />
+        <DeviceList reading="humidity" orange={25} red={50}/>
+        <Divider marginTop={10} marginBottom={10}/>
+        <Summary color={getHumidityColor()} />
+      </GradientCard>
+    );
+  }
+
   return (
-    <View>
-    </View>
+    <ScrollView
+      style={{
+        padding: 10,
+      }}
+    >
+      <PressureOverall />
+      <TemperatureOverall />
+      <HumidityOverall />
+    </ScrollView>
   )
 }
 
+/**
+ * Component for displaying sensors separately from one another
+ */
 function Sensors() {
   
   // Get Context
@@ -228,36 +424,6 @@ function Sensors() {
       }
       // No worries, return theme colored icon
       return dark ? require("../assets/images/HumidityDark.png") : require("../assets/images/HumidityLight.png");
-    }
-
-    /**
-     * Get the summary text based on card's background color
-     * @returns summary string ("Act Now", "Pay Attention", or "Good Job")
-     */
-    function getSummaryText() {
-      const color = getSummaryColor();
-      if (color === globalColors.red) {
-        return "Act Now";
-      }
-      if (color === globalColors.orange) {
-        return "Pay Attention";
-      }
-      return "Good Job";
-    }
-
-    /**
-     * Get the summary image based on card's background color
-     * @returns image source
-     */
-    function getSummarySource() {
-      const color = getSummaryColor();
-      if (color === globalColors.red) {
-        return require("../assets/images/ActNow.png");
-      }
-      if (color === globalColors.orange) {
-        return require("../assets/images/PayAttention.png");
-      }
-      return require("../assets/images/GoodJob.png");
     }
 
     /**
@@ -439,18 +605,15 @@ function Sensors() {
     }
 
     /**
-     * Component to display sensor summary. Does not show if paused.
+     * Render summary if not paused
      */
-    function Summary() {
+    function renderSummary() {
       // Guard clauses:
       if (data.paused) { return; } // Do not show if sensor is paused
       
-      return (
-        <View display="flex" flexDirection="row" alignItems="center" >
-          <Image source={getSummarySource()} style={{height: 20, width: 20}}/>
-          <StyledText text={getSummaryText()} color={getSummaryColor()} marginLeft={10}/>
-        </View>
-      )
+      const summaryColor = getSummaryColor();
+
+      return <Summary color={summaryColor} />;
     }
 
     return (
@@ -497,7 +660,7 @@ function Sensors() {
         </View>
         { data.expanded && <Divider /> }
         <Graphs />
-        <Summary />
+        { renderSummary() }
         { data.expanded && <PauseButton paused={data.paused} onClick={togglePaused}/> }
       </GradientCard>
     )
@@ -569,11 +732,72 @@ function CenteredChart({data, color, backgroundColor}) {
   )
 }
 
+/**
+ * Summary component displaying smiley icon and text based on color input
+ * @param {string} params.color color key for summary
+ */
+function Summary({color}) {
+    /**
+     * Get the summary text based on card's background color
+     * @param color color of summary
+     * @returns summary string ("Act Now", "Pay Attention", or "Good Job")
+     */
+    function getSummaryText(color) {
+      if (color === globalColors.red) {
+        return "Act Now";
+      }
+      if (color === globalColors.orange) {
+        return "Pay Attention";
+      }
+      return "Good Job";
+    }
+
+    /**
+     * Get the summary image based on card's background color
+     * @param color color of summary
+     * @returns image source
+     */
+    function getSummarySource(color) {
+      if (color === globalColors.red) {
+        return require("../assets/images/ActNow.png");
+      }
+      if (color === globalColors.orange) {
+        return require("../assets/images/PayAttention.png");
+      }
+      return require("../assets/images/GoodJob.png");
+    }
+
+    return (
+      <View display="flex" flexDirection="row" alignItems="center" >
+        <Image source={getSummarySource(color)} style={{height: 20, width: 20}}/>
+        <StyledText text={getSummaryText(color)} color={color} marginLeft={10}/>
+      </View>
+    )
+}
+
 const examplePressureData = {
   labels: getGraphLabels(averagedAdc),
   datasets: [
     {
       data: averagedAdc
+    }
+  ]
+};
+
+const exampleOverallPressureData = {
+  labels: getGraphLabels(averagedAdc),
+  datasets: [
+    {
+      data: averagedAdc
+    },
+    {
+      data: getScaledAdc(.5)
+    },
+    {
+      data: getScaledAdc(.8)
+    },
+    {
+      data: getScaledAdc(.6)
     }
   ]
 };

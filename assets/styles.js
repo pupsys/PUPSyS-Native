@@ -114,6 +114,8 @@ export const globalColors = {
   redGradient: ['#FD3C4A', '#FD3C4A'],
   green: "#22C55E",
   greenAlpha: "rgba(34, 197, 94, 0.2)",
+  redAlpha: "rgba(253, 60, 74, 0.2)",
+  orangeAlpha: "rgba(255, 153, 34, 0.2)",
   red: "#FD3C4A",
   orange: "#FF9922",
 }

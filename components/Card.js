@@ -207,6 +207,8 @@ export function GradientCard(props) {
 /**
  * A component for rendering a full-width line in a card
  * @param {boolean} vertical whether or not divider is vertical
+ * @param {number} marginTop top margin
+ * @param {number} marginBottom bottom margin
  * @default
  * vertical = false;
  */
@@ -223,6 +225,8 @@ export function Divider(props) {
         borderColor: dark ? darkTheme.textPrimary : lightTheme.textPrimary,
         borderBottomWidth: props.vertical ? 0 : 1,
         borderLeftWidth: props.vertical ? 1 : 0,
+        marginTop: props.marginTop,
+        marginBottom: props.marginBottom,
       }}
     />
   )

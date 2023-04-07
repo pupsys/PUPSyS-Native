@@ -2,8 +2,14 @@
  * Navigation controller page icon images
  */
 export const navigationImages = {
-  /** Images for App Drawer item icons */
+  /** Strings for appDrawer IonIcons */
   appDrawer: {
+    /** Calibration IonIcon name */
+    CALIBRATION: "settings-outline",
+    /** Patient IonIcon name */
+    PATIENT: "person-outline",
+    /** Sensors IonIcon name */
+    SENSORS: "heart-outline",
   },
   /** Images for Sensor Page tab icons */
   sensorsTabs: {
@@ -30,6 +36,7 @@ export const statusImages = {
   faces: {
     /** Act Now status icon */
     ACTNOW: require('../assets/images/ActNow.png'),
+    /** Good Job status icon */
     GOODJOB: require('../assets/images/GoodJob.png'),
     /** Pay Attention status icon */
     PAYATTENTION: require('../assets/images/PayAttention.png'),

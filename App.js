@@ -19,6 +19,7 @@ import { exampleDevices, } from "./api/sensor";
 
 // Context Imports
 import { DarkContext, DevicesContext, } from "./Context";
+import { navigationImages } from "./api/image";
 
 /**
  * The entire PUPSyS app component. Creates states for all context and returns a Stack Navigator inside all context providers.
@@ -45,7 +46,7 @@ function App() {
               options={{
                 drawerLabel: "Sensors",
                 drawerIcon: ({ color, size }) => (
-                  <Icon name="heart-outline" size={size} color={color} />
+                  <Icon name={navigationImages.appDrawer.SENSORS} size={size} color={color} />
                 ),
               }}
             />
@@ -55,7 +56,7 @@ function App() {
               options={{
                 drawerLabel: "Patient Details",
                 drawerIcon: ({ color, size }) => (
-                  <Icon name="person-outline" size={size} color={color} />
+                  <Icon name={navigationImages.appDrawer.PATIENT} size={size} color={color} />
                 ),
               }}
             />
@@ -65,7 +66,7 @@ function App() {
               options={{
                 drawerLabel: "Calibration",
                 drawerIcon: ({ color, size }) => (
-                  <Icon name="settings-outline" size={size} color={color} />
+                  <Icon name={navigationImages.appDrawer.CALIBRATION} size={size} color={color} />
                 ),
               }}
             />

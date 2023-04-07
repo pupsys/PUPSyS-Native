@@ -30,7 +30,8 @@ const GRAPHSCALE = 0.85;
 
 /**
  * Component to hold Status Tabs
- * @param {ReactNavigation} params.navigation navigation object from AppStack 
+ * @param {Object} props - Component properties
+ * @param {ReactNavigation} props.navigation - Navigation object from AppStack 
  */
 export default function Status({navigation}) {
 
@@ -84,16 +85,18 @@ function Overall() {
 
   /**
    * Component to display a card with list of all connected devices and their pressure readings
-   * @param {string} params.reading reading to display from device
-   * @param {number} params.orange orange threshold
-   * @param {number} params.red red threshold
+   * @param {Objects} props - Component properties
+   * @param {string} props.reading - Reading to display from device
+   * @param {number} props.orange - Orange threshold
+   * @param {number} props.red - Red threshold
    */
   function DeviceList({reading, orange, red}) {
 
     /**
      * Component for rendering a device in BLE devices list
-     * @param {boolean} params.header whether or not this is the header
-     * @param {Object} params.device device object
+     * @param {Object} props - Component properties
+     * @param {boolean} props.header - Whether this is the header
+     * @param {Object} props.device - Device object
      * @see {@link devices}
      */
     function DeviceListItem({header, device}) {
@@ -299,7 +302,7 @@ function Sensors() {
 
   /**
    * A component for rendering sensor data
-   * @param {Object} params.data data from device
+   * @param {Object} props.data data from device
    */
   function SensorCard({data}) {
 
@@ -677,8 +680,9 @@ function Sensors() {
 
 /**
  * Component to render a chart with a provided data
- * @param {Object} params.data chart data
- * @param {string} params.color line color
+ * @param {Object} props - Component properties
+ * @param {Object} props.data - Chart data
+ * @param {string} props.color - Line color
  */
 function CenteredChart({data, color, backgroundColor}) {
 
@@ -730,15 +734,16 @@ function CenteredChart({data, color, backgroundColor}) {
 
 /**
  * Summary component displaying smiley icon and text based on color input
- * @param {string} params.color color key for summary
+ * @param {Object} props - Component properties
+ * @param {string} props.color - Color key for summary
  */
 function Summary({color}) {
+  
     /**
      * Get the summary text based on card's background color
-     * @param color color of summary
      * @returns summary string ("Act Now", "Pay Attention", or "Good Job")
      */
-    function getSummaryText(color) {
+    function getSummaryText() {
       if (color === globalColors.red) {
         return "Act Now";
       }
@@ -750,10 +755,9 @@ function Summary({color}) {
 
     /**
      * Get the summary image based on card's background color
-     * @param color color of summary
      * @returns image source
      */
-    function getSummarySource(color) {
+    function getSummarySource() {
       if (color === globalColors.red) {
         return statusImages.faces.ACTNOW;
       }
@@ -765,8 +769,8 @@ function Summary({color}) {
 
     return (
       <View display="flex" flexDirection="row" alignItems="center" >
-        <Image source={getSummarySource(color)} style={{height: 20, width: 20}}/>
-        <StyledText text={getSummaryText(color)} color={color} marginLeft={10}/>
+        <Image source={getSummarySource()} style={{height: 20, width: 20}}/>
+        <StyledText text={getSummaryText()} color={color} marginLeft={10}/>
       </View>
     )
 }

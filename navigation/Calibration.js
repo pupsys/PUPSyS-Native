@@ -84,8 +84,9 @@ export default function Calibration({navigation}) {
 
     /**
      * Component for rendering a device in BLE devices list
-     * @param {boolean} header whether or not this is the header
-     * @param {Object} device device object
+   * @param {Object} props - Component properties
+     * @param {boolean} props.header whether or not this is the header
+     * @param {Object} props.device device object
      * @see {@link devices}
      */
     function DeviceListItem({header, device}) {
@@ -195,7 +196,8 @@ export default function Calibration({navigation}) {
 
   /**
    * Component to display all sensor details. Shown when not running calibration.
-   * @param {ReactNavigation} navigation navigation object from {@link CalibrationStack}
+   * @param {Object} props - Component properties
+   * @param {ReactNavigation} props.navigation navigation object from {@link CalibrationStack}
    */
   function SensorDetails({navigation}) {
     return (
@@ -292,7 +294,7 @@ export default function Calibration({navigation}) {
       
     /**
      * Component for showing calibration progress
-     * @param {number} number which stage of calibration this dot represents
+     * @param {number} props.number which stage of calibration this dot represents
      */
     function CalibrationDot({number}) {
       
@@ -558,7 +560,8 @@ export default function Calibration({navigation}) {
 
   /**
    * Component to display sensor location picker in navigation
-   * @param {ReactNavigation} navigation navigation object from {@link CalibrationStack}
+   * @param {Object} props - Component properties
+   * @param {ReactNavigation} props.navigation navigation object from {@link CalibrationStack}
    */
   function SensorLocationScreen({navigation}) {
     return (
@@ -585,7 +588,8 @@ export default function Calibration({navigation}) {
 
   /**
    * Component to display default calibration screen w/ device list and actions
-   * @param {ReactNavigation} navigation navigation object from {@link CalibrationStack}
+   * @param {Object} props - Component properties
+   * @param {ReactNavigation} props.navigation navigation object from {@link CalibrationStack}
    */
   function DefaultCalibrationScreen({navigation}) {
     return (
@@ -618,7 +622,7 @@ export default function Calibration({navigation}) {
 /**
  * A draggable sensor icon overlaid on top of an image.
  * @param {Object} props - Component properties.
- * @param {Object} props.iconSource - The source of the sensor icon image.
+ * @param {Image} props.iconSource - The source of the sensor icon image.
  */
 function DraggableSensorIcon({ iconSource }) {
   

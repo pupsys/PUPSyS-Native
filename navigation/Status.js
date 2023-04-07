@@ -15,12 +15,12 @@ import { DarkContext, DevicesContext, } from '../Context';
 import { buttonImages, navigationImages, statusImages, } from "../api/image";
 import { statusTabsPages, } from "../api/navigation";
 import { averagedAdc, getGraphLabels, getScaledAdc } from '../api/sensor'; 
+import { thresholds, } from '../api/threshold';
 
 // Component Imports
 import { PauseButton, } from "../components/Button";
 import { Divider, GradientCard, } from "../components/Card";
-import { StyledText } from '../components/Text';
-import { thresholds } from '../api/threshold';
+import { StyledText, } from '../components/Text';
 
 /** Navigator for all status tabs */
 const StatusTabs = createBottomTabNavigator();

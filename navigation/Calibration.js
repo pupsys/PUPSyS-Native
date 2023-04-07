@@ -369,7 +369,7 @@ export default function Calibration({navigation}) {
         grams /= 1000;
       } else if (calibrationUnits === "lb") {
         grams /= 453.592;
-      } else if (calibrationUnits === "lb") {
+      } else if (calibrationUnits === "oz") {
         grams /= 28.3495;
       }
 

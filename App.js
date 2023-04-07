@@ -1,7 +1,7 @@
 // Library Imports
 import { useState, } from "react";
 import { StatusBar, View, } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/Ionicons" 
 
 // Component Imports
@@ -11,10 +11,10 @@ import Patient from "./navigation/Patient";
 import Status from "./navigation/Status";
 
 // Style Imports
-import { darkTheme, lightTheme } from "./assets/styles";
+import { darkTheme, lightTheme, } from "./assets/styles";
 
 // API Imports
-import { pageNames, } from "./api/enum";
+import { appStackPages, } from "./api/navigation";
 import { exampleDevices, } from "./api/sensor";
 
 // Context Imports
@@ -37,11 +37,11 @@ function App() {
       <View style={{height: '100%'}}>
         <NavigationContainer theme={navTheme}>
           <AppDrawer.Navigator
-            initialRouteName={pageNames.STATUS}
+            initialRouteName={appStackPages.STATUS}
           >
             <AppDrawer.Screen
               component={Status}
-              name={pageNames.STATUS}
+              name={appStackPages.STATUS}
               options={{
                 drawerLabel: "Sensors",
                 drawerIcon: ({ color, size }) => (
@@ -51,7 +51,7 @@ function App() {
             />
             <AppDrawer.Screen
               component={Patient}
-              name={pageNames.PATIENT}
+              name={appStackPages.PATIENT}
               options={{
                 drawerLabel: "Patient Details",
                 drawerIcon: ({ color, size }) => (
@@ -61,7 +61,7 @@ function App() {
             />
             <AppDrawer.Screen
               component={Calibration}
-              name={pageNames.CALIBRATION}
+              name={appStackPages.CALIBRATION}
               options={{
                 drawerLabel: "Calibration",
                 drawerIcon: ({ color, size }) => (

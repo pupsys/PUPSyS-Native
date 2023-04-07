@@ -1,5 +1,5 @@
 // Library Imports
-import { useContext, useState, } from 'react'
+import { useContext, } from 'react'
 import { Dimensions, Image, View, } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler';
 import { createBottomTabNavigator, } from '@react-navigation/bottom-tabs';
@@ -12,6 +12,7 @@ import { darkTheme, globalColors, lightTheme, } from '../assets/styles';
 import { DarkContext, DevicesContext, } from '../Context'
 
 // API Imports
+import { statusTabPages, } from "../api/navigation";
 import { averagedAdc, getGraphLabels, getScaledAdc } from '../api/sensor'; 
 
 // Component Imports
@@ -21,19 +22,6 @@ import { StyledText } from '../components/Text';
 
 /** Navigator for all status tabs */
 const StatusTabs = createBottomTabNavigator();
-
-/**
- * Enum for sensor navigation page names
- * @example
- * tabNames.OVERALL = "Overall";
- * tabNames.SENSORS = "Sensors";
- * @readonly
- * @enum {string}
- */
-const tabNames = {
-  OVERALL: "Overall",
-  SENSORS: "Sensors",
-};
 
 /** Width of graphs relative to screen width */
 const GRAPHSCALE = 0.85;
@@ -47,16 +35,16 @@ export default function Status({navigation}) {
     return (
       <View style={{height: '100%'}}>
         <StatusTabs.Navigator
-          initialRouteName={tabNames.SENSORS}
+          initialRouteName={statusTabsPages.SENSORS}
           backBehavior="none"
           screenOptions={({route}) => ({
             tabBarIcon: ({focused, size}) => {
               // Get the icon for each tab by darkmode value and tab name
               let imgSrc;
               let routeName = route.name;
-              if (routeName === tabNames.OVERALL) {
+              if (routeName === statusTabsPages.OVERALL) {
                 imgSrc = focused ? require('../assets/images/PersonSelected.png') : dark ? require('../assets/images/PersonUnselected.png') : require('../assets/images/PersonUnselectedLight.png');
-              } else if (routeName === tabNames.SENSORS) {
+              } else if (routeName === statusTabsPages.SENSORS) {
                 imgSrc = focused ? require('../assets/images/SensorsSelected.png') : dark ? require('../assets/images/SensorsUnselected.png') : require('../assets/images/SensorsUnselectedLight.png');
               }
                 return <Image style={{width: size, height: size}} source={imgSrc} />

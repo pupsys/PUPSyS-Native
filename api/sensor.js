@@ -1776,3 +1776,13 @@ export function getGraphLabels(sensorReadings) {
 }
 
 export const averagedAdc = averageEveryXNumbers(exampleAdc, SECONDS);
+
+/**
+ * Takes a number x and returns a new list created by multiplying all values in the existing "averagedAdc" list by x.
+ * @param {number} x - The scaling factor to multiply each value in the averagedAdc list.
+ * @returns {number[]} A new list with the scaled values.
+ */
+export function getScaledAdc(x) {
+  // Assuming averagedAdc is an existing list (array) of numbers
+  return averagedAdc.map(value => value * x);
+}

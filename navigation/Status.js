@@ -84,16 +84,16 @@ function Overall() {
 
   /**
    * Component to display a card with list of all connected devices and their pressure readings
-   * @param {string} reading reading to display from device
-   * @param {number} orange orange threshold
-   * @param {number} red red threshold
+   * @param {string} params.reading reading to display from device
+   * @param {number} params.orange orange threshold
+   * @param {number} params.red red threshold
    */
   function DeviceList({reading, orange, red}) {
 
     /**
      * Component for rendering a device in BLE devices list
-     * @param {boolean} header whether or not this is the header
-     * @param {Object} device device object
+     * @param {boolean} params.header whether or not this is the header
+     * @param {Object} params.device device object
      * @see {@link devices}
      */
     function DeviceListItem({header, device}) {
@@ -105,7 +105,8 @@ function Overall() {
       function getBackgroundColor() {
         // Guard clauses
         if (header)           { return; } // This is the header 
-        if (!device[reading]) { return; } // Somehow there is no reading
+        if (!device[reading]) { return; } // Somehow there is no 
+        
         if (device[reading] >= red) {
           return globalColors.redAlpha;
         }
@@ -298,6 +299,7 @@ function Sensors() {
 
   /**
    * A component for rendering sensor data
+   * @param {Object} params.data data from device
    */
   function SensorCard({data}) {
 
@@ -675,8 +677,8 @@ function Sensors() {
 
 /**
  * Component to render a chart with a provided data
- * @param {Object} data chart data
- * @param {string} color line color
+ * @param {Object} params.data chart data
+ * @param {string} params.color line color
  */
 function CenteredChart({data, color, backgroundColor}) {
 

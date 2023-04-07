@@ -12,7 +12,7 @@ import { darkTheme, globalColors, lightTheme, } from '../assets/styles';
 import { DarkContext, DevicesContext, } from '../Context'
 
 // API Imports
-import { averagedAdc, getGraphLabels } from '../api/sensor'; 
+import { averagedAdc, getGraphLabels, } from '../api/sensor'; 
 
 // Component Imports
 import { PauseButton, } from "../components/Button"

@@ -7,6 +7,7 @@ import { DarkContext } from "../Context";
 
 // Style Imports
 import { darkTheme, lightTheme, measurements, textStyles, } from "../assets/styles";
+import { buttonImages } from "../api/image";
 
 /**
  * General text entry component for CitrusNative
@@ -88,7 +89,7 @@ function SearchBar(props) {
             elevation: 5
         }}
       >
-        <Image source={dark ? require("../assets/images/SearchIcon.png") : require("../assets/images/SearchIconLight.png")} style={{height: 32, width: 32, marginLeft: 10}} />
+        <Image source={dark ? buttonImages.SEARCHDARK : buttonImages.SEARCHLIGHT} style={{height: 32, width: 32, marginLeft: 10}} />
         <TextInput 
           placeholder={props.placeholder ? props.placeholder : "Search"}
           placeholderTextColor={dark ? "#FCFCFC" : "#0A1930"}

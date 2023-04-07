@@ -1,13 +1,13 @@
 /**
  * Enum for app navigation page names
  * @example
- * appStackPages.PATIENT = "PUPSyS Patient Details";
- * appStackPages.CALIBRATION = "PUPSyS Sensor Calibration";
- * appStackPages.STATUS = "PUPSyS Sensors";
+ * appDrawerPages.PATIENT = "PUPSyS Patient Details";
+ * appDrawerPages.CALIBRATION = "PUPSyS Sensor Calibration";
+ * appDrawerPages.STATUS = "PUPSyS Sensors";
  * @readonly
  * @enum {string}
  */
-export const appStackPages = {
+export const appDrawerPages = {
     PATIENT: "PUPSyS Patient Details",
     CALIBRATION: "PUPSyS Sensor Calibration",
     STATUS: "PUPSyS Sensors",

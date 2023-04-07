@@ -21,6 +21,7 @@ import { Entry } from '../components/Input';
 import { CenteredTitle, StyledText } from '../components/Text';
 import { DropDownButton, SaveButton, StyledButton } from '../components/Button';
 import { createStackNavigator } from '@react-navigation/stack';
+import { calibrationImages } from '../api/image';
 
 
 /** Space taken up by entry names */
@@ -576,7 +577,7 @@ export default function Calibration({navigation}) {
         }}
       >
         <CenteredTitle text="Sensor Location" />
-        <DraggableSensorIcon iconSource={require("../assets/images/Sensor.png")} />
+        <DraggableSensorIcon iconSource={calibrationImages.SENSORICON} />
         <StyledButton text="Done" onClick={() => navigation.navigate("default")} />    
       </View>
     )
@@ -672,7 +673,7 @@ function DraggableSensorIcon({ iconSource }) {
 
   return (
     <View style={styles.container}>
-      <Image source={require("../assets/images/HumanDiagram.png")} style={styles.backgroundImage} />
+      <Image source={calibrationImages.HUMANDIAGRAM} style={styles.backgroundImage} />
       <PanGestureHandler onGestureEvent={handleGesture}>
         <Animated.View style={[styles.icon, { transform: [{ translateX: iconPosition.x }, { translateY: iconPosition.y }] }]}>
           <Image source={iconSource} style={styles.iconImage} />

@@ -1,6 +1,6 @@
 // Library Imports
-import { useContext, } from 'react'
-import { Dimensions, Image, View, } from 'react-native'
+import { useContext, } from 'react';
+import { Dimensions, Image, View, } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { createBottomTabNavigator, } from '@react-navigation/bottom-tabs';
 import { LineChart } from "react-native-chart-kit";
@@ -9,14 +9,15 @@ import { LineChart } from "react-native-chart-kit";
 import { darkTheme, globalColors, lightTheme, } from '../assets/styles';
 
 // Context Imports
-import { DarkContext, DevicesContext, } from '../Context'
+import { DarkContext, DevicesContext, } from '../Context';
 
 // API Imports
-import { appStackPages, statusTabsPages, } from "../api/navigation";
+import { buttonImages, navigationImages, statusImages, } from "../api/image";
+import { statusTabsPages, } from "../api/navigation";
 import { averagedAdc, getGraphLabels, getScaledAdc } from '../api/sensor'; 
 
 // Component Imports
-import { PauseButton, } from "../components/Button"
+import { PauseButton, } from "../components/Button";
 import { Divider, GradientCard, } from "../components/Card";
 import { StyledText } from '../components/Text';
 
@@ -26,6 +27,10 @@ const StatusTabs = createBottomTabNavigator();
 /** Width of graphs relative to screen width */
 const GRAPHSCALE = 0.85;
 
+/**
+ * Component to hold Status Tabs
+ * @param {ReactNavigation} params.navigation navigation object from AppStack 
+ */
 export default function Status({navigation}) {
 
     // Get Context
@@ -43,9 +48,9 @@ export default function Status({navigation}) {
               let imgSrc;
               let routeName = route.name;
               if (routeName === statusTabsPages.OVERALL) {
-                imgSrc = focused ? require('../assets/images/PersonSelected.png') : dark ? require('../assets/images/PersonUnselected.png') : require('../assets/images/PersonUnselectedLight.png');
+                imgSrc = focused ? navigationImages.sensorsTabs.OVERALLSELECTED : dark ? navigationImages.sensorsTabs.OVERALLDARK : navigationImages.sensorsTabs.OVERALLLIGHT;
               } else if (routeName === statusTabsPages.SENSORS) {
-                imgSrc = focused ? require('../assets/images/SensorsSelected.png') : dark ? require('../assets/images/SensorsUnselected.png') : require('../assets/images/SensorsUnselectedLight.png');
+                imgSrc = focused ? navigationImages.sensorsTabs.SENSORSSELECTED : dark ? navigationImages.sensorsTabs.SENSORSDARK : navigationImages.sensorsTabs.SENSORSLIGHT;
               }
                 return <Image style={{width: size, height: size}} source={imgSrc} />
               },
@@ -341,13 +346,13 @@ function Sensors() {
     function getPressureSource() {
       const color = getPressureColor();
       if (color === globalColors.red) {
-        return require("../assets/images/PressureRed.png");
+        return statusImages.pressure.RED;
       }
       if (color === globalColors.orange) {
-        return require("../assets/images/PressureOrange.png");
+        return statusImages.pressure.ORANGE;
       }
       // No worries, return theme colored icon
-      return dark ? require("../assets/images/PressureDark.png") : require("../assets/images/PressureLight.png");
+      return dark ? statusImages.pressure.DARK : statusImages.pressure.LIGHT;
     }
 
     /**
@@ -373,13 +378,13 @@ function Sensors() {
     function getTemperatureSource() {
       const color = getTemperatureColor();
       if (color === globalColors.red) {
-        return require("../assets/images/TemperatureRed.png");
+        return statusImages.temperature.RED;
       }
       if (color === globalColors.orange) {
-        return require("../assets/images/TemperatureOrange.png");
+        return statusImages.temperature.ORANGE;
       }
       // No worries, return theme colored icon
-      return dark ? require("../assets/images/TemperatureDark.png") : require("../assets/images/TemperatureLight.png");
+      return dark ? statusImages.temperature.DARK : statusImages.temperature.LIGHT;
     }
 
     /**
@@ -405,13 +410,13 @@ function Sensors() {
     function getHumiditySource() {
       const color = getHumidityColor();
       if (color === globalColors.red) {
-        return require("../assets/images/HumidityRed.png");
+        return statusImages.humidity.RED;
       }
       if (color === globalColors.orange) {
-        return require("../assets/images/HumidityOrange.png");
+        return statusImages.humidity.ORANGE;
       }
       // No worries, return theme colored icon
-      return dark ? require("../assets/images/HumidityDark.png") : require("../assets/images/HumidityLight.png");
+      return dark ? statusImages.humidity.DARK : statusImages.humidity.LIGHT;
     }
 
     /**
@@ -623,7 +628,7 @@ function Sensors() {
         >
           <StyledText text={`Sensor ${data.id + 1}: ${data.location}`} fontWeight="bold" />
           <Image 
-            source={dark ? require("../assets/images/ArrowDownDark.png") : require("../assets/images/ArrowDownLight.png")}
+            source={dark ? buttonImages.ARROWDOWNDARK : buttonImages.ARROWDOWNLIGHT}
             style={{
               width: 40,
               height: 40,
@@ -747,12 +752,12 @@ function Summary({color}) {
      */
     function getSummarySource(color) {
       if (color === globalColors.red) {
-        return require("../assets/images/ActNow.png");
+        return statusImages.faces.ACTNOW;
       }
       if (color === globalColors.orange) {
-        return require("../assets/images/PayAttention.png");
+        return statusImages.faces.PAYATTENTION;
       }
-      return require("../assets/images/GoodJob.png");
+        return statusImages.faces.GOODJOB;
     }
 
     return (

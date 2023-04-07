@@ -2,7 +2,7 @@
  * Seconds between sensor ADC readings
  * @const
  */
-export const SECONDS = 30;
+export const SECONDS = 60;
 
 /**
  * Example device information

@@ -4,8 +4,11 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useContext, } from 'react';
 import { Image, Pressable, Text, View, } from "react-native";
 
-// context Imports
+// Context Imports
 import { DarkContext, } from '../Context';
+
+// API Imports
+import { buttonImages, } from "../api/image"
 
 // Style Imports
 import { buttonStyles, darkTheme, globalColors, lightTheme, textStyles, } from '../assets/styles';
@@ -20,7 +23,7 @@ export function DarkModeButton() {
   return (
     <Pressable onPress={() => setDark(!dark)}>
       <View display="flex" flexDirection="column" alignItems="center" justifyContent="center">
-        <Image source={dark ? require("../assets/images/LightMode.png") : require("../assets/images/DarkMode.png")} style={{width: 40, height: 40, backgroundColor: "transparent"}}/>
+        <Image source={dark ? buttonImages.LIGHTMODE : buttonImages.DARKMODE} style={{width: 40, height: 40, backgroundColor: "transparent"}}/>
       </View>
     </Pressable>
   )
@@ -239,12 +242,12 @@ export function DropDownButton(props) {
    */
   function getArrow() {
     if (props.disabled) {
-      return dark ? require("../assets/images/ArrowDownDarkDisabled.png") : require("../assets/images/ArrowDownLightDisabled.png")
+      return dark ? buttonImages.ARROWDOWNDARKDISABLED : buttonImages.ARROWDOWNLIGHTDISABLED;
     }
     if (props.red) {
-      return require("../assets/images/ArrowDownRed.png");
+      return buttonImages.ARROWDOWNRED;
     }
-    return dark ? require("../assets/images/ArrowDownDark.png") : require("../assets/images/ArrowDownLight.png")
+    return dark ? buttonImages.ARROWDOWNDARK : buttonImages.ARROWDOWNLIGHT;
   }
 
   return (
@@ -307,7 +310,7 @@ export function SaveButton(props) {
         marginLeft: 10,
       }}
     >
-        <Image source={dark ? require("../assets/images/SaveDark.png") : require("../assets/images/SaveLight.png")} style={{width: 40, height: 40, backgroundColor: "transparent"}}/>
+        <Image source={dark ? buttonImages.SAVEDARK : buttonImages.SAVELIGHT} style={{width: 40, height: 40, backgroundColor: "transparent"}}/>
     </Pressable>
   )
 }
@@ -346,9 +349,9 @@ export function PauseButton(props) {
    */
   function getImage() {
     if (props.paused) {
-      return dark ? require("../assets/images/PlayDark.png") : require("../assets/images/PlayLight.png");
+      return dark ? buttonImages.PLAYDARK : buttonImages.PLAYLIGHT;
     }
-    return dark ? require("../assets/images/PauseDark.png") : require("../assets/images/PauseLight.png");
+    return dark ? buttonImages.PLAYDARK : buttonImages.PLAYLIGHT;
   }
 
   /**

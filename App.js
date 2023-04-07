@@ -14,7 +14,7 @@ import Status from "./navigation/Status";
 import { darkTheme, lightTheme, } from "./assets/styles";
 
 // API Imports
-import { appStackPages, } from "./api/navigation";
+import { appDrawerPages, } from "./api/navigation";
 import { exampleDevices, } from "./api/sensor";
 
 // Context Imports
@@ -37,11 +37,11 @@ function App() {
       <View style={{height: '100%'}}>
         <NavigationContainer theme={navTheme}>
           <AppDrawer.Navigator
-            initialRouteName={appStackPages.STATUS}
+            initialRouteName={appDrawerPages.STATUS}
           >
             <AppDrawer.Screen
               component={Status}
-              name={appStackPages.STATUS}
+              name={appDrawerPages.STATUS}
               options={{
                 drawerLabel: "Sensors",
                 drawerIcon: ({ color, size }) => (
@@ -51,7 +51,7 @@ function App() {
             />
             <AppDrawer.Screen
               component={Patient}
-              name={appStackPages.PATIENT}
+              name={appDrawerPages.PATIENT}
               options={{
                 drawerLabel: "Patient Details",
                 drawerIcon: ({ color, size }) => (
@@ -61,7 +61,7 @@ function App() {
             />
             <AppDrawer.Screen
               component={Calibration}
-              name={appStackPages.CALIBRATION}
+              name={appDrawerPages.CALIBRATION}
               options={{
                 drawerLabel: "Calibration",
                 drawerIcon: ({ color, size }) => (

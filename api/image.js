@@ -2,7 +2,15 @@
  * Navigation controller page icon images
  */
 export const navigationImages = {
-  /** Strings for appDrawer IonIcons */
+  /**
+   * Enum for AppDrawer drawer icons
+   * @example
+   * navigationImages.appDrawer.CALIBRATION = "settings-outline";
+   * navigationImages.appDrawer.PATIENT = "person-outline";
+   * navigationImages.appDrawer.SENSORS = "heart-outline";
+   * @readonly
+   * @enum {string}
+   */
   appDrawer: {
     /** Calibration IonIcon name */
     CALIBRATION: "settings-outline",
@@ -11,7 +19,15 @@ export const navigationImages = {
     /** Sensors IonIcon name */
     SENSORS: "heart-outline",
   },
-  /** Images for Sensor Page tab icons */
+  /**
+   * Images for Sensor Page tab icons
+   * @example
+   * sensorTabs.OVERALLDARK = require('../assets/images/PersonUnselected.png');
+   * sensorTabs.OVERALLLIGHT = require('../assets/images/PersonUnselectedLight.png');
+   * sensorTabs.OVERALLSELECTED = require('../assets/images/PersonSelected.png');
+   * @readonly
+   * @enum {image}
+   */
   sensorsTabs: {
     /** Overall tab icon darkmode */
     OVERALLDARK: require('../assets/images/PersonUnselected.png'),
@@ -29,7 +45,14 @@ export const navigationImages = {
 }
 
 /**
- * Patient status images
+ * Images for patient status
+ * @example
+ * statusImages.faces.ACTNOW = require('../assets/images/ActNow.png');
+ * statusImages.faces.GOODJOB = require('../assets/images/GoodJob.png');
+ * statusImages.humidity.DARK = require('../assets/images/HumidityDark.png');
+ * statusImages.pressure.RED = require('../assets/images/PressureRed.png');
+ * @readonly
+ * @enum {image}
  */
 export const statusImages = {
   /** Status face icons */
@@ -78,6 +101,12 @@ export const statusImages = {
 
 /**
  * Images for use in buttons
+ * @example
+ * buttonImages.ARROWDOWNDARKDISABLED = require("../assets/images/ArrowDownDarkDisabled.png");
+ * buttonImages.PAUSELIGHT = require("../assets/images/PauseLight.png");
+ * buttonImages.PLAYDARK = require("../assets/images/PlayDark.png");
+ * @readonly
+ * @enum {image}
  */
 export const buttonImages = {
   /** Disabled arrow icon darkmode */
@@ -112,9 +141,14 @@ export const buttonImages = {
   SEARCHLIGHT: require("../assets/images/SearchIconLight.png"),
 }
 
-/**
- * Calibration page images
- */
+  /**
+   * Images for use in Calibration Page
+   * @example
+   * calibrationImages.HUMANDIAGRAM = require("../assets/images/HumanDiagram.png");
+   * calibrationImages.SENSORICON = require("../assets/images/Sensor.png");
+   * @readonly
+   * @enum {image}
+   */
 export const calibrationImages = {
   /** Sensor location popup background image */
   HUMANDIAGRAM: require("../assets/images/HumanDiagram.png"),

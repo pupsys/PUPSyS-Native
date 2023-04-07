@@ -141,14 +141,14 @@ export const buttonImages = {
   SEARCHLIGHT: require("../assets/images/SearchIconLight.png"),
 }
 
-  /**
-   * Images for use in Calibration Page
-   * @example
-   * calibrationImages.HUMANDIAGRAM = require("../assets/images/HumanDiagram.png");
-   * calibrationImages.SENSORICON = require("../assets/images/Sensor.png");
-   * @readonly
-   * @enum {image}
-   */
+/**
+ * Images for use in Calibration Page
+ * @example
+ * calibrationImages.HUMANDIAGRAM = require("../assets/images/HumanDiagram.png");
+ * calibrationImages.SENSORICON = require("../assets/images/Sensor.png");
+ * @readonly
+ * @enum {image}
+ */
 export const calibrationImages = {
   /** Sensor location popup background image */
   HUMANDIAGRAM: require("../assets/images/HumanDiagram.png"),

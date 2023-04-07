@@ -12,7 +12,7 @@ import { darkTheme, globalColors, lightTheme, } from '../assets/styles';
 import { DarkContext, DevicesContext, } from '../Context'
 
 // API Imports
-import { statusTabPages, } from "../api/navigation";
+import { appStackPages, statusTabsPages, } from "../api/navigation";
 import { averagedAdc, getGraphLabels, getScaledAdc } from '../api/sensor'; 
 
 // Component Imports
@@ -60,8 +60,8 @@ export default function Status({navigation}) {
             },
           })}
         >
-          <StatusTabs.Screen name={tabNames.OVERALL} component={Overall}/>
-          <StatusTabs.Screen name={tabNames.SENSORS} component={Sensors}/>
+          <StatusTabs.Screen name={appStackPages.OVERALL} component={Overall}/>
+          <StatusTabs.Screen name={appStackPages.SENSORS} component={Sensors}/>
         </StatusTabs.Navigator>
       </View>
     )

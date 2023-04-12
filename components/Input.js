@@ -10,14 +10,14 @@ import { darkTheme, lightTheme, measurements, textStyles, } from "../assets/styl
 import { buttonImages } from "../api/image";
 
 /**
- * General text entry component for CitrusNative
- * @param {Function} onChange function to be called when text is changes 
- * @param {string} textAlign text alignment 
- * @param {number} marginLeft left margin
- * @param {number} marginRight right margin
- * @param {number} marginTop top margin
- * @param {number} marginBottom bottom margin
- * @param {number} height entry box height
+ * General text entry component for PUPSys
+ * @param {Function} onChange - Function to be called when text is changes 
+ * @param {string} textAlign - Text alignment 
+ * @param {number} marginLeft - Left margin
+ * @param {number} marginRight - Right margin
+ * @param {number} marginTop - Top margin
+ * @param {number} marginBottom - Bottom margin
+ * @param {number} height - Entry box height
  */
 export function Entry(props) {
     
@@ -61,16 +61,18 @@ export function Entry(props) {
 }
 
 /**
- * General search bar component for CitrusNative
+ * General search bar component for PUPSys that calls a function (setSearch) when text inside is changed
  * @private
- * @param {boolean} halfWidth display search bar at 50% width? 
- * @param {boolean} fullWidth display search bar at 50% width? 
- * @param {Function} setSearch function to be called on text change
- * @param {Function} onEnter function to be called on enter key press
- * @param {string} placeholder placeholder text
+ * @param {Object} props - Component properties
+ * @param {boolean} props.halfWidth - Whether to display search bar at 50% width 
+ * @param {boolean} props.fullWidth - Whether to display search bar at 100% width
+ * @param {Function} props.setSearch - Function to be called on text change
+ * @param {Function} props.onEnter - Function to be called on enter key press
+ * @param {string} props.placeholder - Placeholder text
  * @default
  * width = "80%";
  * placeholder = "Search";
+ * @returns {React.Component} - A custom styled SearchBar
  */
 function SearchBar(props) {
     
@@ -106,36 +108,42 @@ function SearchBar(props) {
 }
 
 /**
- * Full width CitrusNative search bar component
- * @param {Function} setSearch function to be called on text change
- * @param {Function} onEnter function to be called on enter key press
- * @param {string} placeholder placeholder text
+ * Full width PUPSys search bar component
+ * @param {Object} props - Component properties
+ * @param {Function} props.setSearch - Function to be called on text change
+ * @param {Function} props.onEnter - Function to be called on enter key press
+ * @param {string} props.placeholder - Placeholder text
  * @default
  * placeholder = "Search";
+ * @returns {React.Component} - A custom styled SearchBar at 100% width
  */
 export function SearchBarFull(props) {
     return <SearchBar setSearch={props.setSearch} onEnter={props.onEnter} placeholder={props.placeholder} fullWidth={true} />
 }
 
 /**
- * Half width CitrusNative search bar component
- * @param {Function} setSearch function to be called on text change
- * @param {Function} onEnter function to be called on enter key press
- * @param {string} placeholder placeholder text
+ * Half width PUPSys search bar component
+ * @param {Object} props - Component Properties
+ * @param {Function} props.setSearch - function to be called on text change
+ * @param {Function} props.onEnter - Function to be called on enter key press
+ * @param {string} props.placeholder - Placeholder text
  * @default
  * placeholder = "Search";
+ * @returns {React.Component} - A custom styled SearchBar at 50% width
  */
 export function SearchBarHalf(props) {
     return <SearchBar setSearch={props.setSearch} onEnter={props.onEnter} placeholder={props.placeholder} halfWidth={true} />
 }
 
 /**
- * 80% width CitrusNative search bar component
- * @param {Function} setSearch function to be called on text change
- * @param {Function} onEnter function to be called on enter key press
- * @param {string} placeholder placeholder text
+ * 80% width PUPSys search bar component
+ * @param {Object} props - Component Properties
+ * @param {Function} props.setSearch - Function to be called on text change
+ * @param {Function} props.onEnter - Function to be called on enter key press
+ * @param {string} props.placeholder - Placeholder text
  * @default
  * placeholder = "Search";
+ * @returns {React.Component} - A custom styled SearchBar at 80% width
  */
 export function SearchBarShort(props) {
     return <SearchBar setSearch={props.setSearch} onEnter={props.onEnter} placeholder={props.placeholder}/>

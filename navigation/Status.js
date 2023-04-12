@@ -32,6 +32,7 @@ const GRAPHSCALE = 0.85;
  * Component to hold Status Tabs
  * @param {Object} props - Component properties
  * @param {ReactNavigation} props.navigation - Navigation object from AppStack 
+ * @returns {React.Component} - Navigator component for Status pages
  */
 export default function Status({navigation}) {
 
@@ -89,6 +90,7 @@ function Overall() {
    * @param {string} props.reading - Reading to display from device
    * @param {number} props.orange - Orange threshold
    * @param {number} props.red - Red threshold
+   * @returns {React.Component} - ScrollView populated with a header and {@link DeviceListItem}
    */
   function DeviceList({reading, orange, red}) {
 
@@ -97,13 +99,14 @@ function Overall() {
      * @param {Object} props - Component properties
      * @param {boolean} props.header - Whether this is the header
      * @param {Object} props.device - Device object
+     * @returns {React.Component} - View acting as a ListItem for a device
      * @see {@link devices}
      */
     function DeviceListItem({header, device}) {
 
       /**
        * Get color of reading by thresholds {@link orange} and {@link red}
-       * @returns color key
+       * @returns {string} - Color key string
        */
       function getBackgroundColor() {
         // Guard clauses
@@ -167,12 +170,13 @@ function Overall() {
 
   /**
    * Component to display overall pressure readings
+   * @returns {React.Component} - Overall pressure readings in a GradientCard
    */
   function PressureOverall() {
 
     /**
      * Get the color of pressure text
-     * @returns color key
+     * @returns {string} - Color key string
      */
     function getPressureColor() {
       for (const device of devices) {
@@ -200,12 +204,13 @@ function Overall() {
 
   /**
    * Component to display overall temperature readings
+   * @returns {React.Component} - Overall temperature readings in a GradientCard
    */
   function TemperatureOverall() {
 
     /**
      * Get the color of temperature text
-     * @returns color key
+     * @returns {string} - Color key string
      */
     function getTemperatureColor() {
       for (const device of devices) {
@@ -233,19 +238,20 @@ function Overall() {
 
   /**
    * Component to display overall humidity readings
+   * @returns {React.Component} - Overall humidity readings in a GradientCard
    */
   function HumidityOverall() {
 
     /**
      * Get the color of humidity text
-     * @returns color key
+     * @returns {string} - Color key string
      */
     function getHumidityColor() {
       for (const device of devices) {
-        if (device.temperature >= thresholds.pressure.RED) {
+        if (device.temperature >= thresholds.humidity.RED) {
           return globalColors.red;
         }
-        if (device.temperature >= thresholds.pressure.ORANGE) {
+        if (device.temperature >= thresholds.humidity.ORANGE) {
           return globalColors.orange;
         }
       }
@@ -257,7 +263,7 @@ function Overall() {
         <StyledText text="Humidity (%)" />
         <Divider marginTop={10} marginBottom={10}/>
         <CenteredChart data={exampleOverallPressureData} color={getHumidityColor()} />
-        <DeviceList reading="humidity" orange={thresholds.pressure.ORANGE} red={thresholds.pressure.RED}/>
+        <DeviceList reading="humidity" orange={thresholds.humidity.ORANGE} red={thresholds.humidity.RED}/>
         <Divider marginTop={10} marginBottom={10}/>
         <Summary color={getHumidityColor()} />
       </GradientCard>
@@ -303,12 +309,13 @@ function Sensors() {
   /**
    * A component for rendering sensor data
    * @param {Object} props.data data from device
+   * @returns {React.Component} - A GradientCard with sensor data displays
    */
   function SensorCard({data}) {
 
     /**
      * Get the border color by picking the most extreme color of any reading
-     * @returns color key
+     * @returns {string} - Color key string
      */
     function getSummaryColor() {
       /** Get colors of all sensors */
@@ -331,7 +338,7 @@ function Sensors() {
 
     /**
      * Get the color of pressure text
-     * @returns color key
+     * @returns {string} - Color key string
      */
     function getPressureColor() {
       if (!data.paused) {
@@ -347,7 +354,7 @@ function Sensors() {
 
     /**
      * Get the image source for pressure icon based on reading color
-     * @returns image source
+     * @returns {Image} - Image source
      */
     function getPressureSource() {
       const color = getPressureColor();
@@ -363,7 +370,7 @@ function Sensors() {
 
     /**
      * Get the color of temperature text
-     * @returns color key
+     * @returns {string} - Color key string
      */
     function getTemperatureColor() {
       if (!data.paused) {
@@ -379,7 +386,7 @@ function Sensors() {
 
     /**
      * Get the image source for temperature icon based on reading color
-     * @returns image source
+     * @returns {Image} - Image source
      */
     function getTemperatureSource() {
       const color = getTemperatureColor();
@@ -395,7 +402,7 @@ function Sensors() {
 
     /**
      * Get the color of humidity text
-     * @returns color key
+     * @returns {string} - Color key string
      */
     function getHumidityColor() {
       if (!data.paused) {
@@ -411,7 +418,7 @@ function Sensors() {
 
     /**
      * Get the image source for humidity icon based on reading color
-     * @returns image source
+     * @returns {Image} - Image source
      */
     function getHumiditySource() {
       const color = getHumidityColor();
@@ -683,8 +690,9 @@ function Sensors() {
  * @param {Object} props - Component properties
  * @param {Object} props.data - Chart data
  * @param {string} props.color - Line color
+ * @returns {React.Component} - A custom styled LineChart
  */
-function CenteredChart({data, color, backgroundColor}) {
+function CenteredChart({data, color}) {
 
   const {dark} = useContext(DarkContext)
 
@@ -736,12 +744,13 @@ function CenteredChart({data, color, backgroundColor}) {
  * Summary component displaying smiley icon and text based on color input
  * @param {Object} props - Component properties
  * @param {string} props.color - Color key for summary
+ * @returns {React.Component} - View with Image and StyledText for overall sensor readings
  */
 function Summary({color}) {
   
     /**
      * Get the summary text based on card's background color
-     * @returns summary string ("Act Now", "Pay Attention", or "Good Job")
+     * @returns {string} - Summary string ("Act Now", "Pay Attention", or "Good Job")
      */
     function getSummaryText() {
       if (color === globalColors.red) {
@@ -755,7 +764,7 @@ function Summary({color}) {
 
     /**
      * Get the summary image based on card's background color
-     * @returns image source
+     * @returns {Image} - Image source
      */
     function getSummarySource() {
       if (color === globalColors.red) {

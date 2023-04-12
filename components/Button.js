@@ -15,6 +15,7 @@ import { buttonStyles, darkTheme, globalColors, lightTheme, textStyles, } from '
 
 /**
  * Simple darkmode toggle button. Changes {@link DarkContext} on click.
+ * @returns {React.Component} - A custom styled darkmode button
  */
 export function DarkModeButton() {
 
@@ -30,20 +31,22 @@ export function DarkModeButton() {
 }
 
 /**
- * General button with text component for CitrusNative
- * @param {Function} onClick function to be called onClick
- * @param {string} color hex value or color key (ex. "red", "green", "venmo")
- * @param {boolean} disabled whether or not to show this button as disabled
- * @param {string} buttonBorder color for button border
- * @param {boolean} buttonBorderDisabled whether to hide the border or not
- * @param {number} width width of button
- * @param {number} height height of button
- * @param {number} marginTop top margin
- * @param {number} marginBottom bottom margin
- * @param {boolean} selected whether or not to display button as selected 
+ * General button with text component for PUPSys
+ * @param {Object} props - Component properties
+ * @param {Function} props.onClick - Function to be called onClick
+ * @param {string} props.color - Hex value or color key (ex. "red", "green", "venmo")
+ * @param {boolean} props.disabled - Whether to show this button as disabled
+ * @param {string} props.buttonBorder - Color for button border
+ * @param {boolean} props.buttonBorderDisabled - Whether to hide the border
+ * @param {number} props.width - Width of button
+ * @param {number} props.height - Height of button
+ * @param {number} props.marginTop - Top margin
+ * @param {number} props.marginBottom - Bottom margin
+ * @param {boolean} props.selected - Whether to display button as selected 
  * @default
  * marginTop = 10;
  * marginBottom = 0;
+ * @returns {React.Component} - A custom styled button
  */
 export function StyledButton(props) {
 
@@ -51,7 +54,7 @@ export function StyledButton(props) {
 
     /**
    * Get the correct border color from props or default to buttonBorder based on DarkContext
-   * @returns string for border color
+   * @returns {string} - String for border color
    */
   function getBorderColor() {
     if (props.color) {
@@ -73,7 +76,7 @@ export function StyledButton(props) {
 
   /**
    * Get the correct text color from props or default to textPrimary based on DarkContext
-   * @returns string for text color
+   * @returns {string} - String for text color
    */
   function getTextColor() {
     if (props.color) {
@@ -182,33 +185,37 @@ export function StyledButton(props) {
 
 /**
  * Checkbox component styled to theme
- * @param {boolean} checked whether or not checkbox is checked
+ * @param {Object} props - Component properties
+ * @param {boolean} props.checked - Whether checkbox is checked
+ * @returns {React.Component} - A custom styled Checkbox component
  */
 export function StyledCheckbox(props) {
   return (
     <CheckBox 
-    value={props.checked} 
-    color="#767676"
-    
-    onValueChange={props.onChange}/>
+      value={props.checked} 
+      color="#767676"
+      onValueChange={props.onChange}
+    />
   )
 }
 
 /**
  * A {@link StyledButton} with a cute little arrow glyph to signify that it will open some sort of menu
- * @param {Function} onClick function to be called onClick
- * @param {string} color hex value or color key (ex. "red", "green", "venmo")
- * @param {boolean} disabled whether or not to show this button as disabled
- * @param {string} buttonBorder color for button border
- * @param {boolean} buttonBorderDisabled whether to hide the border or not
- * @param {number} width width of button
- * @param {number} height height of button
- * @param {number} marginTop top margin
- * @param {number} marginBottom bottom margin
- * @param {boolean} selected whether or not to display button as selected 
+ * @param {Object} props - Component properties
+ * @param {Function} props.onClick - Function to be called onClick
+ * @param {string} props.color - Hex value or color key (ex. "red", "green", "venmo")
+ * @param {boolean} props.disabled - Whether to show this button as disabled
+ * @param {string} props.buttonBorder - Color for button border
+ * @param {boolean} props.buttonBorderDisabled - Whether to hide the border
+ * @param {number} propswidth - Width of button
+ * @param {number} propsheight - Height of button
+ * @param {number} propsmarginTop - Top margin
+ * @param {number} propsmarginBottom - Bottom margin
+ * @param {boolean} props.selected - Whether to display button as selected 
  * @default
  * marginTop = 10;
  * marginBottom = 0;
+ * @returns {React.Component} - A custom styled button that looks like a dropdown menu
  */
 export function DropDownButton(props) {
 
@@ -216,7 +223,7 @@ export function DropDownButton(props) {
 
   /**
    * Get the correct text color from props or default to textPrimary based on DarkContext
-   * @returns string for text color
+   * @returns {string} - String for text color
    */
   function getTextColor() {
     if (props.color) {
@@ -238,7 +245,7 @@ export function DropDownButton(props) {
 
   /**
    * Get the right arrow based on DarkContext
-   * @returns image path
+   * @returns {Image} - Image path
    */
   function getArrow() {
     if (props.disabled) {
@@ -286,8 +293,10 @@ export function DropDownButton(props) {
 }
 
 /**
- * Simple save icon button
- * @param {Function} onClick onClick action
+ * Simple save icon button|
+ * @param {Object} props - Component properties
+ * @param {Function} props.onClick - Function to call when clicked
+ * @returns {React.Component} - A custom styled save button
  */
 export function SaveButton(props) {
 
@@ -317,11 +326,13 @@ export function SaveButton(props) {
 
 /**
  * Pause button with text component for PUPSys
- * @param {Function} onClick function to be called onClick
- * @param {boolean} paused whether paused or not
+ * @param {Object} props - Component properties
+ * @param {Function} props.onClick - Function to call when clicked
+ * @param {boolean} props.paused - Whether to show button as paused
  * @default
  * marginTop = 10;
  * marginBottom = 0;
+ * @returns {React.Component} - A custom styled pause button
  */
 export function PauseButton(props) {
 
@@ -329,7 +340,7 @@ export function PauseButton(props) {
 
     /**
    * Get the correct border color from props or default to buttonBorder based on DarkContext
-   * @returns string for border color
+   * @returns {string} - String for border color
    */
   function getBorderColor() {
     return dark ? darkTheme.buttonBorder : lightTheme.buttonBorder;
@@ -337,7 +348,7 @@ export function PauseButton(props) {
 
   /**
    * Get the correct text color from props or default to textPrimary based on DarkContext
-   * @returns string for text color
+   * @returns {string} - String for text color
    */
   function getTextColor() {
     return dark ? darkTheme.textPrimary : lightTheme.textPrimary;

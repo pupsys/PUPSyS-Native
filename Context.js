@@ -3,7 +3,7 @@ import { createContext } from "react";
 
 /**
  * @type {React.Context<boolean>}
- * @static Tells the entire application whether or not we're in darkmode
+ * @static Tells the entire application whether we're in darkmode
  */
 export const DarkContext = createContext();
 

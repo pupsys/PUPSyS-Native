@@ -1719,7 +1719,7 @@ export const exampleAdc = [
  * Calculate the average of every 'x' numbers in a list and return a new list with the averages.
  * @param {number[]} numbers - A list of numbers to process.
  * @param {number} y - The interval for calculating the averages.
- * @returns {number[]} A new list containing the averages of every 'x' numbers.
+ * @returns {number[]} - A new list containing the averages of every 'x' numbers.
  */
 function averageEveryXNumbers(numbers, x) {
   const averages = [];
@@ -1741,7 +1741,7 @@ function averageEveryXNumbers(numbers, x) {
  * Get a list of strings representing the time of day for each sensor reading, assuming the last reading happened at the current time.
  * @param {number[]} sensorReadings - A list of sensor readings.
  * @param {number} y - The number of seconds between readings.
- * @returns {string[]} A list of strings representing the time of day for each sensor reading, formatted as "hh:mm AM/PM".
+ * @returns {string[]} - A list of strings representing the time of day for each sensor reading, formatted as "hh:mm AM/PM".
  */
 function getReadingTimes(sensorReadings, y) {
   const currentTime = new Date();
@@ -1765,7 +1765,7 @@ function getReadingTimes(sensorReadings, y) {
  * Returns a new list consisting of every 'x'-th element of the input list.
  * @param {Array} list - The input list.
  * @param {number} x - The interval for selecting elements from the input list.
- * @returns {Array} A new list containing every 'x'-th element of the input list.
+ * @returns {Array} - A new list containing every 'x'-th element of the input list.
  */
 function getEveryXthElement(list, x) {
   const resultList = [];
@@ -1783,7 +1783,7 @@ function getEveryXthElement(list, x) {
  * It takes an array of sensor readings and returns an array of truncated labels
  * with a fixed number of elements.
  * @param {number[]} sensorReadings - An array of sensor readings.
- * @returns {string[]} An array of graph labels with a fixed number of elements.
+ * @returns {string[]} - An array of graph labels with a fixed number of elements.
  */
 export function getGraphLabels(sensorReadings) {
     const allReadingTimes = getReadingTimes(sensorReadings, SECONDS); 
@@ -1794,14 +1794,14 @@ export function getGraphLabels(sensorReadings) {
 
 /**
  * 
- * @returns {number[]} {@link exampleAdc} list shortened by averaging the number of readings by {@link SECONDS}
+ * @returns {number[]} - {@link exampleAdc} list shortened by averaging the number of readings by {@link SECONDS}
  */
 export const averagedAdc = averageEveryXNumbers(exampleAdc, SECONDS);
 
 /**
  * Takes a number x and returns a new list created by multiplying all values in the existing "averagedAdc" list by x.
  * @param {number} x - The scaling factor to multiply each value in the averagedAdc list.
- * @returns {number[]} A new list with the scaled values.
+ * @returns {number[]} - A new list with the scaled values.
  */
 export function getScaledAdc(x) {
   // Assuming averagedAdc is an existing list (array) of numbers

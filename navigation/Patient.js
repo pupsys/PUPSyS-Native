@@ -38,9 +38,15 @@ const heightMenuItems = [
   {value: heightUnits[1], label: heightUnits[1]},
 ]
 
+/**
+ * Component to display patient details
+ * @param {Object} props - Component properties
+ * @param {ReactNavigation} props.navigation - Navigation object from AppStack 
+ * @returns {React.Component} - Patient detail page
+ */
 export default function Patient({navigation}) {
 
-  // Create states to keep track of whether or not any dropdown menus are open
+  // Create states to keep track of whether any dropdown menus are open
   const [heightMenuOpen, setHeightMenuOpen] = useState(false);
   const [weightMenuOpen, setWeightMenuOpen] = useState(false);
 
@@ -59,6 +65,7 @@ export default function Patient({navigation}) {
 
   /**
    * Component to show a card with all of the patient's medical conditions, as well as a text box for more information
+   * @returns {React.Component} - GradientCard populated with all possible medical conditions
    */
   function MedicalConditionsCard() {
 
@@ -70,7 +77,7 @@ export default function Patient({navigation}) {
       
       /**
        * Toggle whether patient has a medical condition selected
-       * @param {number} index index of medical condition
+       * @param {number} index - Index of medical condition
        */
       function toggleCondition(index) {
         const condition = allConditions[index];
@@ -119,6 +126,7 @@ export default function Patient({navigation}) {
 
   /**
    * Component to show name entry field
+   * @returns {React.Component} - View with StyledText and Entry for patient name
    */
   function NameEntry() {
     return (
@@ -140,6 +148,7 @@ export default function Patient({navigation}) {
 
   /**
    * Component to show weight entry fields
+   * @returns {React.Component} - View with StyledText, Entry, and DropDownPicker for patient weight
    */
   function WeightEntry() {
     return (
@@ -186,6 +195,7 @@ export default function Patient({navigation}) {
 
   /**
    * Component to show height entry fields
+   * @returns {React.Component} - View with StyledText, Entry, and DropDownPicker for patient height
    */
   function HeightEntry() {
     return (
@@ -232,6 +242,7 @@ export default function Patient({navigation}) {
 
   /**
    * Component to display age entry field
+   * @returns {React.Component} - View with StyledText and Entry for patient height
    */
   function AgeEntry() {
     return (

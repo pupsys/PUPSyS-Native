@@ -46,6 +46,12 @@ const calibrationUnitsMenuItems = [
 /** Stack navigator for calibration */
 const CalibrationStack = createStackNavigator();
 
+/**
+ * Component to hold Calibration Stack
+ * @param {Object} props - Component properties
+ * @param {ReactNavigation} props.navigation - Navigation object from AppStack 
+ * @returns {React.Component} - Navigator component for Calibration pages
+ */
 export default function Calibration({navigation}) {
 
   // Create some example device data
@@ -56,14 +62,13 @@ export default function Calibration({navigation}) {
   const [units, setUnits]                 = useState(allUnits[0]);  // The currently selected unit
   const [currentDevice, setCurrentDevice] = useState(0);            // The index of the currently selected device
   const [calibrating, setCalibrating]     = useState(false);        // Whether we're showing calibration sequence
-  const [sensorLocationModalOpen, setSensorLocationModalOpen] = useState(false); // Whether modal is open
 
   // Get context
   const { dark } = useContext(DarkContext);
 
   /**
    * Change the current device's logTo location
-   * @param {string} newUri uri value from text field or DocumentPicker 
+   * @param {string} newUri - uri value from text field or DocumentPicker 
    */
   function handleLogToChange(newUri) {
     // Clone devices list
@@ -79,14 +84,16 @@ export default function Calibration({navigation}) {
 
   /**
    * Component to display a card with list of all connected devices
+   * @returns {React.Component} - ScrollView populated with a header and {@link DeviceListItem}
    */
   function DeviceList() {
 
     /**
      * Component for rendering a device in BLE devices list
    * @param {Object} props - Component properties
-     * @param {boolean} props.header whether or not this is the header
-     * @param {Object} props.device device object
+     * @param {boolean} props.header - Whether this is the header
+     * @param {Object} props.device - Device object
+     * @returns {React.Component} - View acting as a ListItem for a device
      * @see {@link devices}
      */
     function DeviceListItem({header, device}) {
@@ -106,7 +113,7 @@ export default function Calibration({navigation}) {
     
       /**
        * Set background color of selected device to greenAlpha
-       * @returns color key
+       * @returns {string} - Color key string
        */
       function getBackgroundColor() {
         // Guard clauses:
@@ -176,6 +183,7 @@ export default function Calibration({navigation}) {
 
   /**
    * Open the file browser and set delected directory as log location
+   * @async
    */
   async function openFileBrowser() {
     try {
@@ -197,7 +205,7 @@ export default function Calibration({navigation}) {
   /**
    * Component to display all sensor details. Shown when not running calibration.
    * @param {Object} props - Component properties
-   * @param {ReactNavigation} props.navigation navigation object from {@link CalibrationStack}
+   * @param {ReactNavigation} props.navigation - Navigation object from {@link CalibrationStack}
    */
   function SensorDetails({navigation}) {
     return (
@@ -276,25 +284,28 @@ export default function Calibration({navigation}) {
 
   /**
    * Component to show calibration sequence for selected sensor.
+   * @returns {React.Component} - Device calibration flow component
    */
   function CalibrationSequence() {
 
     // Create states
     const [calibrationStep, setCalibrationStep]                   = useState(1);                        // Which step in calibration we're on
     const [currentWeight, setCurrentWeight]                       = useState(null);                     // Weight of current calibration step
-    const [calibrationUnitsMenuOpen, setCalibrationUnitsMenuOpen] = useState(false);                    // Whether or not the unit dropdown menu is open
+    const [calibrationUnitsMenuOpen, setCalibrationUnitsMenuOpen] = useState(false);                    // Whether the unit dropdown menu is open
     const [calibrationUnits, setCalibrationUnits]                 = useState(allCalibrationUnits[0]);   // The currently selected unit
     const [calibrationReadings, setCalibrationReadings]           = useState([null, null, null]);       // Weights entered during calibration
 
     /**
      * Component to display current calibration state
+     * @returns {React.Component} - View with dots indicating current state of calibration
      */
     function CalibrationProgress() {
 
       
     /**
      * Component for showing calibration progress
-     * @param {number} props.number which stage of calibration this dot represents
+     * @param {number} props.number - Which stage of calibration this dot represents
+     * @returns {React.Component} - Styled dot for showing calibration state
      */
     function CalibrationDot({number}) {
       
@@ -309,7 +320,7 @@ export default function Calibration({navigation}) {
 
       /**
        * Get color of calibration progress dot by state param
-       * @returns color key
+       * @returns {string} - Color key string
        */
       function getDotColor() {
         if (state === 0) {
@@ -412,6 +423,7 @@ export default function Calibration({navigation}) {
 
     /**
      * Component for entering weights during a calibration step
+     * @returns {React.Component} - View with StyledText, Entry, and DropDownPicker to prompt user for weight
      */
     function CalibrationForm() {
       return (
@@ -473,6 +485,7 @@ export default function Calibration({navigation}) {
 
   /**
    * Component for buttons related to calibration
+   * @returns {React.Component} - View with StyledButtons for calibration
    */
   function CalibrationActions() {
 
@@ -561,7 +574,8 @@ export default function Calibration({navigation}) {
   /**
    * Component to display sensor location picker in navigation
    * @param {Object} props - Component properties
-   * @param {ReactNavigation} props.navigation navigation object from {@link CalibrationStack}
+   * @param {ReactNavigation} props.navigation - Navigation object from {@link CalibrationStack}
+   * @returns {React.Component} - Wrapper screen for {@link DraggableSensorIcon}
    */
   function SensorLocationScreen({navigation}) {
     return (
@@ -589,7 +603,8 @@ export default function Calibration({navigation}) {
   /**
    * Component to display default calibration screen w/ device list and actions
    * @param {Object} props - Component properties
-   * @param {ReactNavigation} props.navigation navigation object from {@link CalibrationStack}
+   * @param {ReactNavigation} props.navigation - Navigation object from {@link CalibrationStack}
+   * @returns {React.Component} - View with DeviceList, CalibrationActions, ResetDevicesButton, and either SensorDetails or CalibrationSequence
    */
   function DefaultCalibrationScreen({navigation}) {
     return (
@@ -620,11 +635,12 @@ export default function Calibration({navigation}) {
 }
 
 /**
- * A draggable sensor icon overlaid on top of an image.
- * @param {Object} props - Component properties.
- * @param {Image} props.iconSource - The source of the sensor icon image.
+ * A draggable sensor icon overlaid on top of an image
+ * @param {Object} props - Component properties
+ * @param {Image} props.iconSource - The source of the sensor icon image
+ * @returns {React.Component} - Custom view component for dragging a sensor image icon across a human anatomy diagram
  */
-function DraggableSensorIcon({ iconSource }) {
+function DraggableSensorIcon({iconSource}) {
   
   // Get context
   const { dark } = useContext(DarkContext)

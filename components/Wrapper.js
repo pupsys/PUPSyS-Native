@@ -11,8 +11,10 @@ import { DarkContext, } from '../Context'
 import { darkTheme, lightTheme, } from '../assets/styles'
 
 /**
- * Basic CitrusNative styled page wrapper 
- * @param {string} justifyContent column justification
+ * Basic PUPSys styled page wrapper 
+ * @param {Object} props - Component properties
+ * @param {string} props.justifyContent - Column justification
+ * @returns {React.Component} - A custom styled View for wrapping an entire page
  */
 export function PageWrapper(props) {
   return (
@@ -34,8 +36,9 @@ export function PageWrapper(props) {
 }
 
 /**
- * Bastic CitrusNative styled scrolling page wrapper  
- * @returns 
+ * Bastic PUPSys styled scrolling page wrapper  
+ * @returns {Object} - Component properties
+ * @returns {React.Component} - A custom styled ScrollView
  */
 export function ScrollPage(props) {
   return (
@@ -57,8 +60,10 @@ export function ScrollPage(props) {
 /**
  * Scollview wrapper component for lists of components.
  * Taps are handled with keyboard up
- * @param {number} marginTop top margin
- * @param {number} marginBottom bottom margin
+ * @param {Object} props - Component properties
+ * @param {number} props.marginTop - Top margin
+ * @param {number} props.marginBottom - Bottom margin
+ * @returns {React.Component} - A custom styled ScrollView that is tap transparent
  */
 export function ListScroll(props) {
     return (
@@ -76,14 +81,15 @@ export function ListScroll(props) {
 }
 
 /**
- * 
- * @param {string} flexDirection card flex direction
- * @param {string} alignItems card item alignment
- * @param {string} justifyContent card content justification
- * @param {number} paddingTop top padding 
- * @param {number} paddingBottom bottom padding 
- * @param {number} marginTop top margin 
- * @param {number} marginBottom bottom margin 
+ * Wrapper component for card-style children
+ * @param {Object} props - Component properties
+ * @param {string} props.flexDirection - Card flex direction
+ * @param {string} props.alignItems - Card item alignment
+ * @param {string} props.justifyContent - Card content justification
+ * @param {number} props.paddingTop - Top padding 
+ * @param {number} props.paddingBottom - Bottom padding 
+ * @param {number} props.marginTop - Top margin 
+ * @param {number} props.marginBottom - Bottom margin 
  * @default
  * flexDirection = "column";
  * alignItems = "center";
@@ -92,6 +98,7 @@ export function ListScroll(props) {
  * paddingBottom = 5;
  * marginTop = 20;
  * marginBottom = 20;
+ * @returns {React.Component} - A custom styled wrapper compnent for card-style children
  */
 export function CardWrapper(props) {
 

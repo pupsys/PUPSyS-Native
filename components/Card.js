@@ -12,17 +12,19 @@ import { cardStyles, darkTheme, globalColors, lightTheme } from "../assets/style
 
 /**
  * Component for rendering an elevated surface with linear gradient border
- * @param {boolean} selected whether or not to display card as selected
- * @param {Function} onClick function to be called on card click
- * @param {boolean} disabled whether or not to display card as disabled
- * @param {boolean} solid whether or not to use solid color instead of gradient
- * @param {string} gradient gradient key for border ("white", "red", or "green")
- * @param {string} justifyContent flex direction
- * @param {string} flexDirection flex direction
- * @param {React.Component} leftSwipeComponent component to render under card on left swipe
- * @param {React.Component} rightSwipeComponent component to render under card on right swipe
- * @param {Function} onLeftSwipe function to call on left swipe
- * @param {Function} onRightSwipe function to call on right swipe
+ * @param {Object} props - Component properties
+ * @param {boolean} props.selected - Whether to display card as selected
+ * @param {Function} props.onClick - Function to be called on card click
+ * @param {boolean} props.disabled - Whether to display card as disabled
+ * @param {boolean} props.solid - Whether to use solid color instead of gradient
+ * @param {string} props.gradient - Gradient key for border ("white", "red", or "green")
+ * @param {string} props.justifyContent - Content justification
+ * @param {string} props.flexDirection - Flex direction
+ * @param {React.Component} props.leftSwipeComponent - Component to render under card on left swipe
+ * @param {React.Component} props.rightSwipeComponent - Component to render under card on right swipe
+ * @param {Function} props.onLeftSwipe - Function to call on left swipe
+ * @param {Function} props.onRightSwipe - Function to call on right swipe
+ * @returns {React.Component} - A card-styled Pressable surrounded by a LinearGradient
  */
 export function GradientCard(props) {
 
@@ -31,7 +33,7 @@ export function GradientCard(props) {
 
   /**
    * Get the correct gradient stops given card props
-   * @returns array of string for gradient stops
+   * @returns {string[]} - Array of string for gradient stops
    */
   function getGradientColors() {
     if (props.selected) {
@@ -121,8 +123,8 @@ export function GradientCard(props) {
    
   /**
    * Render any leftSwipeComponent under the card
-   * @param {number} progress swipe progress 
-   * @param {number} dragX horizontal displacement
+   * @param {number} progress - Swipe progress 
+   * @param {number} dragX - Horizontal displacement
    */
   function renderLeftActions(progress, dragX) {
     // Guard clauses:
@@ -137,8 +139,8 @@ export function GradientCard(props) {
 
   /**
    * Render any rightSwipeComponent under the card
-   * @param {number} progress swipe progress 
-   * @param {number} dragX horizontal displacement
+   * @param {number} progress - Swipe progress 
+   * @param {number} dragX - Horizontal displacement
    */
   function renderRightActions(progress, dragX) {
     // Guard clauses:
@@ -153,7 +155,7 @@ export function GradientCard(props) {
 
   /**
    * Call the correct onSwipe function for the direction
-   * @param {string} direction direction of swipe 
+   * @param {string} direction - Direction of swipe 
    */
   function handleSwipeOpen(direction) {
     if (direction === "left") {
@@ -206,11 +208,13 @@ export function GradientCard(props) {
 
 /**
  * A component for rendering a full-width line in a card
- * @param {boolean} vertical whether or not divider is vertical
- * @param {number} marginTop top margin
- * @param {number} marginBottom bottom margin
+ * @param {Object} props - Component properties
+ * @param {boolean} props.vertical - Whether divider is vertical
+ * @param {number} props.marginTop - Top margin
+ * @param {number} props.marginBottom - Bottom margin
  * @default
  * vertical = false;
+ * @returns {React.Component} - A line to separate UI elements
  */
 export function Divider(props) {
   

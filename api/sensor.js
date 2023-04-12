@@ -1738,10 +1738,10 @@ function averageEveryXNumbers(numbers, x) {
 }  
 
 /**
- * Get a list of strings representing the time of day for each sensor reading, assuming the last reading happened at the current time.
- * @param {number[]} sensorReadings - A list of sensor readings.
- * @param {number} y - The number of seconds between readings.
- * @returns {string[]} - A list of strings representing the time of day for each sensor reading, formatted as "hh:mm AM/PM".
+ * Get a list of strings representing the time of day for each sensor reading, assuming the last reading happened at the current time
+ * @param {number[]} sensorReadings - A list of sensor readings
+ * @param {number} y - The number of seconds between readings
+ * @returns {string[]} - A list of strings representing the time of day for each sensor reading, formatted as "hh:mm AM/PM"
  */
 function getReadingTimes(sensorReadings, y) {
   const currentTime = new Date();

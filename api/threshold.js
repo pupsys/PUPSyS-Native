@@ -1,4 +1,3 @@
-
 /**
  * Thresholds for status colors by reading type
  * @example

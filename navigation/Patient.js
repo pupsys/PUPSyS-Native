@@ -43,6 +43,7 @@ export default function Patient({navigation}) {
 
   /**
    * Component to show a card with all of the patient's medical conditions, as well as a text box for more information
+   * @returns {React.Component} - GradientCard populated with all possible medical conditions
    */
   function MedicalConditionsCard() {
 
@@ -54,7 +55,7 @@ export default function Patient({navigation}) {
       
       /**
        * Toggle whether patient has a medical condition selected
-       * @param {number} index index of medical condition
+       * @param {number} index - Index of medical condition
        */
       function toggleCondition(index) {
         const condition = allConditions[index];
@@ -103,6 +104,7 @@ export default function Patient({navigation}) {
 
   /**
    * Component to show name entry field
+   * @returns {React.Component} - View with StyledText and Entry for patient name
    */
   function NameEntry() {
 
@@ -135,6 +137,7 @@ export default function Patient({navigation}) {
 
   /**
    * Component to show weight entry fields
+   * @returns {React.Component} - View with StyledText, Entry, and DropDownPicker for patient weight
    */
   function WeightEntry() {
 
@@ -205,6 +208,7 @@ export default function Patient({navigation}) {
 
   /**
    * Component to show height entry fields
+   * @returns {React.Component} - View with StyledText, Entry, and DropDownPicker for patient height
    */
   function HeightEntry() {
 
@@ -275,6 +279,7 @@ export default function Patient({navigation}) {
 
   /**
    * Component to display age entry field
+   * @returns {React.Component} - View with StyledText and Entry for patient height
    */
   function AgeEntry() {
     return (

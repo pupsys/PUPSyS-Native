@@ -1,7 +1,7 @@
 /**
  * Formats a UTC date string so that it's easier to read
- * @param {String} date string representing a UTC date
- * @returns {String} date formatted as a string in the format "Month day, year"
+ * @param {string} date - String representing a UTC date
+ * @returns {string} - Date formatted as a string in the format "Month day, year"
  */
 export function getDateString(date) {
     // Create a date object that we can parse
@@ -64,8 +64,8 @@ export function getDateString(date) {
 
 /**
  * Formats a UTC date string so that it's easier to read
- * @param {String} date string representing a UTC date
- * @returns {String} date formatted as a string in the format "month/day/year"
+ * @param {string} date - String representing a UTC date
+ * @returns {string} - Date formatted as a string in the format "month/day/year"
  */
  export function getSlashDateString(date) {
     // Make sure we have a valid date object
@@ -82,8 +82,8 @@ export function getDateString(date) {
 
 /**
  * Remove all non-numeric characters from a string via regex
- * @param {string} string string to remove all non-numeric chars
- * @returns string w/ only numbers
+ * @param {string} string - String to remove all non-numeric chars
+ * @returns {string} - String w/ only numbers
  */
 export function makeNumeric(string) {
     return string.replace(/\D+/g, '');
@@ -91,8 +91,8 @@ export function makeNumeric(string) {
 
 /**
  * Capitalize the first letter of a string
- * @param {string} string string to capitalize
- * @returns string with first letter capitalized
+ * @param {string} string - String to capitalize
+ * @returns {string} - String with first letter capitalized
  */
 export function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -100,8 +100,8 @@ export function capitalizeFirstLetter(string) {
 
 /**
  * Format file system uri to readable path
- * @param {string} uri uri to format
- * @returns formatted URI
+ * @param {string} uri - Uri to format
+ * @returns {string} - formatted URI
  */
 export function formatUri(uri) {
     return "/" + uri.substring(uri.indexOf("%3A") + 3).replace("%2F", "/");

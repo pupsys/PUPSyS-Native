@@ -4,7 +4,7 @@ import { ScrollView, Pressable, View, } from 'react-native'
 import DropDownPicker from 'react-native-dropdown-picker';
 
 // Context Imports
-import { DarkContext, } from '../Context';
+import { DarkContext, PatientContext, } from '../Context';
 
 // Style Imports
 import { darkTheme, lightTheme, } from '../assets/styles';
@@ -15,39 +15,23 @@ import { Entry, } from '../components/Input';
 import { StyledText, } from '../components/Text';
 import { StyledCheckbox } from '../components/Button';
 
+// API Imports
+import { heightMenuItems, weightMenuItems } from '../api/patient';
+
 /** Space taken up by entry names */
 const fieldNameWidth = 60;
-
-/** All possible units of height */
-const heightUnits = ["in", "cm"];
-/** All possible units of weight */
-const weightUnits = ["kg", "lb"];
 
 /** All possible medical conditions for a patient (example data) */
 const allConditions = ["Diabetes", "Option 2", "Option 3", "...", "Other"];
 
-/** Dropdown menu items for possible weight units */
-const weightMenuItems = [
-  {value: weightUnits[0], label: weightUnits[0]},
-  {value: weightUnits[1], label: weightUnits[1]},
-]
-
-/** Dropdown menu items for possible height units */
-const heightMenuItems = [
-  {value: heightUnits[0], label: heightUnits[0]},
-  {value: heightUnits[1], label: heightUnits[1]},
-]
-
 export default function Patient({navigation}) {
+
+  // Get patient context
+  const { patient, setPatient } = useContext(PatientContext);
 
   // Create states to keep track of whether or not any dropdown menus are open
   const [heightMenuOpen, setHeightMenuOpen] = useState(false);
   const [weightMenuOpen, setWeightMenuOpen] = useState(false);
-
-  const [weightUnit, setWeightUnit] = useState(weightUnits[0]);
-  const [heightUnit, setHeightUnit] = useState(heightUnits[0]);
-  const [name, setName] = useState("Joseph Dobbelaar");
-  const [weight, setWeight] = useState("78");
   const [height, setHeight] = useState("73");
   const [age, setAge] = useState("21");
   
@@ -121,6 +105,17 @@ export default function Patient({navigation}) {
    * Component to show name entry field
    */
   function NameEntry() {
+
+    /**
+     * Set patient's name and update context
+     * @param {string} t - Text from name entry
+     */
+    function updatePatientName(t) {
+      const newPatient = {...patient};
+      newPatient.name = t;
+      setPatient(newPatient);
+    }
+
     return (
       <View
         style={{
@@ -133,7 +128,7 @@ export default function Patient({navigation}) {
         <View style={{width: fieldNameWidth}}>
           <StyledText text="Name:" marginRight={5}/>
         </View>
-        <Entry width="75%" height={50} placeholderText="Name" value={name} onChange={t => setName(t)}/>
+        <Entry width="75%" height={50} placeholderText="Name" value={patient.name} onChange={t => updatePatientName(t)}/>
       </View>
     )
   }
@@ -142,6 +137,30 @@ export default function Patient({navigation}) {
    * Component to show weight entry fields
    */
   function WeightEntry() {
+
+    /**
+     * Set patient's weight and update context
+     * @param {string} t - Text from weight entry
+     */
+    function updatePatientWeight(t) {
+      // Convert text to number
+      const newWeight = parseInt(t);
+      const newPatient = {...patient};
+      newPatient.weight = newWeight;
+      setPatient(newPatient);
+    }
+
+    /**
+     * Update patient weight unit and close weight menu
+     * @param {Object} item - Dropdown menu item 
+     */
+    function updatePatientWeightUnit(item) {
+      const newPatient = {...patient};
+      newPatient.weightUnit = item.value;
+      setPatient(newPatient);
+      setWeightMenuOpen(false);
+    }
+
     return (
       <View
         style={{
@@ -154,13 +173,13 @@ export default function Patient({navigation}) {
         <View style={{width: fieldNameWidth}}>
           <StyledText text="Weight:" marginRight={5}/>
         </View>
-        <Entry width="25%" height={50} placeholderText="Weight" value={weight} onChange={t => setWeight(t)}/>
+        <Entry width="25%" height={50} placeholderText="Weight" value={patient.weight.toString()} onChange={t => updatePatientWeight(t)}/>
         <DropDownPicker
           open={weightMenuOpen}
-          value={weightUnit}
+          value={patient.weightUnit}
           items={weightMenuItems}
           onPress={() => setWeightMenuOpen(!weightMenuOpen)}
-          onSelectItem={(item) => {setWeightUnit(item.value); setWeightMenuOpen(false);}}
+          onSelectItem={item => updatePatientWeightUnit(item)}
           showArrowIcon={true}
           searchable={false}
           dropDownContainerStyle={{
@@ -188,6 +207,30 @@ export default function Patient({navigation}) {
    * Component to show height entry fields
    */
   function HeightEntry() {
+
+    /**
+     * Set patient's height and update context
+     * @param {string} t - Text from height entry
+     */
+    function updatePatientHeight(t) {
+      // Convert text to number
+      const newHeight = parseInt(t);
+      const newPatient = {...patient};
+      newPatient.height = newHeight;
+      setPatient(newPatient);
+    }
+
+    /**
+     * Update patient height unit and close height menu
+     * @param {Object} item - Dropdown menu item 
+     */
+    function updatePatientHeightUnit(item) {
+      const newPatient = {...patient};
+      newPatient.heightUnit = item.value;
+      setPatient(newPatient);
+      setHeightMenuOpen(false);
+    }
+
     return (
       <View
         style={{
@@ -200,13 +243,13 @@ export default function Patient({navigation}) {
         <View style={{width: fieldNameWidth}}>
           <StyledText text="Height:" marginRight={5}/>
         </View>
-        <Entry width="25%" height={50} placeholderText="Height" value={height} onChange={t => setHeight(t)}/>
+        <Entry width="25%" height={50} placeholderText="Height" value={patient.height} onChange={t => updatePatientHeight(t)}/>
         <DropDownPicker
           open={heightMenuOpen}
-          value={heightUnit}
+          value={patient.heightUnit}
           items={heightMenuItems}
           onPress={() => setHeightMenuOpen(!heightMenuOpen)}
-          onSelectItem={(item) => {setHeightUnit(item.value); setHeightMenuOpen(false);}}
+          onSelectItem={item => updatePatientHeightUnit(item)}
           showArrowIcon={true}
           searchable={false}
           dropDownContainerStyle={{

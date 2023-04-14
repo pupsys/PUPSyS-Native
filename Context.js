@@ -8,7 +8,13 @@ import { createContext } from "react";
 export const DarkContext = createContext();
 
 /**
- * @type {React.Context<string>}
+ * @type {React.Context<Map<string, Object>>}
  * @static Tells the entire application device states
  */
 export const DevicesContext = createContext();
+
+/**
+ * @type {React.Context<Map<string, Object>>}
+ * @static Tells the entire application current patient state
+ */
+export const PatientContext = createContext();

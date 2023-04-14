@@ -16,9 +16,10 @@ import { darkTheme, lightTheme, } from "./assets/styles";
 // API Imports
 import { appDrawerPages, } from "./api/navigation";
 import { exampleDevices, } from "./api/sensor";
+import { examplePatient, } from "./api/patient";
 
 // Context Imports
-import { DarkContext, DevicesContext, } from "./Context";
+import { DarkContext, DevicesContext, PatientContext, } from "./Context";
 import { navigationImages } from "./api/image";
 
 /**
@@ -29,11 +30,13 @@ function App() {
   // Init. contexts
   const [ dark, setDark ] = useState(false);
   const [ devices, setDevices ] = useState(exampleDevices);
+  const [ patient, setPatient ] = useState(examplePatient);
 
   // Render PUPSyS!
   return (
-    <DarkContext.Provider value={{dark, setDark}}>  
-    <DevicesContext.Provider value={{devices, setDevices}}>  
+    <PatientContext.Provider  value={{patient, setPatient}}>  
+    <DarkContext.Provider     value={{dark, setDark}}>  
+    <DevicesContext.Provider  value={{devices, setDevices}}>  
       <StatusBar backgroundColor={dark ? darkTheme.statusBarColor : lightTheme.statusBarColor} />
       <View style={{height: '100%'}}>
         <NavigationContainer theme={navTheme}>
@@ -75,6 +78,7 @@ function App() {
       </View>
     </DevicesContext.Provider>
     </DarkContext.Provider>
+    </PatientContext.Provider>
   );
 }3
 

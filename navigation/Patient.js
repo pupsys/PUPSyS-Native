@@ -32,7 +32,6 @@ export default function Patient({navigation}) {
   // Create states to keep track of whether or not any dropdown menus are open
   const [heightMenuOpen, setHeightMenuOpen] = useState(false);
   const [weightMenuOpen, setWeightMenuOpen] = useState(false);
-  const [height, setHeight] = useState("73");
   const [age, setAge] = useState("21");
   
   const [medicalConditions, setMedicalConditions] = useState([])

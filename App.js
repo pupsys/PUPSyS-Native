@@ -28,9 +28,9 @@ import { navigationImages } from "./api/image";
 function App() {
 
   // Init. contexts
-  const [ dark, setDark ] = useState(false);
-  const [ devices, setDevices ] = useState(exampleDevices);
-  const [ patient, setPatient ] = useState(examplePatient);
+  const [ dark, setDark ]       = useState(false);          // Current darkmode state
+  const [ devices, setDevices ] = useState(exampleDevices); // Current devices
+  const [ patient, setPatient ] = useState(examplePatient); // Current patient state
 
   // Render PUPSyS!
   return (

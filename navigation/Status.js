@@ -1,9 +1,9 @@
 // Library Imports
-import { useContext, } from 'react';
+import { useContext, useEffect, } from 'react';
 import { Dimensions, Image, View, } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
+import { ScrollView, } from 'react-native-gesture-handler';
 import { createBottomTabNavigator, } from '@react-navigation/bottom-tabs';
-import { LineChart } from "react-native-chart-kit";
+import { LineChart, } from "react-native-chart-kit";
 
 // Style Imports
 import { darkTheme, globalColors, lightTheme, } from '../assets/styles';
@@ -21,6 +21,7 @@ import { thresholds, } from '../api/threshold';
 import { PauseButton, } from "../components/Button";
 import { Divider, GradientCard, } from "../components/Card";
 import { StyledText, } from '../components/Text';
+import { generateRandomNumbers } from '../api/simulation';
 
 /** Navigator for all status tabs */
 const StatusTabs = createBottomTabNavigator();
@@ -320,18 +321,21 @@ function Sensors() {
     function getSummaryColor() {
       /** Get colors of all sensors */
       const allColors = [getPressureColor(), getTemperatureColor(), getHumidityColor()];
+
       // If any of the colors are red, make the card red
       for (const readingColor of allColors) {
         if (readingColor === globalColors.red) {
           return readingColor;
         }
       }
+
       // If any of the colors are orange, make the card orange
       for (const readingColor of allColors) {
         if (readingColor === globalColors.orange) {
           return readingColor;
         }
       }
+
       // Everything is well! Make the card green.
       return globalColors.green;
     }
@@ -523,8 +527,6 @@ function Sensors() {
       // Guard clauses:
       if (!data.expanded) { return; } // Card is not expanded
 
-      console.log(data)
-      
       // Render graphs
       return (
         <View
@@ -612,18 +614,6 @@ function Sensors() {
       setDevices(newDevices);
     }
 
-    /**
-     * Render summary if not paused
-     */
-    function renderSummary() {
-      // Guard clauses:
-      if (data.paused) { return; } // Do not show if sensor is paused
-      
-      const summaryColor = getSummaryColor();
-
-      return <Summary color={summaryColor} />;
-    }
-
     return (
       <GradientCard
         flexDirection="column"
@@ -668,7 +658,7 @@ function Sensors() {
         </View>
         { data.expanded && <Divider /> }
         <Graphs />
-        { renderSummary() }
+        { !data.paused && <Summary color={getSummaryColor()} /> /* Only show summary if unpaused */ }
         { data.expanded && <PauseButton paused={data.paused} onClick={togglePaused}/> }
       </GradientCard>
     )
@@ -814,7 +804,16 @@ const exampleOverallPressureData = {
 };
 
 const exampleTemperatureData = {
-  labels: ["January", "February", "March", "April", "May", "June"],
+  labels: getGraphLabels(
+    [
+      Math.random() * 100,
+      Math.random() * 100,
+      Math.random() * 100,
+      Math.random() * 100,
+      Math.random() * 100,
+      Math.random() * 100
+    ]
+  ),
   datasets: [
     {
       data: [
@@ -830,7 +829,16 @@ const exampleTemperatureData = {
 };
 
 const exampleHumidityData = {
-  labels: ["January", "February", "March", "April", "May", "June"],
+  labels: getGraphLabels(
+    [
+      Math.random() * 100,
+      Math.random() * 100,
+      Math.random() * 100,
+      Math.random() * 100,
+      Math.random() * 100,
+      Math.random() * 100
+    ]
+  ),
   datasets: [
     {
       data: [

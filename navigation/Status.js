@@ -14,7 +14,7 @@ import { DarkContext, DevicesContext, } from '../Context';
 // API Imports
 import { buttonImages, navigationImages, statusImages, } from "../api/image";
 import { statusTabsPages, } from "../api/navigation";
-import { averagedAdc, getGraphLabels, getScaledAdc } from '../api/sensor'; 
+import { averagedAdc, getGraphLabels, getScaledAdc, } from '../api/sensor'; 
 import { thresholds, } from '../api/threshold';
 
 // Component Imports
@@ -522,6 +522,8 @@ function Sensors() {
     function Graphs() {
       // Guard clauses:
       if (!data.expanded) { return; } // Card is not expanded
+
+      console.log(data)
       
       // Render graphs
       return (

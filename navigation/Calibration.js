@@ -679,7 +679,7 @@ function DraggableSensorIcon({iconSource}) {
    * @property {number} x - The x-coordinate of the sensor icon.
    * @property {number} y - The y-coordinate of the sensor icon.
    */
-  const [iconPosition, setIconPosition] = useState({ x: 0, y: 0 });
+  const [ iconPosition, setIconPosition ] = useState({ x: 0, y: 0 });
 
   /**
    * Handles the gesture event to update the icon position.

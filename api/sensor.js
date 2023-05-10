@@ -2,6 +2,7 @@
 import { useContext } from "react";
 
 // API Imports
+import { statusImages } from "./image";
 import { exampleAdc, } from "./data";
 
 // Style Imports
@@ -11,8 +12,8 @@ import { darkTheme, globalColors, lightTheme, } from "../assets/styles";
 import { DarkContext } from "../Context";
 
 /**
- * Get the color of pressure text
- * @param {Device} - Device from device context
+ * Get the color of a device's pressure reading
+ * @param {Device} device - Device from device context
  * @returns {string} - Color key string
  */
 export function getPressureColor(device) {
@@ -32,15 +33,57 @@ export function getPressureColor(device) {
 }
 
 /**
- * Get the color of temperature text
- * @param {Device} - Device from device context
+ * Get most severe of all device pressure colors
+ * @param {Device[]} devices - Devices from device context
+ * @returns {string} - Color key string
+ */
+export function getPressureColorOverall(devices) {
+
+  // Get context
+  const { dark } = useContext(DarkContext);
+
+  for (const device of devices) {
+    if (device.pressure >= thresholds.pressure.RED) {
+      return globalColors.red;
+    }
+    if (device.pressure >= thresholds.pressure.ORANGE) {
+      return globalColors.orange;
+    }
+  }
+  return dark ? darkTheme.textPrimary : lightTheme.textPrimary;
+}
+
+/**
+ * Get the image source for pressure icon based on reading color
+ * @param {Device} device - Device from device context
+ * @returns {Image} - Image source
+ */
+export function getPressureSource(device) {
+
+  // Get context
+  const { dark } = useContext(DarkContext);
+
+  const color = getPressureColor(device);
+  if (color === globalColors.red) {
+    return statusImages.pressure.RED;
+  }
+  if (color === globalColors.orange) {
+    return statusImages.pressure.ORANGE;
+  }
+  // No worries, return theme colored icon
+  return dark ? statusImages.pressure.DARK : statusImages.pressure.LIGHT;
+}
+
+/**
+ * Get the color of a device's temperature reading
+ * @param {Device} device - Device from device context
  * @returns {string} - Color key string
  */
 export function getTemperatureColor(device) {
 
   // Get context
   const { dark } = useContext(DarkContext);
-
+  
   if (!device.paused) {
     if (device.temperature >= thresholds.temperature.RED) {
       return globalColors.red;
@@ -53,8 +96,50 @@ export function getTemperatureColor(device) {
 }
 
 /**
- * Get the color of humidity text
- * @param {Device} - Device from device context
+ * Get most severe of all device temperature colors
+ * @param {Device[]} devices - Devices from device context
+ * @returns {string} - Color key string
+ */
+export function getTemperatureColorOverall(devices) {
+
+  // Get context
+  const { dark } = useContext(DarkContext);
+
+  for (const device of devices) {
+    if (device.temperature >= thresholds.temperature.RED) {
+      return globalColors.red;
+    }
+    if (device.temperature >= thresholds.temperature.ORANGE) {
+      return globalColors.orange;
+    }
+  }
+  return dark ? darkTheme.textPrimary : lightTheme.textPrimary;
+}
+
+/**
+ * Get the image source for temperature icon based on reading color
+ * @param {Device} device - Device from device context
+ * @returns {Image} - Image source
+ */
+export function getTemperatureSource(device) {
+
+  // Get context
+  const { dark } = useContext(DarkContext);
+
+  const color = getTemperatureColor(device);
+  if (color === globalColors.red) {
+    return statusImages.temperature.RED;
+  }
+  if (color === globalColors.orange) {
+    return statusImages.temperature.ORANGE;
+  }
+  // No worries, return theme colored icon
+  return dark ? statusImages.temperature.DARK : statusImages.temperature.LIGHT;
+}
+
+/**
+ * Get the color of a device's humidity reading
+ * @param {Device} device - Device from device context
  * @returns {string} - Color key string
  */
 export function getHumidityColor(device) {
@@ -74,8 +159,50 @@ export function getHumidityColor(device) {
 }
 
 /**
+ * Get most severe of all device humidity colors
+ * @param {Device[]} devices - Devices from device context
+ * @returns {string} - Color key string
+ */
+export function getHumidityColorOverall(devices) {
+
+  // Get context
+  const { dark } = useContext(DarkContext);
+
+  for (const device of devices) {
+    if (device.temperature >= thresholds.humidity.RED) {
+      return globalColors.red;
+    }
+    if (device.temperature >= thresholds.humidity.ORANGE) {
+      return globalColors.orange;
+    }
+  }
+  return dark ? darkTheme.textPrimary : lightTheme.textPrimary;
+}
+
+/**
+ * Get the image source for humidity icon based on reading color
+ * @param {Device} device - Device from device context
+ * @returns {Image} - Image source
+ */
+export function getHumiditySource(device) {
+
+  // Get context
+  const { dark } = useContext(DarkContext);
+
+  const color = getHumidityColor(device);
+  if (color === globalColors.red) {
+    return statusImages.humidity.RED;
+  }
+  if (color === globalColors.orange) {
+    return statusImages.humidity.ORANGE;
+  }
+  // No worries, return theme colored icon
+  return dark ? statusImages.humidity.DARK : statusImages.humidity.LIGHT;
+}
+
+/**
  * Get the border color by picking the most extreme color of any reading
- * @param {Device} - Device from device context
+ * @param {Device} device - Device from device context
  * @returns {string} - Color key string
  */
 export function getSummaryColor(device) {

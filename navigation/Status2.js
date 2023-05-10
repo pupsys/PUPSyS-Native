@@ -22,19 +22,14 @@ import { createStackNavigator } from '@react-navigation/stack';
 /** Navigator for all status tabs */
 const StatusStack = createStackNavigator();
 
-/** Width of graphs relative to screen width */
-const GRAPHSCALE = 0.85;
-
 /**
  * Component to hold Status Tabs
+ * @deprecated - This way of displaying status was just straight up dumb. It probably won't get any use.
  * @param {Object} props - Component properties
  * @param {ReactNavigation} props.navigation - Navigation object from AppStack 
  * @returns {React.Component} - Navigator component for Status pages
  */
 export default function Status({navigation}) {
-
-  // Get Context
-  const { dark } = useContext(DarkContext);
     
   // Render Status tabs
   return (
@@ -53,6 +48,8 @@ export default function Status({navigation}) {
 
 /**
  * Dashboard page for sensor / reading data
+ * @deprecated - Tried this for a few hours, but it's pretty much unusable. It isn't any more clear than the first version of Status.js. Leaving this in the code for now in case
+ * there are things that could be useful. It will be removed when the final Status page is created.
  * @param {Object} props - Component properties
  * @param {ReactNavigation} props.navigation - Navigation object from StatusStack 
  * @returns {React.Component} - Page with routes to sensor and reading detail pages

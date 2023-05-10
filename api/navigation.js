@@ -24,4 +24,7 @@ export const appDrawerPages = {
 export const statusTabsPages = {
     OVERALL: "Overall",
     SENSORS: "Sensors",
+    DASHBOARD: "Dashboard",
+    SENSORDETAIL: "SensorDetail",
+    READINGDETAIL: "ReadingDetail",
   };

@@ -212,6 +212,7 @@ export function GradientCard(props) {
  * @param {boolean} props.vertical - Whether divider is vertical
  * @param {number} props.marginTop - Top margin
  * @param {number} props.marginBottom - Bottom margin
+ * @param {string} props.color - Line color
  * @default
  * vertical = false;
  * @returns {React.Component} - A line to separate UI elements
@@ -221,12 +222,23 @@ export function Divider(props) {
   // Get context
   const { dark } = useContext(DarkContext);
 
+  /**
+   * Get divider color by props or theme
+   * @returns {string} - Color for divider line
+   */
+  function getDividerColor() {
+    if (props.color) {
+      return props.color;
+    }
+    return dark ? darkTheme.textPrimary : lightTheme.textPrimary;
+  }
+  
   return (
     <View 
       style={{          
         width: props.vertical ? "0%" : "100%",
         height: props.vertical ? "100%" : "0%",
-        borderColor: dark ? darkTheme.textPrimary : lightTheme.textPrimary,
+        borderColor: getDividerColor(),
         borderBottomWidth: props.vertical ? 0 : 1,
         borderLeftWidth: props.vertical ? 1 : 0,
         marginTop: props.marginTop,

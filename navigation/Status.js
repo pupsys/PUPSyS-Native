@@ -1,5 +1,5 @@
 // Library Imports
-import { useContext, } from 'react';
+import { useContext, useEffect, useState, } from 'react';
 import { Dimensions, Image, View, } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { createBottomTabNavigator, } from '@react-navigation/bottom-tabs';
@@ -9,7 +9,7 @@ import { LineChart } from "react-native-chart-kit";
 import { darkTheme, globalColors, lightTheme, } from '../assets/styles';
 
 // Context Imports
-import { DarkContext, DevicesContext, } from '../Context';
+import { DarkContext, DevicesContext, SensorContext } from '../Context';
 
 // API Imports
 import { buttonImages, navigationImages, statusImages, } from "../api/image";
@@ -313,6 +313,9 @@ function Sensors() {
    */
   function SensorCard({data}) {
 
+    // Get context
+    const { sensorData } = useContext(SensorContext);
+
     /**
      * Get the border color by picking the most extreme color of any reading
      * @returns {string} - Color key string
@@ -518,11 +521,26 @@ function Sensors() {
 
     /**
      * Components to show graphs so long as card is expanded
+     * @returns {React.Component} - View with three graphs
      */
     function Graphs() {
       // Guard clauses:
       if (!data.expanded) { return; } // Card is not expanded
+
       
+      
+      /**
+       * Data for pressure graph from {@link SensorContext}
+       */
+      const pressureGraphData = {
+        labels: getGraphLabels(sensorData.pressure),
+        datasets: [
+          {
+            data: sensorData.pressure
+          }
+        ]
+      };
+
       // Render graphs
       return (
         <View

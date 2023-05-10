@@ -1,3 +1,102 @@
+// Library Imports
+import { useContext } from "react";
+
+// API Imports
+import { thresholds } from "./threshold";
+
+// Style Imports
+import { darkTheme, globalColors, lightTheme, } from "../assets/styles";
+
+// Context Imports
+import { DarkContext } from "../Context";
+
+/**
+ * Get the color of pressure text
+ * @param {Device} - Device from device context
+ * @returns {string} - Color key string
+ */
+export function getPressureColor(device) {
+
+  // Get context
+  const { dark } = useContext(DarkContext);
+
+  if (!device.paused) {
+    if (device.pressure >= thresholds.pressure.RED) {
+      return globalColors.red;
+    }
+    if (device.pressure >= thresholds.pressure.ORANGE) {
+      return globalColors.orange;
+    }
+  }
+  return dark ? darkTheme.textPrimary : lightTheme.textPrimary;
+}
+
+/**
+ * Get the color of temperature text
+ * @param {Device} - Device from device context
+ * @returns {string} - Color key string
+ */
+export function getTemperatureColor(device) {
+
+  // Get context
+  const { dark } = useContext(DarkContext);
+
+  if (!device.paused) {
+    if (device.temperature >= thresholds.temperature.RED) {
+      return globalColors.red;
+    }
+    if (device.temperature >= thresholds.temperature.ORANGE) {
+      return globalColors.orange;
+    }
+  }
+  return dark ? darkTheme.textPrimary : lightTheme.textPrimary;
+}
+
+/**
+ * Get the color of humidity text
+ * @param {Device} - Device from device context
+ * @returns {string} - Color key string
+ */
+export function getHumidityColor(device) {
+
+  // Get context
+  const { dark } = useContext(DarkContext);
+  
+  if (!device.paused) {
+    if (device.humidity >= thresholds.humidity.RED) {
+      return globalColors.red;
+    }
+    if (device.humidity >= thresholds.humidity.ORANGE) {
+      return globalColors.orange;
+    }
+  }
+  return dark ? darkTheme.textPrimary : lightTheme.textPrimary;
+}
+
+/**
+ * Get the border color by picking the most extreme color of any reading
+ * @param {Device} - Device from device context
+ * @returns {string} - Color key string
+ */
+export function getSummaryColor(device) {
+  /** Get colors of all sensors */
+  const allColors = [getPressureColor(device), getTemperatureColor(device), getHumidityColor(device)];
+  // If any of the colors are red, make the card red
+  for (const readingColor of allColors) {
+    if (readingColor === globalColors.red) {
+      return readingColor;
+    }
+  }
+  // If any of the colors are orange, make the card orange
+  for (const readingColor of allColors) {
+    if (readingColor === globalColors.orange) {
+      return readingColor;
+    }
+  }
+  // Everything is well! Make the card green.
+  return globalColors.green;
+}
+
 /**
  * Seconds between sensor ADC readings
  * @const

@@ -1,5 +1,4 @@
 // Libray Imports
-import { LinearGradient, } from 'expo-linear-gradient'
 import { useContext, } from "react"
 import { View, } from 'react-native'
 import { ScrollView, } from 'react-native-gesture-handler'

@@ -14,7 +14,7 @@ import { darkTheme, lightTheme, } from "../assets/styles";
  * @param {boolean} dark - Current darkmode value
  * @returns {string} - String for text color
  */
-function getColor(colorParam, dark) {
+function getTextColor(colorParam, dark) {
   if (colorParam) {
     if (colorParam === "secondary") {
       return dark ? darkTheme.textSecondary : lightTheme.textSecondary;
@@ -25,7 +25,7 @@ function getColor(colorParam, dark) {
 }
 
 /**
- * Basic centered text component that ignoes touch
+ * Basic centered text component that ignoes touch— defaulted to bold
  * @param {Object} props - Component properties
  * @param {string} props.text - Text to display in title
  * @param {string} props.color - Color or color key (ex. "secondary")
@@ -63,14 +63,14 @@ export function CenteredTitle(props) {
         style={{ 
           fontSize: props.fontSize ? props.fontSize : 16, 
           fontWeight: props.fontWeight ? props.fontWeight : 'bold', 
-          color: getColor(props.color, dark), 
+          color: getTextColor(props.color, dark), 
           marginTop: props.marginTop ? props.marginTop : 10,
           marginBottom: props.marginBottom ? props.marginBottom : 10,
           marginLeft: props.marginLeft ? props.marginLeft : 0,
           marginRight: props.marginRight ? props.marginRight : 0,
         }}
       >
-        {props.text}
+        { props.text }
       </Text>
     </View>
   )
@@ -127,12 +127,12 @@ export function StyledText(props) {
           zIndex: props.zIndex ? props.zIndex : 1,
           fontSize: props.fontSize ? props.fontSize : 16, 
           fontWeight: props.fontWeight ? props.fontWeight : 'normal', 
-          color: getColor(props.color, dark), 
+          color: getTextColor(props.color, dark), 
           textAlign: 'center',
           width: props.width ? "100%" : null,
         }}
       >
-        {props.text}
+        { props.text }
       </Text>
     </Pressable>
   )
@@ -178,14 +178,14 @@ export function AlignedText(props) {
         style={{ 
           fontSize: props.fontSize ? props.fontSize : 16, 
           fontWeight: props.fontWeight ? props.fontWeight : 'bold', 
-          color: getColor(props.color, dark), 
+          color: getTextColor(props.color, dark), 
           marginTop: props.marginTop ? props.marginTop : 0,
           marginBottom: props.marginBottom ? props.marginBottom : 0,
           marginLeft: props.marginLeft ? props.marginLeft : 0,
           marginRight: props.marginRight ? props.marginRight : 0,
         }}
       >
-        {props.text}
+        { props.text }
       </Text>
     </View>
   )

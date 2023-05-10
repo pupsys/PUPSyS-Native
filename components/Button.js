@@ -362,7 +362,7 @@ export function PauseButton(props) {
     if (props.paused) {
       return dark ? buttonImages.PLAYDARK : buttonImages.PLAYLIGHT;
     }
-    return dark ? buttonImages.PLAYDARK : buttonImages.PLAYLIGHT;
+    return dark ? buttonImages.PAUSEDARK : buttonImages.PAUSELIGHT;
   }
 
   /**

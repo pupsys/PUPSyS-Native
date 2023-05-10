@@ -248,7 +248,7 @@ export default function Patient({navigation}) {
         <View style={{width: fieldNameWidth}}>
           <StyledText text="Height:" marginRight={5}/>
         </View>
-        <Entry width="25%" height={50} placeholderText="Height" value={patient.height} onChange={t => updatePatientHeight(t)}/>
+        <Entry width="25%" height={50} placeholderText="Height" value={patient.height.toString()} onChange={t => updatePatientHeight(t)}/>
         <DropDownPicker
           open={heightMenuOpen}
           value={patient.heightUnit}

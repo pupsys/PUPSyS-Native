@@ -1,5 +1,5 @@
 // Library Imports
-import { useState, } from "react";
+import { useEffect, useState, } from "react";
 import { StatusBar, View, } from "react-native";
 import { NavigationContainer, } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/Ionicons" 
@@ -21,6 +21,7 @@ import { examplePatient, } from "./api/patient";
 // Context Imports
 import { DarkContext, DevicesContext, PatientContext, SensorContext } from "./Context";
 import { navigationImages } from "./api/image";
+import { generateRandomNumbers } from "./api/simulation";
 
 /**
  * The entire PUPSyS app component. Creates states for all context and returns a Stack Navigator inside all context providers.

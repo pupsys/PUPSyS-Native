@@ -24,6 +24,7 @@ import { cardStyles, darkTheme, globalColors, lightTheme } from "../assets/style
  * @param {React.Component} props.rightSwipeComponent - Component to render under card on right swipe
  * @param {Function} props.onLeftSwipe - Function to call on left swipe
  * @param {Function} props.onRightSwipe - Function to call on right swipe
+ * @param {string} props.backgroundColor - Card background color
  * @returns {React.Component} - A card-styled Pressable surrounded by a LinearGradient
  */
 export function GradientCard(props) {
@@ -58,7 +59,10 @@ export function GradientCard(props) {
 
   function getBackgroundColor() {
     if (props.disabled) {
-      return dark ? darkTheme.searchFill : lightTheme.searchFill
+      return dark ? darkTheme.searchFill : lightTheme.searchFill;
+    }
+    if (props.backgroundColor) {
+      return props.backgroundColor;
     }
     return dark ? darkTheme.cardFill : lightTheme.cardFill;
   }

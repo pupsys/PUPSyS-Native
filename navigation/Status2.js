@@ -161,6 +161,13 @@ function Dashboard({navigation}) {
    */
   function OverallCarousel() {
     
+    /** Overall color for pressure */
+    const pressureColor = getPressureColorOverall();
+    /** Overall color for temperature */
+    const temperatureColor = getTemperatureColorOverall();
+    /** Overall color for humidity */
+    const humidityColor = getHumidityColorOverall();
+    
     /** Overall color for patient */
     const overallColor = getOverallColor();
 
@@ -267,10 +274,6 @@ function Dashboard({navigation}) {
        * @returns {React.Component} - Icons and checks for pressure, temperature, and humidity
        */
       function OverallReadings() {
-
-        const pressureColor = getPressureColorOverall();
-        const temperatureColor = getTemperatureColorOverall();
-        const humidityColor = getHumidityColorOverall();
 
         /**
          * Component to render a single device reading
@@ -389,9 +392,40 @@ function Dashboard({navigation}) {
       )
     }
 
+    function PressureCard() {
+
+      /**
+       * Header for pressure card
+       * @returns {React.Component} - Pressure title and summary icon
+       */
+      function PressureHeader() {
+        return (
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              width: "100%",
+            }}
+          >
+            <StyledText text={"Pressure:"}/>
+            <Summary color={pressureColor} />
+          </View>
+        )
+      }
+
+      return (
+        <GradientCard flexDirection="column" gradient={pressureColor} >
+          <PressureHeader />
+          <Divider color={pressureColor} marginTop={10} marginBottom={10} />
+        </GradientCard>
+      )
+    }
+
     return (
       <View>
         <OverallCard />
+        <PressureCard />
       </View>
     )
   }

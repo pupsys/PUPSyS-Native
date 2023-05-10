@@ -14,8 +14,7 @@ import { DarkContext, DevicesContext, SensorContext } from '../Context';
 // API Imports
 import { buttonImages, navigationImages, statusImages, } from "../api/image";
 import { statusTabsPages, } from "../api/navigation";
-import { averagedAdc, getGraphLabels, getScaledAdc, } from '../api/sensor'; 
-import { thresholds, } from '../api/threshold';
+import { averagedAdc, getGraphLabels, getScaledAdc, thresholds, } from '../api/sensor'; 
 
 // Component Imports
 import { PauseButton, } from "../components/Button";

@@ -12,8 +12,7 @@ import { DarkContext, DevicesContext } from '../Context';
 // API Imports
 import { statusImages, } from "../api/image";
 import { statusTabsPages, } from "../api/navigation";
-import { getSummaryColor, getPressureColor, getTemperatureColor, getHumidityColor, } from '../api/sensor'; 
-import { thresholds, } from '../api/threshold';
+import { getSummaryColor, getPressureColor, getTemperatureColor, getHumidityColor, thresholds, } from '../api/sensor';
 
 // Component Imports
 import { Divider, GradientCard, } from "../components/Card";

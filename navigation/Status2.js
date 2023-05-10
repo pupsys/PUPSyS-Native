@@ -1,24 +1,21 @@
 // Library Imports
-import { useContext, useEffect, useState, } from 'react';
-import { Dimensions, Image, View, } from 'react-native';
+import { useContext, } from 'react';
+import { Image, View, } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import { createBottomTabNavigator, } from '@react-navigation/bottom-tabs';
-import { LineChart } from "react-native-chart-kit";
 
 // Style Imports
 import { darkTheme, globalColors, lightTheme, } from '../assets/styles';
 
 // Context Imports
-import { DarkContext, DevicesContext, SensorContext } from '../Context';
+import { DarkContext, DevicesContext } from '../Context';
 
 // API Imports
-import { buttonImages, statusImages, } from "../api/image";
+import { statusImages, } from "../api/image";
 import { statusTabsPages, } from "../api/navigation";
 import { getSummaryColor, getPressureColor, getTemperatureColor, getHumidityColor, } from '../api/sensor'; 
 import { thresholds, } from '../api/threshold';
 
 // Component Imports
-import { PauseButton, } from "../components/Button";
 import { Divider, GradientCard, } from "../components/Card";
 import { CenteredTitle, StyledText, } from '../components/Text';
 import { createStackNavigator } from '@react-navigation/stack';

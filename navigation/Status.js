@@ -274,8 +274,8 @@ function Sensors() {
     // Guard Clauses:
     if (!devices) { return; } // No sensor data exists, so we shouldn't try to render anything
 
-    return devices.map((devices, index) => {
-      return <SensorCard key={index} data={devices} />
+    return devices.map((device, index) => {
+      return <SensorCard key={index} device={device} />
     });
   }
 
@@ -285,6 +285,9 @@ function Sensors() {
    * @returns {React.Component} - A GradientCard with sensor data displays
    */
   function SensorCard({device}) {
+
+    // Guard clauses:
+    if (!device) { return; } // No device exists
 
     /** This device's pressure color */
     const pressureColor = getPressureColor(device);

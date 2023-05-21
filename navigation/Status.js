@@ -286,9 +286,6 @@ function Sensors() {
    */
   function SensorCard({device}) {
 
-    // Guard clauses:
-    if (!device) { return; } // No device exists
-
     /** This device's pressure color */
     const pressureColor = getPressureColor(device);
     /** This device's temperature color */

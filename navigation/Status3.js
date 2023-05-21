@@ -1,6 +1,6 @@
 // Library Imports
-import { useContext, } from 'react';
-import { Dimensions, Image, View, } from 'react-native';
+import { useContext, useRef, useState } from 'react';
+import { FlatList, Image, View } from 'react-native';
 import { ScrollView, } from 'react-native-gesture-handler';
 import { createBottomTabNavigator, } from '@react-navigation/bottom-tabs';
 import { LineChart, } from "react-native-chart-kit";
@@ -33,12 +33,13 @@ import {
 import { PauseButton, } from "../components/Button";
 import { Divider, GradientCard, } from "../components/Card";
 import { StyledText, } from '../components/Text';
-
-/** Navigator for all status tabs */
-const StatusTabs = createBottomTabNavigator();
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 /** Width of graphs relative to screen width */
 const GRAPHSCALE = 0.85;
+
+/** Number of cards for overall carousel */
+const NUM_OVERALL_CARDS = 3;
 
 /**
  * Component to hold Status Tabs
@@ -47,50 +48,6 @@ const GRAPHSCALE = 0.85;
  * @returns {React.Component} - Navigator component for Status pages
  */
 export default function Status({navigation}) {
-
-    // Get Context
-    const { dark } = useContext(DarkContext);
-    
-    // Render Status tabs
-    return (
-      <View style={{height: '100%'}}>
-        <StatusTabs.Navigator
-          initialRouteName={statusTabsPages.SENSORS}
-          backBehavior="none"
-          screenOptions={({route}) => ({
-            tabBarIcon: ({focused, size}) => {
-              // Get the icon for each tab by darkmode value and tab name
-              let imgSrc;
-              let routeName = route.name;
-              if (routeName === statusTabsPages.OVERALL) {
-                imgSrc = focused ? navigationImages.sensorsTabs.OVERALLSELECTED : dark ? navigationImages.sensorsTabs.OVERALLDARK : navigationImages.sensorsTabs.OVERALLLIGHT;
-              } else if (routeName === statusTabsPages.SENSORS) {
-                imgSrc = focused ? navigationImages.sensorsTabs.SENSORSSELECTED : dark ? navigationImages.sensorsTabs.SENSORSDARK : navigationImages.sensorsTabs.SENSORSLIGHT;
-              }
-                return <Image style={{width: size, height: size}} source={imgSrc} />
-              },
-            tabBarActiveTintColor: globalColors.green,
-            tabBarInactiveTintColor: dark ? darkTheme.textPrimary : lightTheme.textPrimary,
-            headerShown: false,
-            tabBarStyle: {
-              backgroundColor: dark ? darkTheme.tabBarColor : lightTheme.tabBarColor,
-              paddingBottom: 5,
-              height: 60, 
-              paddingTop: 5,
-            },
-          })}
-        >
-          <StatusTabs.Screen name={statusTabsPages.OVERALL} component={Overall}/>
-          <StatusTabs.Screen name={statusTabsPages.SENSORS} component={Sensors}/>
-        </StatusTabs.Navigator>
-      </View>
-    )
-}
-
-/**
- * Component for displaying all sensor data at the same time
- */
-function Overall() {
 
   // Get context
   const { devices } = useContext(DevicesContext);
@@ -181,77 +138,93 @@ function Overall() {
     }
 
   /**
-   * Component to display overall pressure readings
-   * @returns {React.Component} - Overall pressure readings in a GradientCard
+   * Component to display all overall readings in a horizontal carousel
+   * @returns {React.Component} - Overall readings in a horizontal ScrollView
    */
-  function PressureOverall() {
+  function OverallCarousel() {
 
-    /** Overall pressure color */
-    const pressureOverallColor = getPressureColorOverall(devices);
+    /**
+     * Component to display overall pressure readings
+     * @returns {React.Component} - Overall pressure readings in a GradientCard
+     */
+    function PressureOverall() {
 
+      /** Overall pressure color */
+      const pressureOverallColor = getPressureColorOverall(devices);
+
+      return (
+        <GradientCard flexDirection="column" gradient={pressureOverallColor}>
+          <StyledText text="Pressure (mmHg)" />
+          <Divider marginTop={10} />
+          <DeviceList reading="pressure" orange={thresholds.pressure.ORANGE} red={thresholds.pressure.RED}/>
+        </GradientCard>
+      );
+    }
+
+    /**
+     * Component to display overall temperature readings
+     * @returns {React.Component} - Overall temperature readings in a GradientCard
+     */
+    function TemperatureOverall() {
+
+      /** Overall temperature color */
+      const temperatureOverallColor = getTemperatureColorOverall(devices);
+
+      return (
+        <GradientCard flexDirection="column" gradient={temperatureOverallColor}>
+          <StyledText text="Temperature (°C)" />
+          <Divider marginTop={10} />
+          <DeviceList reading="temperature" orange={thresholds.temperature.ORANGE} red={thresholds.temperature.RED}/>
+        </GradientCard>
+      );
+    }
+
+    /**
+     * Component to display overall humidity readings
+     * @returns {React.Component} - Overall humidity readings in a GradientCard
+     */
+    function HumidityOverall() {
+
+      /** Overall humidity color */
+      const humidityOverallColor = getHumidityColorOverall(devices);
+
+      return (
+        <GradientCard flexDirection="column" gradient={humidityOverallColor}>
+          <StyledText text="Humidity (%)" />
+          <Divider marginTop={10} />
+          <DeviceList reading="humidity" orange={thresholds.humidity.ORANGE} red={thresholds.humidity.RED}/>
+        </GradientCard>
+      );
+    }
+    
     return (
-      <GradientCard flexDirection="column" gradient={pressureOverallColor}>
-        <StyledText text="Pressure (mmHg)" />
-        <Divider marginTop={10} marginBottom={10}/>
-        <CenteredChart data={exampleOverallPressureData} color={pressureOverallColor} />
-        <DeviceList reading="pressure" orange={thresholds.pressure.ORANGE} red={thresholds.pressure.RED}/>
-        <Divider marginTop={10} marginBottom={10}/>
-        <Summary color={pressureOverallColor} />
-      </GradientCard>
-    );
+      <ScrollView
+        horizontal={true}
+        contentContainerStyle={{ 
+          width: `${100 * NUM_OVERALL_CARDS}%`,
+        }}
+        style={{
+          paddingBottom: 10
+        }}
+        showsHorizontalScrollIndicator={true}
+        scrollEventThrottle={100}
+        decelerationRate="fast"
+        pagingEnabled
+      >
+        <PressureOverall />
+        <TemperatureOverall />
+        <HumidityOverall />
+      </ScrollView>
+    )
   }
-
-  /**
-   * Component to display overall temperature readings
-   * @returns {React.Component} - Overall temperature readings in a GradientCard
-   */
-  function TemperatureOverall() {
-
-    /** Overall temperature color */
-    const temperatureOverallColor = getTemperatureColorOverall(devices);
-
-    return (
-      <GradientCard flexDirection="column" gradient={temperatureOverallColor}>
-        <StyledText text="Temperature (°C)" />
-        <Divider marginTop={10} marginBottom={10}/>
-        <CenteredChart data={exampleOverallPressureData} color={temperatureOverallColor} />
-        <DeviceList reading="temperature" orange={thresholds.temperature.ORANGE} red={thresholds.temperature.RED}/>
-        <Divider marginTop={10} marginBottom={10}/>
-        <Summary color={temperatureOverallColor} />
-      </GradientCard>
-    );
-  }
-
-  /**
-   * Component to display overall humidity readings
-   * @returns {React.Component} - Overall humidity readings in a GradientCard
-   */
-  function HumidityOverall() {
-
-    /** Overall humidity color */
-    const humidityOverallColor = getHumidityColorOverall(devices);
-
-    return (
-      <GradientCard flexDirection="column" gradient={humidityOverallColor}>
-        <StyledText text="Humidity (%)" />
-        <Divider marginTop={10} marginBottom={10}/>
-        <CenteredChart data={exampleOverallPressureData} color={humidityOverallColor} />
-        <DeviceList reading="humidity" orange={thresholds.humidity.ORANGE} red={thresholds.humidity.RED}/>
-        <Divider marginTop={10} marginBottom={10}/>
-        <Summary color={humidityOverallColor} />
-      </GradientCard>
-    );
-  }
-
+  
   return (
     <ScrollView
       style={{
         padding: 10,
       }}
     >
-      <PressureOverall />
-      <TemperatureOverall />
-      <HumidityOverall />
+      <OverallCarousel />
     </ScrollView>
   )
 }
@@ -274,8 +247,8 @@ function Sensors() {
     // Guard Clauses:
     if (!devices) { return; } // No sensor data exists, so we shouldn't try to render anything
 
-    return devices.map((devices, index) => {
-      return <SensorCard key={index} data={devices} />
+    return devices.map((device, index) => {
+      return <SensorCard key={index} device={device} />
     });
   }
 
@@ -404,86 +377,6 @@ function Sensors() {
     }
 
     /**
-     * Components to show graphs so long as card is expanded
-     * @returns {React.Component} - View with three graphs
-     */
-    function Graphs() {
-      // Guard clauses:
-      if (!device.expanded) { return; } // Card is not expanded
-      
-      // Render graphs
-      return (
-        <View
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-start",
-            width: "100%",
-            padding: 5,
-          }}
-        >
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "flex-start",
-              width: "100%",
-              padding: 5,
-            }}
-          >
-            <Image 
-              source={getPressureSource()}
-              style={{
-                width: 30,
-                height: 30,
-              }}
-            />
-            <StyledText text="Pressure (adc)" marginLeft={5} color={pressureColor} />
-          </View>
-          { device.paused  ? <StyledText text="Sensor Paused" width="100%" marginBottom={5} /> : <CenteredChart device={examplePressureDevice} color={pressureColor} /> }
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "flex-start",
-              width: "100%",
-              padding: 5,
-            }}
-          >
-            <Image 
-              source={getTemperatureSource()}
-              style={{
-                width: 30,
-                height: 30,
-              }}
-            />
-            <StyledText text="Temperature (°C)" marginLeft={5} color={temperatureColor} />
-          </View>
-          { device.paused  ? <StyledText text="Sensor Paused" width="100%" marginBottom={5} /> : <CenteredChart device={exampleTemperatureDevice} color={temperatureColor} /> }
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "flex-start",
-              width: "100%",
-              padding: 5,
-            }}
-          >
-            <Image 
-              source={getHumiditySource()}
-              style={{
-                width: 30,
-                height: 30,
-              }}
-            />
-            <StyledText text="Humidity (%)" marginLeft={5} color={humidityColor} />
-          </View>
-          { device.paused  ? <StyledText text="Sensor Paused" width="100%" marginBottom={5} /> : <CenteredChart device={exampleHumidityDevice} color={humidityColor} /> }
-        </View>
-      )
-    }
-
-    /**
      * Toggle device expanded status
      */
     function toggleExpanded() {
@@ -541,7 +434,6 @@ function Sensors() {
           <HumidityReading />
         </View>
         { device.expanded && <Divider /> }
-        <Graphs />
         { !device.paused && <Summary color={getSummaryColor()} /> /* Only show summary if unpaused */ }
         { device.expanded && <PauseButton paused={device.paused} onClick={togglePaused}/> }
       </GradientCard>
@@ -557,61 +449,6 @@ function Sensors() {
       >
         { renderSensorCards() }
       </ScrollView>
-    </View>
-  )
-}
-
-/**
- * Component to render a chart with a provided data
- * @param {Object} props - Component properties
- * @param {Object} props.data - Chart data
- * @param {string} props.color - Line color
- * @returns {React.Component} - A custom styled LineChart
- */
-function CenteredChart({data, color}) {
-
-  const {dark} = useContext(DarkContext)
-
-  return (
-    <View
-      style={{
-        width: "100%",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-      }}
-    >
-      <LineChart
-        data={data}
-        segments={4}
-        width={Dimensions.get("window").width * GRAPHSCALE} // from react-native
-        height={220}
-        yAxisInterval={1} // optional, defaults to 1
-        withVerticalLines={false}
-        chartConfig={{
-          backgroundColor: dark ? darkTheme.cardFill : lightTheme.cardFill,
-          backgroundGradientFrom: dark ? darkTheme.cardFill : lightTheme.cardFill,
-          backgroundGradientTo: dark ? darkTheme.cardFill : lightTheme.cardFill,
-          decimalPlaces: 0, // optional, defaults to 2dp
-          color: () => color,
-          labelColor: () => dark ? darkTheme.textPrimary : lightTheme.textPrimary,
-          style: {
-            borderRadius: 0,
-          },
-          propsForDots: {
-            r: "2",
-            strokeWidth: "1",
-            stroke: dark ? darkTheme.textPrimary : lightTheme.textPrimary,
-          },
-          propsForBackgroundLines: {
-            opacity: 0.2,
-          },
-        }}
-        bezier
-        style={{
-          marginVertical: 8,
-        }}
-      />
     </View>
   )
 }
@@ -736,3 +573,39 @@ const exampleHumidityData = {
     }
   ]
 };
+
+/**
+ * Carousel component.
+ * @param {Object} props - Component properties.
+ * @param {Array} props.data - The data to be displayed in the carousel.
+ */
+function Carousel({ data }) {
+
+  /**
+   * A custom component for a single carousel item.
+   * You can replace it with your own component.
+   * @param {Object} props - Component properties.
+   * @param {Object} props.item - The item to be displayed in the carousel item.
+   */
+  function CarouselItem({ item }) {
+    return (
+      <View >
+        { item }
+      </View>
+    );
+  }
+
+
+  return (
+    <SafeAreaView>
+      <FlatList
+        data={data}
+        renderItem={({ item }) => <CarouselItem item={item} /> }
+        horizontal
+        showsHorizontalScrollIndicator={true}
+        bounces={true}
+        keyExtractor={(_, index) => `carousel_item_${index}`}
+      />
+    </SafeAreaView>
+  );
+}

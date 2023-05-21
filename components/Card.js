@@ -176,37 +176,63 @@ export function GradientCard(props) {
     }
   }
 
-  // Wrap the card in a Swipeable and render contents
-  return (
-    <Swipeable 
-      ref={swipeableRef}
-      containerStyle={{
-          flex: 1
-      }}
-      renderLeftActions={renderLeftActions}
-      renderRightActions={renderRightActions}
-      onSwipeableWillOpen={handleSwipeOpen}
-    >
-      <LinearGradient 
-        start={props.selected ? [0, 0] : [0, 0.5]}
-        end={props.selected ? [1, 1] : [0.3, 0.5]}
-        colors={getGradientColors()}
-        style={{
-            maxWidth: props.width ? props.width: '100%',
-            borderRadius:  cardStyles.cardBorderRadius, 
-            height: "100%", 
-            marginBottom: cardStyles.cardMarginBottom, 
-            elevation: cardStyles.cardElevation,
-            flex: 1,
-            padding: 1,
-            display: 'flex', 
-            justifyContent: 'center', 
-            alignItems: 'center',
+  // If this card is intended to be swipeable, wrap it in a Swipable component
+  if (props.leftSwipeComponent || props.rightSwipeComponent) {
+    // This should be swipeable
+    // Wrap the card in a Swipeable and render contents
+    return (
+      <Swipeable 
+        ref={swipeableRef}
+        containerStyle={{
+            flex: 1
         }}
+        renderLeftActions={renderLeftActions}
+        renderRightActions={renderRightActions}
+        onSwipeableWillOpen={handleSwipeOpen}
       >
-        { renderView() }
-      </LinearGradient>
-    </Swipeable>
+        <LinearGradient 
+          start={props.selected ? [0, 0] : [0, 0.5]}
+          end={props.selected ? [1, 1] : [0.3, 0.5]}
+          colors={getGradientColors()}
+          style={{
+              maxWidth: props.width ? props.width: '100%',
+              borderRadius:  cardStyles.cardBorderRadius, 
+              height: "100%", 
+              marginBottom: cardStyles.cardMarginBottom, 
+              elevation: cardStyles.cardElevation,
+              flex: 1,
+              padding: 1,
+              display: 'flex', 
+              justifyContent: 'center', 
+              alignItems: 'center',
+          }}
+        >
+          { renderView() }
+        </LinearGradient>
+      </Swipeable>
+    )
+  }
+
+  // This shouldn't be swipeable, so don't render the Swipable component to avoid interfering with touch in carousels
+  return (
+    <LinearGradient 
+      start={props.selected ? [0, 0] : [0, 0.5]}
+      end={props.selected ? [1, 1] : [0.3, 0.5]}
+      colors={getGradientColors()}
+      style={{
+          maxWidth: props.width ? props.width: '100%',
+          borderRadius:  cardStyles.cardBorderRadius, 
+          height: "100%", 
+          marginBottom: cardStyles.cardMarginBottom, 
+          flex: 1,
+          padding: 2,
+          display: 'flex', 
+          justifyContent: 'center', 
+          alignItems: 'center',
+      }}
+    >
+      { renderView() }
+    </LinearGradient>
   )
 }
 

@@ -8,7 +8,7 @@ import Icon from "react-native-vector-icons/Ionicons"
 import Calibration from "./navigation/Calibration";
 import { AppDrawer, navTheme, } from "./components/Navigation";
 import Patient from "./navigation/Patient";
-import Status from "./navigation/Status";
+import Status from "./navigation/Status3";
 
 // Style Imports
 import { darkTheme, lightTheme, } from "./assets/styles";

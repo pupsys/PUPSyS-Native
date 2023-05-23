@@ -225,6 +225,45 @@ export function getSummaryColor(device) {
 }
 
 /**
+ * Get the most severe of an array of colors
+ * @param {string[]} colors - Array of colors to parse
+ * @returns {string} - most severe of all three color inputs
+ */
+export function getMostSevereColor(colors) {
+  // Check for reds
+  for (const c of colors) {
+    if (c === globalColors.red) {
+      return c;
+    }
+  }
+  // Check for oranges
+  for (const c of colors) {
+    if (c === globalColors.orange) {
+      return c;
+    }
+  }
+  // Return all good
+  return globalColors.green;
+}
+
+/**
+ * Get the correct, low-opacity version of a color
+ * @param {string} opaqueColor - Opaque version of color
+ * @returns {string} - Alpha version of given color
+ */
+export function getAlpha(opaqueColor) {
+  if (opaqueColor === globalColors.red) {
+    return globalColors.redAlpha;
+  }
+  if (opaqueColor === globalColors.orange) {
+    return globalColors.orangeAlpha;
+  }
+  if (opaqueColor === globalColors.green) {
+    return globalColors.greenAlpha;
+  }
+}
+
+/**
  * Seconds between sensor ADC readings
  * @const
  */

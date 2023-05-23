@@ -16,10 +16,12 @@ import { buttonImages, navigationImages, statusImages, } from "../api/image";
 import { statusTabsPages, } from "../api/navigation";
 import { 
   averagedAdc, 
+  getAlpha, 
   getGraphLabels, 
   getHumidityColor,
   getHumidityColorOverall, 
   getHumiditySource, 
+  getMostSevereColor, 
   getPressureColor,
   getPressureColorOverall,
   getPressureSource,
@@ -39,7 +41,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 const GRAPHSCALE = 0.85;
 
 /** Number of cards for overall carousel */
-const NUM_OVERALL_CARDS = 3;
+const NUM_OVERALL_CARDS = 4;
 
 /**
  * Component to hold Status Tabs
@@ -60,8 +62,12 @@ export default function Status({navigation}) {
    * @param {number} props.orange - Orange threshold
    * @param {number} props.red - Red threshold
    * @returns {React.Component} - ScrollView populated with a header and {@link DeviceListItem}
+   * Not including a {@link props.reading} will display overall status
    */
   function DeviceList({reading, orange, red}) {
+
+    /** If not given a reading, we're in overall mode */
+    const overallMode = !reading;
 
     /**
      * Component for rendering a device in BLE devices list
@@ -73,22 +79,58 @@ export default function Status({navigation}) {
      */
     function DeviceListItem({header, device}) {
 
+      /** Handle any reading header override from overallMode **/
+      const readingHeader = overallMode ? "Status" : "Reading"; 
+
       /**
-       * Get color of reading by thresholds {@link orange} and {@link red}
+       * Get color of reading by thresholds {@link orange} and {@link red} or overall
        * @returns {string} - Color key string
        */
       function getBackgroundColor() {
         // Guard clauses
-        if (header)           { return; } // This is the header 
-        if (!device[reading]) { return; } // Somehow there is no 
-        
+        if (header)                           { return; } // This is the header 
+        if (!device[reading] && !overallMode) { return; } // Somehow there is no device reading, but we're not in overall mode
+
+        // If we're in overallMode, take the most severe of all reading colors
+        if (overallMode) {
+          // We're in overallMode
+          const pressureColor = getPressureColor(device);
+          const temperatureColor = getTemperatureColor(device);
+          const humidityColor = getHumidityColor(device);
+
+          return getMostSevereColor([pressureColor, temperatureColor, humidityColor]);
+        }
+
+        // If we're not in overallMode, just compare with given thresholds
         if (device[reading] >= red) {
-          return globalColors.redAlpha;
+          return globalColors.red;
         }
         if (device[reading] >= orange) {
-          return globalColors.orangeAlpha;
+          return globalColors.red;
         }
       }
+
+      function getReadingText() {
+        // Guard clauses:
+        if (!device) { return "?"; } // Somehow device is undefined?? This happens, but it shouldn't.
+
+        // If we're in overallMode, get the text from the backgroundColor
+        if (overallMode) {
+          /** Overall color for this device */
+          const overallColor = getBackgroundColor();
+          if (overallColor === globalColors.red) {
+            return "Act Now";
+          }
+          if (overallColor === globalColors.orange) {
+            return "Pay Attention";
+          }
+          return "Good Job";
+        }
+        return device[reading];
+      }
+
+      /** Handle a reading value override */
+      const readingValue = getReadingText();
 
       // Render device in a View
       return (
@@ -98,14 +140,14 @@ export default function Status({navigation}) {
             flexDirection: "row",
             alignItems: "center",
             marginVertical: 2,
-            backgroundColor: getBackgroundColor()
+            backgroundColor: getAlpha(getBackgroundColor()),
           }}
         >
           <StyledText text={header ? "#" : `${device.id + 1}`} width="10%" align="center"/>
           <Divider vertical={true}/>
           <StyledText text={header ? "Location" : device.location} width="50%"/>
           <Divider vertical={true}/>
-          <StyledText text={header ? "Reading" : device[reading]} width="40%"/>
+          <StyledText text={header ? readingHeader : readingValue} width="40%"/>
         </View>
       )
     }
@@ -196,6 +238,48 @@ export default function Status({navigation}) {
         </GradientCard>
       );
     }
+
+    /**
+     * Component to display which sensors have any issues
+     * @returns {React.Component} - Overall readings in a GradientCard
+     */
+    function OverallHome() {
+
+      /**
+       * Using the three colors {@link pressureOverallColor}, {@link temperatureOverallColor}, and {@link humidityOverallColor},
+       * return the most severe of the three.
+       */
+      function getOverallColor() {
+        // Get all three overall colors
+        const pressureOverallColor = getPressureColorOverall(devices);
+        const temperatureOverallColor = getTemperatureColorOverall(devices);
+        const humidityOverallColor = getHumidityColorOverall(devices);
+
+        // If any are red, return red
+        if (pressureOverallColor === globalColors.red || temperatureOverallColor === globalColors.red || humidityOverallColor === globalColors.red) {
+          return globalColors.red;
+        }
+
+        // If any are orange, return orange
+        if (pressureOverallColor === globalColors.orange || temperatureOverallColor === globalColors.orange || humidityOverallColor === globalColors.orange) {
+          return globalColors.orange;
+        }
+
+        // All is well! Return green
+        return globalColors.green;
+      }
+
+      /** Overall color */
+      const overallColor = getOverallColor();
+
+      return (
+        <GradientCard flexDirection="column" gradient={overallColor}>
+          <StyledText text="Overall" />
+          <Divider marginTop={10} />
+          <DeviceList overallMode={true} />
+        </GradientCard>
+      );
+    }
     
     return (
       <ScrollView
@@ -211,6 +295,7 @@ export default function Status({navigation}) {
         decelerationRate="fast"
         pagingEnabled
       >
+        <OverallHome />
         <PressureOverall />
         <TemperatureOverall />
         <HumidityOverall />
@@ -573,39 +658,3 @@ const exampleHumidityData = {
     }
   ]
 };
-
-/**
- * Carousel component.
- * @param {Object} props - Component properties.
- * @param {Array} props.data - The data to be displayed in the carousel.
- */
-function Carousel({ data }) {
-
-  /**
-   * A custom component for a single carousel item.
-   * You can replace it with your own component.
-   * @param {Object} props - Component properties.
-   * @param {Object} props.item - The item to be displayed in the carousel item.
-   */
-  function CarouselItem({ item }) {
-    return (
-      <View >
-        { item }
-      </View>
-    );
-  }
-
-
-  return (
-    <SafeAreaView>
-      <FlatList
-        data={data}
-        renderItem={({ item }) => <CarouselItem item={item} /> }
-        horizontal
-        showsHorizontalScrollIndicator={true}
-        bounces={true}
-        keyExtractor={(_, index) => `carousel_item_${index}`}
-      />
-    </SafeAreaView>
-  );
-}

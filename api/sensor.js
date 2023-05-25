@@ -283,8 +283,8 @@ export const exampleDevices = [
     pressure: 350,
     temperature: 50,
     humidity: 50,
-    paused: false,
-    expanded: false,
+    paused: false,    // Remove when sensors page finished
+    expanded: false,  // Remove when sensors page finished
   },
   {
     id: 1,
@@ -296,8 +296,8 @@ export const exampleDevices = [
     pressure: 300,
     temperature: 40,
     humidity: 20,
-    paused: false,
-    expanded: false,
+    paused: false,    // Remove when sensors page finished
+    expanded: false,  // Remove when sensors page finished
   },
   {
     id: 2,
@@ -309,8 +309,8 @@ export const exampleDevices = [
     pressure: 300,
     temperature: 30,
     humidity: 20,
-    paused: false,
-    expanded: false,
+    paused: false,    // Remove when sensors page finished
+    expanded: false,  // Remove when sensors page finished
   },
   {
     id: 3,
@@ -322,8 +322,8 @@ export const exampleDevices = [
     pressure: 300,
     temperature: 30,
     humidity: 20,
-    paused: false,
-    expanded: false,
+    paused: false,    // Remove when sensors page finished
+    expanded: false,  // Remove when sensors page finished
   },
 ];
 

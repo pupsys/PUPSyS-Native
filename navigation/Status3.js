@@ -34,7 +34,7 @@ import {
 // Component Imports
 import { PauseButton, } from "../components/Button";
 import { Divider, GradientCard, } from "../components/Card";
-import { StyledText, } from '../components/Text';
+import { CenteredTitle, StyledText, } from '../components/Text';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 /** Width of graphs relative to screen width */
@@ -108,6 +108,7 @@ export default function Status({navigation}) {
         if (device[reading] >= orange) {
           return globalColors.red;
         }
+        return globalColors.green;
       }
 
       function getReadingText() {
@@ -310,6 +311,8 @@ export default function Status({navigation}) {
       }}
     >
       <OverallCarousel />
+      <CenteredTitle text="Sensors:" />
+      <Sensors />
     </ScrollView>
   )
 }
@@ -378,21 +381,6 @@ function Sensors() {
     }
 
     /**
-     * Change the current device's paused status
-     */
-    function togglePaused() {
-      // Clone devices list
-      let newDevices = [];
-      for (const d of devices) {
-        newDevices.push(d);
-      }
-      // Set current device's logTo to value of text field
-      newDevices[device.id].paused = !newDevices[device.id].paused;
-      // Update state
-      setDevices(newDevices);
-    }
-
-    /**
      * Component to display humidity device
      */
     function HumidityReading() {
@@ -406,7 +394,7 @@ function Sensors() {
             }}
           />
           <StyledText 
-            text={device.paused ? "..." : `${device.humidity}%`} 
+            text={`${device.humidity}%`} 
             marginLeft={5} 
             marginRight={5} 
             color={humidityColor}
@@ -429,7 +417,7 @@ function Sensors() {
             }}
           />
           <StyledText 
-            text={device.paused ? "..." : `${device.temperature}°C`} 
+            text={`${device.temperature}°C`} 
             marginLeft={5} 
             marginRight={5} 
             color={temperatureColor}
@@ -452,7 +440,7 @@ function Sensors() {
             }}
           />
           <StyledText 
-            text={device.paused ? "..." : `${device.pressure}mmHg`} 
+            text={`${device.pressure}mmHg`} 
             marginLeft={5} 
             marginRight={5} 
             color={pressureColor}
@@ -461,48 +449,17 @@ function Sensors() {
       )
     }
 
-    /**
-     * Toggle device expanded status
-     */
-    function toggleExpanded() {
-      // Clone devices list
-      let newDevices = [];
-      for (const d of devices) {
-        newDevices.push(d);
-      }
-      // Set current device's logTo to value of text field
-      newDevices[device.id].expanded = !newDevices[device.id].expanded;
-      // Update state
-      setDevices(newDevices);
-    }
-
     return (
       <GradientCard
         flexDirection="column"
         justifyContent="center"
         gradient={getSummaryColor()}
-        onClick={toggleExpanded}
-        disabled={device.paused}
       >
-        <View 
-          display="flex" 
-          flexDirection="row" 
-          aligntItems="center" 
-          justifyContent="space-between"
-          style={{          
-            width: "100%",
-          }}
-        >
-          <StyledText text={`Sensor ${device.id + 1}: ${device.location}`} fontWeight="bold" />
-          <Image 
-            source={dark ? buttonImages.ARROWDOWNDARK : buttonImages.ARROWDOWNLIGHT}
-            style={{
-              width: 40,
-              height: 40,
-              transform: [{ rotate: device.expanded ? "0deg" : "180deg" }],
-            }}
-          />
-        </View>
+        <StyledText 
+          text={`Sensor ${device.id + 1}: ${device.location}`} 
+          fontWeight="bold" 
+          marginBottom={5}
+        />
         <Divider />
         <View 
           display="flex" 
@@ -518,9 +475,7 @@ function Sensors() {
           <TemperatureReading />
           <HumidityReading />
         </View>
-        { device.expanded && <Divider /> }
-        { !device.paused && <Summary color={getSummaryColor()} /> /* Only show summary if unpaused */ }
-        { device.expanded && <PauseButton paused={device.paused} onClick={togglePaused}/> }
+        <Summary color={getSummaryColor()} />
       </GradientCard>
     )
   }

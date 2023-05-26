@@ -1,8 +1,7 @@
 // Library Imports
-import { useContext, useRef, useState } from 'react';
-import { Dimensions, Image, View } from 'react-native';
+import { useContext, } from 'react';
+import { Dimensions, Image, View, } from 'react-native';
 import { ScrollView, } from 'react-native-gesture-handler';
-import { createBottomTabNavigator, } from '@react-navigation/bottom-tabs';
 import { LineChart, } from "react-native-chart-kit";
 
 // Style Imports

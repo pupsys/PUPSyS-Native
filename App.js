@@ -8,7 +8,7 @@ import Icon from "react-native-vector-icons/Ionicons"
 import Calibration from "./navigation/Calibration";
 import { AppDrawer, navTheme, } from "./components/Navigation";
 import Patient from "./navigation/Patient";
-import Status from "./navigation/Status";
+import Status from "./navigation/Status3";
 
 // Style Imports
 import { darkTheme, lightTheme, } from "./assets/styles";
@@ -19,7 +19,7 @@ import { exampleDevices, } from "./api/sensor";
 import { examplePatient, } from "./api/patient";
 
 // Context Imports
-import { DarkContext, DevicesContext, PatientContext, } from "./Context";
+import { DarkContext, DevicesContext, PatientContext, SensorContext } from "./Context";
 import { navigationImages } from "./api/image";
 import { generateRandomNumbers } from "./api/simulation";
 
@@ -32,9 +32,15 @@ function App() {
   const [ dark, setDark ]       = useState(false);          // Current darkmode state
   const [ devices, setDevices ] = useState(exampleDevices); // Current devices
   const [ patient, setPatient ] = useState(examplePatient); // Current patient state
+  const [ sensorData, setSensorData ] = useState({ // Current sensor state
+    pressure: [],     // Default pressure readings to empty list
+    temperature: [],  // Default temperature readings to empty list
+    humidity: [],     // Default humidity readings to empty list
+  });
 
   // Render PUPSyS!
   return (
+    <SensorContext.Provider  value={{sensorData, setSensorData}}>  
     <PatientContext.Provider  value={{patient, setPatient}}>  
     <DarkContext.Provider     value={{dark, setDark}}>  
     <DevicesContext.Provider  value={{devices, setDevices}}>  
@@ -80,6 +86,7 @@ function App() {
     </DevicesContext.Provider>
     </DarkContext.Provider>
     </PatientContext.Provider>
+    </SensorContext.Provider>
   );
 }3
 

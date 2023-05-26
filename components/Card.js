@@ -24,6 +24,7 @@ import { cardStyles, darkTheme, globalColors, lightTheme } from "../assets/style
  * @param {React.Component} props.rightSwipeComponent - Component to render under card on right swipe
  * @param {Function} props.onLeftSwipe - Function to call on left swipe
  * @param {Function} props.onRightSwipe - Function to call on right swipe
+ * @param {string} props.backgroundColor - Card background color
  * @returns {React.Component} - A card-styled Pressable surrounded by a LinearGradient
  */
 export function GradientCard(props) {
@@ -58,7 +59,10 @@ export function GradientCard(props) {
 
   function getBackgroundColor() {
     if (props.disabled) {
-      return dark ? darkTheme.searchFill : lightTheme.searchFill
+      return dark ? darkTheme.searchFill : lightTheme.searchFill;
+    }
+    if (props.backgroundColor) {
+      return props.backgroundColor;
     }
     return dark ? darkTheme.cardFill : lightTheme.cardFill;
   }
@@ -172,37 +176,63 @@ export function GradientCard(props) {
     }
   }
 
-  // Wrap the card in a Swipeable and render contents
-  return (
-    <Swipeable 
-      ref={swipeableRef}
-      containerStyle={{
-          flex: 1
-      }}
-      renderLeftActions={renderLeftActions}
-      renderRightActions={renderRightActions}
-      onSwipeableWillOpen={handleSwipeOpen}
-    >
-      <LinearGradient 
-        start={props.selected ? [0, 0] : [0, 0.5]}
-        end={props.selected ? [1, 1] : [0.3, 0.5]}
-        colors={getGradientColors()}
-        style={{
-            maxWidth: props.width ? props.width: '100%',
-            borderRadius:  cardStyles.cardBorderRadius, 
-            height: "100%", 
-            marginBottom: cardStyles.cardMarginBottom, 
-            elevation: cardStyles.cardElevation,
-            flex: 1,
-            padding: 1,
-            display: 'flex', 
-            justifyContent: 'center', 
-            alignItems: 'center',
+  // If this card is intended to be swipeable, wrap it in a Swipable component
+  if (props.leftSwipeComponent || props.rightSwipeComponent) {
+    // This should be swipeable
+    // Wrap the card in a Swipeable and render contents
+    return (
+      <Swipeable 
+        ref={swipeableRef}
+        containerStyle={{
+            flex: 1
         }}
+        renderLeftActions={renderLeftActions}
+        renderRightActions={renderRightActions}
+        onSwipeableWillOpen={handleSwipeOpen}
       >
-        { renderView() }
-      </LinearGradient>
-    </Swipeable>
+        <LinearGradient 
+          start={props.selected ? [0, 0] : [0, 0.5]}
+          end={props.selected ? [1, 1] : [0.3, 0.5]}
+          colors={getGradientColors()}
+          style={{
+              maxWidth: props.width ? props.width: '100%',
+              borderRadius:  cardStyles.cardBorderRadius, 
+              height: "100%", 
+              marginBottom: cardStyles.cardMarginBottom, 
+              elevation: cardStyles.cardElevation,
+              flex: 1,
+              padding: 1,
+              display: 'flex', 
+              justifyContent: 'center', 
+              alignItems: 'center',
+          }}
+        >
+          { renderView() }
+        </LinearGradient>
+      </Swipeable>
+    )
+  }
+
+  // This shouldn't be swipeable, so don't render the Swipable component to avoid interfering with touch in carousels
+  return (
+    <LinearGradient 
+      start={props.selected ? [0, 0] : [0, 0.5]}
+      end={props.selected ? [1, 1] : [0.3, 0.5]}
+      colors={getGradientColors()}
+      style={{
+          maxWidth: props.width ? props.width: '100%',
+          borderRadius:  cardStyles.cardBorderRadius, 
+          height: "100%", 
+          marginBottom: cardStyles.cardMarginBottom, 
+          flex: 1,
+          padding: 2,
+          display: 'flex', 
+          justifyContent: 'center', 
+          alignItems: 'center',
+      }}
+    >
+      { renderView() }
+    </LinearGradient>
   )
 }
 
@@ -212,6 +242,7 @@ export function GradientCard(props) {
  * @param {boolean} props.vertical - Whether divider is vertical
  * @param {number} props.marginTop - Top margin
  * @param {number} props.marginBottom - Bottom margin
+ * @param {string} props.color - Line color
  * @default
  * vertical = false;
  * @returns {React.Component} - A line to separate UI elements
@@ -221,12 +252,23 @@ export function Divider(props) {
   // Get context
   const { dark } = useContext(DarkContext);
 
+  /**
+   * Get divider color by props or theme
+   * @returns {string} - Color for divider line
+   */
+  function getDividerColor() {
+    if (props.color) {
+      return props.color;
+    }
+    return dark ? darkTheme.textPrimary : lightTheme.textPrimary;
+  }
+  
   return (
     <View 
       style={{          
         width: props.vertical ? "0%" : "100%",
         height: props.vertical ? "100%" : "0%",
-        borderColor: dark ? darkTheme.textPrimary : lightTheme.textPrimary,
+        borderColor: getDividerColor(),
         borderBottomWidth: props.vertical ? 0 : 1,
         borderLeftWidth: props.vertical ? 1 : 0,
         marginTop: props.marginTop,

@@ -18,3 +18,10 @@ export const DevicesContext = createContext();
  * @static Tells the entire application current patient state
  */
 export const PatientContext = createContext();
+
+/**
+ * @type {React.Context<Map<string, Object>>}
+ * @static Tells the entire application current sensor state
+ */
+export const SensorContext = createContext();
+

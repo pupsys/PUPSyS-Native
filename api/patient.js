@@ -23,12 +23,29 @@ export const examplePatient = {
 
 /** Dropdown menu items for possible weight units */
 export const weightMenuItems = [
-  {value: weightUnits[0], label: weightUnits[0]},
-  {value: weightUnits[1], label: weightUnits[1]},
+  { 
+    value: weightUnits[0], 
+    label: weightUnits[0] 
+  },
+  { 
+    value: weightUnits[1], 
+    label: weightUnits[1] 
+  },
 ]
 
 /** Dropdown menu items for possible height units */
 export const heightMenuItems = [
-  {value: heightUnits[0], label: heightUnits[0]},
-  {value: heightUnits[1], label: heightUnits[1]},
+  { 
+    value: heightUnits[0], 
+    label: heightUnits[0] 
+  },
+  { 
+    value: heightUnits[1], 
+    label: heightUnits[1] 
+  },
 ]
+
+/** 
+ * All possible medical conditions for a patient (example data) 
+*/
+export const allConditions = ["Diabetes", "Option 2", "Option 3", "...", "Other"];

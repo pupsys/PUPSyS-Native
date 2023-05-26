@@ -16,14 +16,17 @@ import { StyledText, } from '../components/Text';
 import { StyledCheckbox } from '../components/Button';
 
 // API Imports
-import { heightMenuItems, weightMenuItems } from '../api/patient';
+import { allConditions, heightMenuItems, weightMenuItems } from '../api/patient';
 
 /** Space taken up by entry names */
 const fieldNameWidth = 60;
 
-/** All possible medical conditions for a patient (example data) */
-const allConditions = ["Diabetes", "Option 2", "Option 3", "...", "Other"];
-
+/**
+ * Component to display patient information page
+ * @param {Object} props - Component properties
+ * @param {ReactNavigation} props.navigation - Navigation object from AppStack 
+ * @returns {React.Component} - Navigator component for Patient pages
+ */
 export default function Patient({navigation}) {
 
   // Get patient context
@@ -32,7 +35,6 @@ export default function Patient({navigation}) {
   // Create states to keep track of whether or not any dropdown menus are open
   const [heightMenuOpen, setHeightMenuOpen] = useState(false);
   const [weightMenuOpen, setWeightMenuOpen] = useState(false);
-  const [age, setAge] = useState("21");
   
   const [medicalConditions, setMedicalConditions] = useState([])
   const [notesEntryValue, setNotesEntryValue] = useState("");
@@ -278,9 +280,22 @@ export default function Patient({navigation}) {
 
   /**
    * Component to display age entry field
-   * @returns {React.Component} - View with StyledText and Entry for patient height
+   * @returns {React.Component} - View with StyledText and Entry for patient age
    */
   function AgeEntry() {
+
+    /**
+     * Set patient's age and update context
+     * @param {string} t - Text from age entry
+     */
+    function updatePatientAge(t) {
+      // Convert text to number
+      const newAge = parseInt(t);
+      const newPatient = {...patient};
+      newPatient.age = newAge;
+      setPatient(newPatient);
+    }
+
     return (
       <View
         style={{
@@ -293,7 +308,7 @@ export default function Patient({navigation}) {
         <View style={{width: fieldNameWidth}}>
           <StyledText text="Age:" marginRight={5}/>
         </View>
-        <Entry width="25%" height={50} placeholderText="Age" value={age} onChange={t => setAge(t)}/>
+        <Entry width="25%" height={50} placeholderText="Age" value={patient.age} onChange={t => updatePatientAge(t)}/>
       </View>
     )
   }

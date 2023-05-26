@@ -1,5 +1,5 @@
 // Library Imports
-import { useContext, useEffect, } from 'react';
+import { useContext, } from 'react';
 import { Dimensions, Image, View, } from 'react-native';
 import { ScrollView, } from 'react-native-gesture-handler';
 import { createBottomTabNavigator, } from '@react-navigation/bottom-tabs';
@@ -14,14 +14,25 @@ import { DarkContext, DevicesContext, } from '../Context';
 // API Imports
 import { buttonImages, navigationImages, statusImages, } from "../api/image";
 import { statusTabsPages, } from "../api/navigation";
-import { averagedAdc, getGraphLabels, getScaledAdc, } from '../api/sensor'; 
-import { thresholds, } from '../api/threshold';
+import { 
+  averagedAdc, 
+  getGraphLabels, 
+  getHumidityColor,
+  getHumidityColorOverall, 
+  getHumiditySource, 
+  getPressureColor,
+  getPressureColorOverall,
+  getPressureSource,
+  getScaledAdc, 
+  getTemperatureColor,
+  getTemperatureColorOverall,
+  getTemperatureSource,
+  thresholds, } from '../api/sensor'; 
 
 // Component Imports
 import { PauseButton, } from "../components/Button";
 import { Divider, GradientCard, } from "../components/Card";
 import { StyledText, } from '../components/Text';
-import { generateRandomNumbers } from '../api/simulation';
 
 /** Navigator for all status tabs */
 const StatusTabs = createBottomTabNavigator();
@@ -175,30 +186,17 @@ function Overall() {
    */
   function PressureOverall() {
 
-    /**
-     * Get the color of pressure text
-     * @returns {string} - Color key string
-     */
-    function getPressureColor() {
-      for (const device of devices) {
-        if (device.pressure >= thresholds.pressure.RED) {
-          return globalColors.red;
-        }
-        if (device.pressure >= thresholds.pressure.ORANGE) {
-          return globalColors.orange;
-        }
-      }
-      return dark ? darkTheme.textPrimary : lightTheme.textPrimary;
-    }
+    /** Overall pressure color */
+    const pressureOverallColor = getPressureColorOverall(devices);
 
     return (
-      <GradientCard flexDirection="column" gradient={getPressureColor()}>
+      <GradientCard flexDirection="column" gradient={pressureOverallColor}>
         <StyledText text="Pressure (mmHg)" />
         <Divider marginTop={10} marginBottom={10}/>
-        <CenteredChart data={exampleOverallPressureData} color={getPressureColor()} />
+        <CenteredChart data={exampleOverallPressureData} color={pressureOverallColor} />
         <DeviceList reading="pressure" orange={thresholds.pressure.ORANGE} red={thresholds.pressure.RED}/>
         <Divider marginTop={10} marginBottom={10}/>
-        <Summary color={getPressureColor()} />
+        <Summary color={pressureOverallColor} />
       </GradientCard>
     );
   }
@@ -209,30 +207,17 @@ function Overall() {
    */
   function TemperatureOverall() {
 
-    /**
-     * Get the color of temperature text
-     * @returns {string} - Color key string
-     */
-    function getTemperatureColor() {
-      for (const device of devices) {
-        if (device.temperature >= thresholds.temperature.RED) {
-          return globalColors.red;
-        }
-        if (device.temperature >= thresholds.temperature.ORANGE) {
-          return globalColors.orange;
-        }
-      }
-      return dark ? darkTheme.textPrimary : lightTheme.textPrimary;
-    }
+    /** Overall temperature color */
+    const temperatureOverallColor = getTemperatureColorOverall(devices);
 
     return (
-      <GradientCard flexDirection="column" gradient={getTemperatureColor()}>
+      <GradientCard flexDirection="column" gradient={temperatureOverallColor}>
         <StyledText text="Temperature (°C)" />
         <Divider marginTop={10} marginBottom={10}/>
-        <CenteredChart data={exampleOverallPressureData} color={getTemperatureColor()} />
+        <CenteredChart data={exampleOverallPressureData} color={temperatureOverallColor} />
         <DeviceList reading="temperature" orange={thresholds.temperature.ORANGE} red={thresholds.temperature.RED}/>
         <Divider marginTop={10} marginBottom={10}/>
-        <Summary color={getTemperatureColor()} />
+        <Summary color={temperatureOverallColor} />
       </GradientCard>
     );
   }
@@ -243,30 +228,17 @@ function Overall() {
    */
   function HumidityOverall() {
 
-    /**
-     * Get the color of humidity text
-     * @returns {string} - Color key string
-     */
-    function getHumidityColor() {
-      for (const device of devices) {
-        if (device.temperature >= thresholds.humidity.RED) {
-          return globalColors.red;
-        }
-        if (device.temperature >= thresholds.humidity.ORANGE) {
-          return globalColors.orange;
-        }
-      }
-      return dark ? darkTheme.textPrimary : lightTheme.textPrimary;
-    }
+    /** Overall humidity color */
+    const humidityOverallColor = getHumidityColorOverall(devices);
 
     return (
-      <GradientCard flexDirection="column" gradient={getHumidityColor()}>
+      <GradientCard flexDirection="column" gradient={humidityOverallColor}>
         <StyledText text="Humidity (%)" />
         <Divider marginTop={10} marginBottom={10}/>
-        <CenteredChart data={exampleOverallPressureData} color={getHumidityColor()} />
+        <CenteredChart data={exampleOverallPressureData} color={humidityOverallColor} />
         <DeviceList reading="humidity" orange={thresholds.humidity.ORANGE} red={thresholds.humidity.RED}/>
         <Divider marginTop={10} marginBottom={10}/>
-        <Summary color={getHumidityColor()} />
+        <Summary color={humidityOverallColor} />
       </GradientCard>
     );
   }
@@ -302,25 +274,32 @@ function Sensors() {
     // Guard Clauses:
     if (!devices) { return; } // No sensor data exists, so we shouldn't try to render anything
 
-    return devices.map((devices, index) => {
-      return <SensorCard key={index} data={devices} />
+    return devices.map((device, index) => {
+      return <SensorCard key={index} device={device} />
     });
   }
 
   /**
    * A component for rendering sensor data
-   * @param {Object} props.data data from device
+   * @param {Object} props.device device from DevicesContext
    * @returns {React.Component} - A GradientCard with sensor data displays
    */
-  function SensorCard({data}) {
+  function SensorCard({device}) {
+
+    /** This device's pressure color */
+    const pressureColor = getPressureColor(device);
+    /** This device's temperature color */
+    const temperatureColor = getTemperatureColor(device);
+    /** This device's humidity color */
+    const humidityColor = getHumidityColor(device);
+    /** Get colors of all readings */
+    const allColors = [ pressureColor, temperatureColor, humidityColor ];
 
     /**
      * Get the border color by picking the most extreme color of any reading
      * @returns {string} - Color key string
      */
     function getSummaryColor() {
-      /** Get colors of all sensors */
-      const allColors = [getPressureColor(), getTemperatureColor(), getHumidityColor()];
 
       // If any of the colors are red, make the card red
       for (const readingColor of allColors) {
@@ -341,102 +320,6 @@ function Sensors() {
     }
 
     /**
-     * Get the color of pressure text
-     * @returns {string} - Color key string
-     */
-    function getPressureColor() {
-      if (!data.paused) {
-        if (data.pressure >= thresholds.pressure.RED) {
-          return globalColors.red;
-        }
-        if (data.pressure >= thresholds.pressure.ORANGE) {
-          return globalColors.orange;
-        }
-      }
-      return dark ? darkTheme.textPrimary : lightTheme.textPrimary;
-    }
-
-    /**
-     * Get the image source for pressure icon based on reading color
-     * @returns {Image} - Image source
-     */
-    function getPressureSource() {
-      const color = getPressureColor();
-      if (color === globalColors.red) {
-        return statusImages.pressure.RED;
-      }
-      if (color === globalColors.orange) {
-        return statusImages.pressure.ORANGE;
-      }
-      // No worries, return theme colored icon
-      return dark ? statusImages.pressure.DARK : statusImages.pressure.LIGHT;
-    }
-
-    /**
-     * Get the color of temperature text
-     * @returns {string} - Color key string
-     */
-    function getTemperatureColor() {
-      if (!data.paused) {
-        if (data.temperature >= thresholds.temperature.RED) {
-          return globalColors.red;
-        }
-        if (data.temperature >= thresholds.temperature.ORANGE) {
-          return globalColors.orange;
-        }
-      }
-      return dark ? darkTheme.textPrimary : lightTheme.textPrimary;
-    }
-
-    /**
-     * Get the image source for temperature icon based on reading color
-     * @returns {Image} - Image source
-     */
-    function getTemperatureSource() {
-      const color = getTemperatureColor();
-      if (color === globalColors.red) {
-        return statusImages.temperature.RED;
-      }
-      if (color === globalColors.orange) {
-        return statusImages.temperature.ORANGE;
-      }
-      // No worries, return theme colored icon
-      return dark ? statusImages.temperature.DARK : statusImages.temperature.LIGHT;
-    }
-
-    /**
-     * Get the color of humidity text
-     * @returns {string} - Color key string
-     */
-    function getHumidityColor() {
-      if (!data.paused) {
-        if (data.humidity >= thresholds.humidity.RED) {
-          return globalColors.red;
-        }
-        if (data.humidity >= thresholds.humidity.ORANGE) {
-          return globalColors.orange;
-        }
-      }
-      return dark ? darkTheme.textPrimary : lightTheme.textPrimary;
-    }
-
-    /**
-     * Get the image source for humidity icon based on reading color
-     * @returns {Image} - Image source
-     */
-    function getHumiditySource() {
-      const color = getHumidityColor();
-      if (color === globalColors.red) {
-        return statusImages.humidity.RED;
-      }
-      if (color === globalColors.orange) {
-        return statusImages.humidity.ORANGE;
-      }
-      // No worries, return theme colored icon
-      return dark ? statusImages.humidity.DARK : statusImages.humidity.LIGHT;
-    }
-
-    /**
      * Change the current device's paused status
      */
     function togglePaused() {
@@ -446,75 +329,75 @@ function Sensors() {
         newDevices.push(d);
       }
       // Set current device's logTo to value of text field
-      newDevices[data.id].paused = !newDevices[data.id].paused;
+      newDevices[device.id].paused = !newDevices[device.id].paused;
       // Update state
       setDevices(newDevices);
     }
 
     /**
-     * Component to display humidity data
+     * Component to display humidity device
      */
     function HumidityReading() {
       return (
         <View display="flex" flexDirection="row" alignItems="center" >
           <Image 
-            source={getHumiditySource()}
+            source={getHumiditySource(device)}
             style={{
               width: 30,
               height: 30,
             }}
           />
           <StyledText 
-            text={data.paused ? "..." : `${data.humidity}%`} 
+            text={device.paused ? "..." : `${device.humidity}%`} 
             marginLeft={5} 
             marginRight={5} 
-            color={getHumidityColor()}
+            color={humidityColor}
           />
         </View>
       )
     }
 
     /**
-     * Component to display temperature data
+     * Component to display temperature device
      */
     function TemperatureReading() {
       return (
         <View display="flex" flexDirection="row" alignItems="center">
           <Image 
-            source={getTemperatureSource()}
+            source={getTemperatureSource(device)}
             style={{
               width: 30,
               height: 30,
             }}
           />
           <StyledText 
-            text={data.paused ? "..." : `${data.temperature}°C`} 
+            text={device.paused ? "..." : `${device.temperature}°C`} 
             marginLeft={5} 
             marginRight={5} 
-            color={getTemperatureColor()}
+            color={temperatureColor}
           />
         </View>
       )
     }
 
     /**
-     * Component to display pressure data
+     * Component to display pressure device
      */
     function PressureReading() {
       return (
         <View display="flex" flexDirection="row" alignItems="center" >
           <Image 
-            source={getPressureSource()}
+            source={getPressureSource(device)}
             style={{
               width: 30,
               height: 30,
             }}
           />
           <StyledText 
-            text={data.paused ? "..." : `${data.pressure}mmHg`} 
+            text={device.paused ? "..." : `${device.pressure}mmHg`} 
             marginLeft={5} 
             marginRight={5} 
-            color={getPressureColor()}
+            color={pressureColor}
           />
         </View>
       )
@@ -522,11 +405,12 @@ function Sensors() {
 
     /**
      * Components to show graphs so long as card is expanded
+     * @returns {React.Component} - View with three graphs
      */
     function Graphs() {
       // Guard clauses:
-      if (!data.expanded) { return; } // Card is not expanded
-
+      if (!device.expanded) { return; } // Card is not expanded
+      
       // Render graphs
       return (
         <View
@@ -554,9 +438,9 @@ function Sensors() {
                 height: 30,
               }}
             />
-            <StyledText text="Pressure (adc)" marginLeft={5} color={getPressureColor()} />
+            <StyledText text="Pressure (adc)" marginLeft={5} color={pressureColor} />
           </View>
-          { data.paused  ? <StyledText text="Sensor Paused" width="100%" marginBottom={5} /> : <CenteredChart data={examplePressureData} color={getPressureColor()} /> }
+          { device.paused  ? <StyledText text="Sensor Paused" width="100%" marginBottom={5} /> : <CenteredChart device={examplePressureDevice} color={pressureColor} /> }
           <View
             style={{
               display: "flex",
@@ -573,9 +457,9 @@ function Sensors() {
                 height: 30,
               }}
             />
-            <StyledText text="Temperature (°C)" marginLeft={5} color={getTemperatureColor()} />
+            <StyledText text="Temperature (°C)" marginLeft={5} color={temperatureColor} />
           </View>
-          { data.paused  ? <StyledText text="Sensor Paused" width="100%" marginBottom={5} /> : <CenteredChart data={exampleTemperatureData} color={getTemperatureColor()} /> }
+          { device.paused  ? <StyledText text="Sensor Paused" width="100%" marginBottom={5} /> : <CenteredChart device={exampleTemperatureDevice} color={temperatureColor} /> }
           <View
             style={{
               display: "flex",
@@ -592,9 +476,9 @@ function Sensors() {
                 height: 30,
               }}
             />
-            <StyledText text="Humidity (%)" marginLeft={5} color={getHumidityColor()} />
+            <StyledText text="Humidity (%)" marginLeft={5} color={humidityColor} />
           </View>
-          { data.paused  ? <StyledText text="Sensor Paused" width="100%" marginBottom={5} /> : <CenteredChart data={exampleHumidityData} color={getHumidityColor()} /> }
+          { device.paused  ? <StyledText text="Sensor Paused" width="100%" marginBottom={5} /> : <CenteredChart device={exampleHumidityDevice} color={humidityColor} /> }
         </View>
       )
     }
@@ -609,7 +493,7 @@ function Sensors() {
         newDevices.push(d);
       }
       // Set current device's logTo to value of text field
-      newDevices[data.id].expanded = !newDevices[data.id].expanded;
+      newDevices[device.id].expanded = !newDevices[device.id].expanded;
       // Update state
       setDevices(newDevices);
     }
@@ -620,7 +504,7 @@ function Sensors() {
         justifyContent="center"
         gradient={getSummaryColor()}
         onClick={toggleExpanded}
-        disabled={data.paused}
+        disabled={device.paused}
       >
         <View 
           display="flex" 
@@ -631,13 +515,13 @@ function Sensors() {
             width: "100%",
           }}
         >
-          <StyledText text={`Sensor ${data.id + 1}: ${data.location}`} fontWeight="bold" />
+          <StyledText text={`Sensor ${device.id + 1}: ${device.location}`} fontWeight="bold" />
           <Image 
             source={dark ? buttonImages.ARROWDOWNDARK : buttonImages.ARROWDOWNLIGHT}
             style={{
               width: 40,
               height: 40,
-              transform: [{ rotate: data.expanded ? "0deg" : "180deg" }],
+              transform: [{ rotate: device.expanded ? "0deg" : "180deg" }],
             }}
           />
         </View>
@@ -656,10 +540,10 @@ function Sensors() {
           <TemperatureReading />
           <HumidityReading />
         </View>
-        { data.expanded && <Divider /> }
+        { device.expanded && <Divider /> }
         <Graphs />
-        { !data.paused && <Summary color={getSummaryColor()} /> /* Only show summary if unpaused */ }
-        { data.expanded && <PauseButton paused={data.paused} onClick={togglePaused}/> }
+        { !device.paused && <Summary color={getSummaryColor()} /> /* Only show summary if unpaused */ }
+        { device.expanded && <PauseButton paused={device.paused} onClick={togglePaused}/> }
       </GradientCard>
     )
   }

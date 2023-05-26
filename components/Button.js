@@ -1,6 +1,6 @@
 // Library Imports
 import CheckBox from "expo-checkbox";
-import { LinearGradient } from 'expo-linear-gradient';
+import { LinearGradient, } from 'expo-linear-gradient';
 import { useContext, } from 'react';
 import { Image, Pressable, Text, View, } from "react-native";
 
@@ -225,7 +225,7 @@ export function DropDownButton(props) {
    * Get the correct text color from props or default to textPrimary based on DarkContext
    * @returns {string} - String for text color
    */
-  function getTextColor() {
+  function getDropdownButtonTextColor() {
     if (props.color) {
       if (props.color === "red") {
         return globalColors.red;
@@ -247,7 +247,7 @@ export function DropDownButton(props) {
    * Get the right arrow based on DarkContext
    * @returns {Image} - Image path
    */
-  function getArrow() {
+  function getArrowImageSource() {
     if (props.disabled) {
       return dark ? buttonImages.ARROWDOWNDARKDISABLED : buttonImages.ARROWDOWNLIGHTDISABLED;
     }
@@ -283,10 +283,10 @@ export function DropDownButton(props) {
           justifyContent: "center",
         }}
       >
-        <Text style={{color: (getTextColor()), fontSize: textStyles.entryFontSize}}>
+        <Text style={{color: (getDropdownButtonTextColor()), fontSize: textStyles.entryFontSize}}>
           {props.text}
         </Text>
-        <Image source={getArrow()} style={{marginLeft: 5, height: 20, width: 20}}/>
+        <Image source={getArrowImageSource()} style={{marginLeft: 5, height: 20, width: 20}}/>
       </Pressable>
     </View>
   )
@@ -342,7 +342,7 @@ export function PauseButton(props) {
    * Get the correct border color from props or default to buttonBorder based on DarkContext
    * @returns {string} - String for border color
    */
-  function getBorderColor() {
+  function getPauseButtonBorderColor() {
     return dark ? darkTheme.buttonBorder : lightTheme.buttonBorder;
   }
 
@@ -350,7 +350,7 @@ export function PauseButton(props) {
    * Get the correct text color from props or default to textPrimary based on DarkContext
    * @returns {string} - String for text color
    */
-  function getTextColor() {
+  function getPauseButtonTextColor() {
     return dark ? darkTheme.textPrimary : lightTheme.textPrimary;
   }
   
@@ -358,7 +358,7 @@ export function PauseButton(props) {
    * Get pause or play image by props.paused
    * @reutrns image source
    */
-  function getImage() {
+  function getPauseButtonImage() {
     if (props.paused) {
       return dark ? buttonImages.PLAYDARK : buttonImages.PLAYLIGHT;
     }
@@ -369,7 +369,7 @@ export function PauseButton(props) {
    * Get pause or play text by props.paused
    * @reutrns button text
    */
-  function getText() {
+  function getPauseButtonText() {
     if (props.paused) {
       return "Resume";
     }
@@ -399,22 +399,22 @@ export function PauseButton(props) {
           width: "100%",
           borderRadius: 10,
           borderWidth: buttonStyles.buttonBorderWidth,
-          borderColor: getBorderColor(),
+          borderColor: getPauseButtonBorderColor(),
           display: "flex",
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "center",
         }}
       >
-        <Image source={getImage()} style={{width: 30, height: 30, backgroundColor: "transparent"}}/>
+        <Image source={getPauseButtonImage()} style={{width: 30, height: 30, backgroundColor: "transparent"}}/>
         <Text 
           style={{
-            color: (getTextColor()), 
+            color: (getPauseButtonTextColor()), 
             fontSize: 14,
             margin: 5,
           }}
           >
-          {getText()}
+          {getPauseButtonText()}
         </Text>
       </Pressable>
     </View>

@@ -25,3 +25,9 @@ export const PatientContext = createContext();
  */
 export const SensorContext = createContext();
 
+/**
+ * @type {React.Context<Map<string, Number>>}
+ * @static Tells the entire application current focus state
+ */
+export const FocusContext = createContext();
+

@@ -1,6 +1,6 @@
 // Library Imports
 import { useContext, useRef, useState } from 'react';
-import { FlatList, Image, View } from 'react-native';
+import { Dimensions, Image, View } from 'react-native';
 import { ScrollView, } from 'react-native-gesture-handler';
 import { createBottomTabNavigator, } from '@react-navigation/bottom-tabs';
 import { LineChart, } from "react-native-chart-kit";
@@ -9,11 +9,10 @@ import { LineChart, } from "react-native-chart-kit";
 import { darkTheme, globalColors, lightTheme, } from '../assets/styles';
 
 // Context Imports
-import { DarkContext, DevicesContext, } from '../Context';
+import { DarkContext, DevicesContext, FocusContext, } from '../Context';
 
 // API Imports
-import { buttonImages, navigationImages, statusImages, } from "../api/image";
-import { statusTabsPages, } from "../api/navigation";
+import { statusImages, } from "../api/image";
 import { 
   averagedAdc, 
   getAlpha, 
@@ -32,10 +31,9 @@ import {
   thresholds, } from '../api/sensor'; 
 
 // Component Imports
-import { PauseButton, } from "../components/Button";
 import { Divider, GradientCard, } from "../components/Card";
 import { CenteredTitle, StyledText, } from '../components/Text';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { createStackNavigator } from '@react-navigation/stack';
 
 /** Width of graphs relative to screen width */
 const GRAPHSCALE = 0.85;
@@ -43,17 +41,36 @@ const GRAPHSCALE = 0.85;
 /** Number of cards for overall carousel */
 const NUM_OVERALL_CARDS = 4;
 
+export default function Status({navigation}) {
+  
+  const StatusStack = createStackNavigator();
+  
+  return (
+    <StatusStack.Navigator
+      initialRouteName="dashboard"
+      screenOptions={{
+        headerShown: false
+      }}
+    >
+      <StatusStack.Screen name="dashboard" component={StatusDashboard} />
+      <StatusStack.Screen name="sensorDetail" component={SensorDetail} />
+      <StatusStack.Screen name="readingDetail" component={ReadingDetail} />
+    </StatusStack.Navigator>
+  )
+}
+
 /**
- * Component to hold Status Tabs
+ * Component to hold Status Dashboard
  * @param {Object} props - Component properties
  * @param {ReactNavigation} props.navigation - Navigation object from AppStack 
  * @returns {React.Component} - Navigator component for Status pages
  */
-export default function Status({navigation}) {
+function StatusDashboard({navigation}) {
 
   // Get context
   const { devices } = useContext(DevicesContext);
   const { dark } = useContext(DarkContext);
+  const { focus, setFocus } = useContext(FocusContext);
 
   /**
    * Component to display a card with list of all connected devices and their pressure readings
@@ -303,6 +320,119 @@ export default function Status({navigation}) {
       </ScrollView>
     )
   }
+
+  /**
+   * Component for displaying sensors separately from one another
+   */
+  function Sensors() {
+
+    /**
+     * Render a sensor card for each sensor in {@link sensorData}
+     */
+    function renderSensorCards() {
+      // Guard Clauses:
+      if (!devices) { return; } // No sensor data exists, so we shouldn't try to render anything
+
+      return devices.map((device, index) => {
+        return <SensorCard key={index} device={device} />
+      });
+    }
+
+    /**
+     * A component for rendering sensor data
+     * @param {Object} props.device device from DevicesContext
+     * @returns {React.Component} - A GradientCard with sensor data displays
+     */
+    function SensorCard({device}) {
+
+      /** This device's pressure color */
+      const pressureColor = getPressureColor(device);
+      /** This device's temperature color */
+      const temperatureColor = getTemperatureColor(device);
+      /** This device's humidity color */
+      const humidityColor = getHumidityColor(device);
+      /** Get colors of all readings */
+
+      const allColors = [ pressureColor, temperatureColor, humidityColor ];
+
+      /**
+       * Navigate to sensor detail page and update focus context
+       */
+      function handleSensorCardClick() {
+        const newFocus = {...focus};
+        newFocus.device = device.id;
+        setFocus(newFocus);
+        navigation.navigate("sensorDetail");
+      }
+
+      /**
+       * Get the border color by picking the most extreme color of any reading
+       * @returns {string} - Color key string
+       */
+      function getSummaryColor() {
+
+        // If any of the colors are red, make the card red
+        for (const readingColor of allColors) {
+          if (readingColor === globalColors.red) {
+            return readingColor;
+          }
+        }
+
+        // If any of the colors are orange, make the card orange
+        for (const readingColor of allColors) {
+          if (readingColor === globalColors.orange) {
+            return readingColor;
+          }
+        }
+
+        // Everything is well! Make the card green.
+        return globalColors.green;
+      }
+
+      return (
+        <GradientCard
+          flexDirection="column"
+          justifyContent="center"
+          gradient={getSummaryColor()}
+          onClick={handleSensorCardClick}
+        >
+          <StyledText 
+            text={`Sensor ${device.id + 1}: ${device.location}`} 
+            fontWeight="bold" 
+            marginBottom={5}
+          />
+          <Divider />
+          <View 
+            display="flex" 
+            flexDirection="row" 
+            alignItems="center" 
+            justifyContent="center"
+            style={{          
+              width: "100%",
+              margin: 5,
+            }}
+          >
+            <PressureReading device={device}/>
+            <TemperatureReading device={device}/>
+            <HumidityReading device={device} />
+          </View>
+          <Summary color={getSummaryColor()} />
+        </GradientCard>
+      )
+    }
+    
+    return (
+      <View>
+        <ScrollView
+          style={{
+            padding: 10,
+          }}
+        >
+          { renderSensorCards() }
+        </ScrollView>
+      </View>
+    )
+  }
   
   return (
     <ScrollView
@@ -314,182 +444,6 @@ export default function Status({navigation}) {
       <CenteredTitle text="Sensors:" />
       <Sensors />
     </ScrollView>
-  )
-}
-
-/**
- * Component for displaying sensors separately from one another
- */
-function Sensors() {
-  
-  // Get Context
-  const { dark } = useContext(DarkContext);
-
-  // Get data from sensors over BLE
-  const { devices, setDevices } = useContext(DevicesContext);
-
-  /**
-   * Render a sensor card for each sensor in {@link sensorData}
-   */
-  function renderSensorCards() {
-    // Guard Clauses:
-    if (!devices) { return; } // No sensor data exists, so we shouldn't try to render anything
-
-    return devices.map((device, index) => {
-      return <SensorCard key={index} device={device} />
-    });
-  }
-
-  /**
-   * A component for rendering sensor data
-   * @param {Object} props.device device from DevicesContext
-   * @returns {React.Component} - A GradientCard with sensor data displays
-   */
-  function SensorCard({device}) {
-
-    /** This device's pressure color */
-    const pressureColor = getPressureColor(device);
-    /** This device's temperature color */
-    const temperatureColor = getTemperatureColor(device);
-    /** This device's humidity color */
-    const humidityColor = getHumidityColor(device);
-    /** Get colors of all readings */
-    const allColors = [ pressureColor, temperatureColor, humidityColor ];
-
-    /**
-     * Get the border color by picking the most extreme color of any reading
-     * @returns {string} - Color key string
-     */
-    function getSummaryColor() {
-
-      // If any of the colors are red, make the card red
-      for (const readingColor of allColors) {
-        if (readingColor === globalColors.red) {
-          return readingColor;
-        }
-      }
-
-      // If any of the colors are orange, make the card orange
-      for (const readingColor of allColors) {
-        if (readingColor === globalColors.orange) {
-          return readingColor;
-        }
-      }
-
-      // Everything is well! Make the card green.
-      return globalColors.green;
-    }
-
-    /**
-     * Component to display humidity device
-     */
-    function HumidityReading() {
-      return (
-        <View display="flex" flexDirection="row" alignItems="center" >
-          <Image 
-            source={getHumiditySource(device)}
-            style={{
-              width: 30,
-              height: 30,
-            }}
-          />
-          <StyledText 
-            text={`${device.humidity}%`} 
-            marginLeft={5} 
-            marginRight={5} 
-            color={humidityColor}
-          />
-        </View>
-      )
-    }
-
-    /**
-     * Component to display temperature device
-     */
-    function TemperatureReading() {
-      return (
-        <View display="flex" flexDirection="row" alignItems="center">
-          <Image 
-            source={getTemperatureSource(device)}
-            style={{
-              width: 30,
-              height: 30,
-            }}
-          />
-          <StyledText 
-            text={`${device.temperature}°C`} 
-            marginLeft={5} 
-            marginRight={5} 
-            color={temperatureColor}
-          />
-        </View>
-      )
-    }
-
-    /**
-     * Component to display pressure device
-     */
-    function PressureReading() {
-      return (
-        <View display="flex" flexDirection="row" alignItems="center" >
-          <Image 
-            source={getPressureSource(device)}
-            style={{
-              width: 30,
-              height: 30,
-            }}
-          />
-          <StyledText 
-            text={`${device.pressure}mmHg`} 
-            marginLeft={5} 
-            marginRight={5} 
-            color={pressureColor}
-          />
-        </View>
-      )
-    }
-
-    return (
-      <GradientCard
-        flexDirection="column"
-        justifyContent="center"
-        gradient={getSummaryColor()}
-      >
-        <StyledText 
-          text={`Sensor ${device.id + 1}: ${device.location}`} 
-          fontWeight="bold" 
-          marginBottom={5}
-        />
-        <Divider />
-        <View 
-          display="flex" 
-          flexDirection="row" 
-          alignItems="center" 
-          justifyContent="center"
-          style={{          
-            width: "100%",
-            margin: 5,
-          }}
-        >
-          <PressureReading />
-          <TemperatureReading />
-          <HumidityReading />
-        </View>
-        <Summary color={getSummaryColor()} />
-      </GradientCard>
-    )
-  }
-    
-  return (
-    <View>
-      <ScrollView
-        style={{
-          padding: 10,
-        }}
-      >
-        { renderSensorCards() }
-      </ScrollView>
-    </View>
   )
 }
 
@@ -535,6 +489,139 @@ function Summary({color}) {
         <StyledText text={getSummaryText()} color={color} marginLeft={10}/>
       </View>
     )
+}
+
+function SensorDetail({navigation}) {
+
+  // Get context
+  const { devices } = useContext(DevicesContext);
+  const { focus } = useContext(FocusContext);
+
+  /**
+   * Current focused device
+   */
+  const device = devices[focus.device];
+
+   /**
+  * Components to show graphs so long as card is expanded
+  * @returns {React.Component} - View with three graphs
+  */
+  function Graphs() {
+
+    // Get colors for all device readings
+    const pressureColor = getPressureColor(device);
+    const temperatureColor = getTemperatureColor(device);
+    const humidityColor = getHumidityColor(device);
+    
+    // Render graphs
+    return (
+      <View
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "flex-start",
+          width: "100%",
+          padding: 5,
+        }}
+      >
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "flex-start",
+            width: "100%",
+            padding: 5,
+          }}
+        >
+          <Image 
+            source={getPressureSource(device)}
+            style={{
+              width: 30,
+              height: 30,
+            }}
+          />
+          <StyledText text="Pressure (adc)" marginLeft={5} color={pressureColor} />
+        </View>
+        <CenteredChart data={examplePressureData} color={pressureColor} />
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "flex-start",
+            width: "100%",
+            padding: 5,
+          }}
+        >
+          <Image 
+            source={getTemperatureSource(device)}
+            style={{
+              width: 30,
+              height: 30,
+            }}
+          />
+          <StyledText text="Temperature (°C)" marginLeft={5} color={temperatureColor} />
+        </View>
+        <CenteredChart data={exampleTemperatureData} color={temperatureColor} />
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "flex-start",
+            width: "100%",
+            padding: 5,
+          }}
+        >
+          <Image 
+            source={getHumiditySource(device)}
+            style={{
+              width: 30,
+              height: 30,
+            }}
+          />
+          <StyledText text="Humidity (%)" marginLeft={5} color={humidityColor}/>
+        </View>
+        <CenteredChart data={exampleHumidityData} color={humidityColor} />
+      </View>
+    )
+  }
+
+  return (
+    <ScrollView
+      style={{
+        padding: 5
+      }}
+    >
+      <CenteredTitle text={devices[focus.device].location} />
+      <Divider />
+      <View 
+        display="flex" 
+        flexDirection="row" 
+        alignItems="center" 
+        justifyContent="center"
+        style={{          
+          width: "100%",
+          margin: 5,
+        }}
+      >
+        <PressureReading device={device}/>
+        <TemperatureReading device={device}/>
+        <HumidityReading device={device} />
+      </View>
+      <Divider />
+      <Graphs />
+    </ScrollView>
+  )
+}
+
+function ReadingDetail({navigation}) {
+
+  // Get context
+  const { devices } = useContext(DevicesContext);
+  const { focus } = useContext(FocusContext);
+
+  return (
+    <CenteredTitle text={devices[focus.device].location} />    
+  )
 }
 
 const examplePressureData = {
@@ -613,3 +700,129 @@ const exampleHumidityData = {
     }
   ]
 };
+
+/**
+ * Component to display pressure device
+ */
+function PressureReading({device}) {
+
+  return (
+    <View display="flex" flexDirection="row" alignItems="center" >
+      <Image 
+        source={getPressureSource(device)}
+        style={{
+          width: 30,
+          height: 30,
+        }}
+      />
+      <StyledText 
+        text={`${device.pressure}mmHg`} 
+        marginLeft={5} 
+        marginRight={5} 
+        color={getPressureColor(device)}
+      />
+    </View>
+  )
+}
+
+/**
+ * Component to display temperature device
+ */
+function TemperatureReading({device}) {
+  return (
+    <View display="flex" flexDirection="row" alignItems="center">
+      <Image 
+        source={getTemperatureSource(device)}
+        style={{
+          width: 30,
+          height: 30,
+        }}
+      />
+      <StyledText 
+        text={`${device.temperature}°C`} 
+        marginLeft={5} 
+        marginRight={5} 
+        color={getTemperatureColor(device)}
+      />
+    </View>
+  )
+}
+
+/**
+ * Component to display humidity device
+ */
+function HumidityReading({device}) {
+  return (
+    <View display="flex" flexDirection="row" alignItems="center" >
+      <Image 
+        source={getHumiditySource(device)}
+        style={{
+          width: 30,
+          height: 30,
+        }}
+      />
+      <StyledText 
+        text={`${device.humidity}%`} 
+        marginLeft={5} 
+        marginRight={5} 
+        color={getHumidityColor(device)}
+      />
+    </View>
+  )
+}
+
+/**
+ * Component to render a chart with a provided data
+ * @param {Object} props - Component properties
+ * @param {Object} props.data - Chart data
+ * @param {string} props.color - Line color
+ * @returns {React.Component} - A custom styled LineChart
+ */
+function CenteredChart({data, color}) {
+
+  // Get context
+  const { dark } = useContext(DarkContext)
+
+  return (
+    <View
+      style={{
+        width: "100%",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+      }}
+    >
+      <LineChart
+        data={data}
+        segments={4}
+        width={Dimensions.get("window").width * GRAPHSCALE} // from react-native
+        height={220}
+        yAxisInterval={1} // optional, defaults to 1
+        withVerticalLines={false}
+        chartConfig={{
+          backgroundColor: dark ? darkTheme.cardFill : lightTheme.cardFill,
+          backgroundGradientFrom: dark ? darkTheme.cardFill : lightTheme.cardFill,
+          backgroundGradientTo: dark ? darkTheme.cardFill : lightTheme.cardFill,
+          decimalPlaces: 0, // optional, defaults to 2dp
+          color: () => color,
+          labelColor: () => dark ? darkTheme.textPrimary : lightTheme.textPrimary,
+          style: {
+            borderRadius: 0,
+          },
+          propsForDots: {
+            r: "2",
+            strokeWidth: "1",
+            stroke: dark ? darkTheme.textPrimary : lightTheme.textPrimary,
+          },
+          propsForBackgroundLines: {
+            opacity: 0.2,
+          },
+        }}
+        bezier
+        style={{
+          marginVertical: 8,
+        }}
+      />
+    </View>
+  )
+}

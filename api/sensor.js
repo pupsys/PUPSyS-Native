@@ -21,13 +21,11 @@ export function getPressureColor(device) {
   // Get context
   const { dark } = useContext(DarkContext);
 
-  if (!device.paused) {
-    if (device.pressure >= thresholds.pressure.RED) {
-      return globalColors.red;
-    }
-    if (device.pressure >= thresholds.pressure.ORANGE) {
-      return globalColors.orange;
-    }
+  if (device.pressure >= thresholds.pressure.RED) {
+    return globalColors.red;
+  }
+  if (device.pressure >= thresholds.pressure.ORANGE) {
+    return globalColors.orange;
   }
   return dark ? darkTheme.textPrimary : lightTheme.textPrimary;
 }
@@ -84,13 +82,11 @@ export function getTemperatureColor(device) {
   // Get context
   const { dark } = useContext(DarkContext);
   
-  if (!device.paused) {
-    if (device.temperature >= thresholds.temperature.RED) {
-      return globalColors.red;
-    }
-    if (device.temperature >= thresholds.temperature.ORANGE) {
-      return globalColors.orange;
-    }
+  if (device.temperature >= thresholds.temperature.RED) {
+    return globalColors.red;
+  }
+  if (device.temperature >= thresholds.temperature.ORANGE) {
+    return globalColors.orange;
   }
   return dark ? darkTheme.textPrimary : lightTheme.textPrimary;
 }
@@ -147,13 +143,11 @@ export function getHumidityColor(device) {
   // Get context
   const { dark } = useContext(DarkContext);
   
-  if (!device.paused) {
-    if (device.humidity >= thresholds.humidity.RED) {
-      return globalColors.red;
-    }
-    if (device.humidity >= thresholds.humidity.ORANGE) {
-      return globalColors.orange;
-    }
+  if (device.humidity >= thresholds.humidity.RED) {
+    return globalColors.red;
+  }
+  if (device.humidity >= thresholds.humidity.ORANGE) {
+    return globalColors.orange;
   }
   return dark ? darkTheme.textPrimary : lightTheme.textPrimary;
 }

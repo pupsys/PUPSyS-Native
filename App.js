@@ -19,7 +19,7 @@ import { exampleDevices, } from "./api/sensor";
 import { examplePatient, } from "./api/patient";
 
 // Context Imports
-import { DarkContext, DevicesContext, PatientContext, SensorContext } from "./Context";
+import { DarkContext, DevicesContext, FocusContext, PatientContext, SensorContext } from "./Context";
 import { navigationImages } from "./api/image";
 import { generateRandomNumbers } from "./api/simulation";
 
@@ -37,9 +37,14 @@ function App() {
     temperature: [],  // Default temperature readings to empty list
     humidity: [],     // Default humidity readings to empty list
   });
+  const [ focus, setFocus ] = useState({ // Current focus state
+    device: 0,
+    reading: 0
+  });
 
   // Render PUPSyS!
   return (
+    <FocusContext.Provider  value={{focus, setFocus}}>  
     <SensorContext.Provider  value={{sensorData, setSensorData}}>  
     <PatientContext.Provider  value={{patient, setPatient}}>  
     <DarkContext.Provider     value={{dark, setDark}}>  
@@ -87,6 +92,7 @@ function App() {
     </DarkContext.Provider>
     </PatientContext.Provider>
     </SensorContext.Provider>
+    </FocusContext.Provider>
   );
 }3
 

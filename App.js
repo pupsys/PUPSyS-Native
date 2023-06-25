@@ -22,6 +22,7 @@ function App() {
   // Currently no Context / State to configure
 
   return (
+    <FocusContext.Provider  value={{focus, setFocus}}>  
     <SensorContext.Provider  value={{sensorData, setSensorData}}>  
     <PatientContext.Provider  value={{patient, setPatient}}>  
     <DarkContext.Provider     value={{dark, setDark}}>  
@@ -69,6 +70,7 @@ function App() {
     </DarkContext.Provider>
     </PatientContext.Provider>
     </SensorContext.Provider>
+    </FocusContext.Provider>
   );
 }3
 

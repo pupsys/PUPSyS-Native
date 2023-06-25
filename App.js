@@ -5,40 +5,22 @@ import { NavigationContainer, } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/Ionicons" 
 
 // Component Imports
-import Calibration from "./navigation/Calibration";
 import { AppDrawer, navTheme, } from "./components/Navigation";
-import Patient from "./navigation/Patient";
-import Status from "./navigation/Status3";
 
 // Style Imports
-import { darkTheme, lightTheme, } from "./assets/styles";
+import { } from "./assets/styles";
 
 // API Imports
-import { appDrawerPages, } from "./api/navigation";
-import { exampleDevices, } from "./api/sensor";
-import { examplePatient, } from "./api/patient";
-
-// Context Imports
-import { DarkContext, DevicesContext, PatientContext, SensorContext } from "./Context";
-import { navigationImages } from "./api/image";
-import { generateRandomNumbers } from "./api/simulation";
+import { AppDrawerItemIcon } from "./api/image";
+import { AppDrawerItemName, } from "./api/navigation";
 
 /**
- * The entire PUPSyS app component. Creates states for all context and returns a Stack Navigator inside all context providers.
+ * The entire StudentSuccessProject App component
  */
 function App() {
+  
+  // Currently no Context / State to configure
 
-  // Init. contexts
-  const [ dark, setDark ]       = useState(false);          // Current darkmode state
-  const [ devices, setDevices ] = useState(exampleDevices); // Current devices
-  const [ patient, setPatient ] = useState(examplePatient); // Current patient state
-  const [ sensorData, setSensorData ] = useState({ // Current sensor state
-    pressure: [],     // Default pressure readings to empty list
-    temperature: [],  // Default temperature readings to empty list
-    humidity: [],     // Default humidity readings to empty list
-  });
-
-  // Render PUPSyS!
   return (
     <SensorContext.Provider  value={{sensorData, setSensorData}}>  
     <PatientContext.Provider  value={{patient, setPatient}}>  
